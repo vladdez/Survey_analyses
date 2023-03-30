@@ -1,0 +1,4 @@
+"0","data <- read_excel(""data/results-survey3.xlsx"")"
+"2","New names:"
+"0","data <- data[1:121] %>% "
+"0","  filter(.[[18]] !='Yes') # not analysed any EEG method"

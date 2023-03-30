@@ -1,0 +1,200 @@
+---
+title: "user_study"
+format: html
+editor: visual
+---
+
+## Setup
+
+```{r, message= FALSE, warning=FALSE}
+# upload to the git 1
+library(readxl)
+library(foreach)
+library(stringr)
+library(dplyr)
+library(tokenizers)
+library(data.table)
+library(ggplot2)
+library(plyr)
+library(quanteda)
+library(SemNetCleaner)
+library(purrr)
+library(tidytext)
+library(tm)
+library(topicmodels)
+library(SnowballC)
+library(Matrix)
+library(text2vec)
+library(tidyr)
+library(janitor)
+library(GGally)
+
+```
+
+```{r, message= FALSE, warning=FALSE}
+data <- read_excel("data/results-survey3.xlsx")
+data <- data[1:121] %>% 
+  filter(.[[18]] !='Yes') # not analysed any EEG method
+```
+
+## Up or down
+
+```{r, eval = FALSE, echo = FALSE}
+ud <- cbind(unlist(area$words), unlist(data[[79]])) %>% data.frame() %>% 
+  filter(.[[2]] != "NANA") %>% dplyr::rename(area=X1, ud=X2) %>% 
+  mutate(ud = ifelse(ud=="Up", 1, 0)) %>% 
+  group_by(area) %>%
+  filter(n() > 2)
+
+log.model <- glm(ud ~ area, data = ud, family = 'binomial')
+summary(log.model)
+```
+
+```{r, eval = FALSE, echo = FALSE}
+  cbind(unlist(area$words), unlist(data[[79]])) %>% data.frame() %>% 
+  filter(.[[2]] != "NANA") %>% dplyr::rename(area=X1, ud=X2) %>%
+  group_by(area) %>%
+  filter(n() > 2) %>% 
+  ggplot(., aes(y = area)) +
+ geom_bar(aes(fill = factor(ud)), position = position_stack(reverse = TRUE)) +
+  labs(x = "count",  fill ="Positive:") +
+ theme(legend.position = "top")
+```
+
+
+## Experience ~ tools 
+
+
+```{r}
+vec <- names(data[25:49]) %>% str_split_i(., "\\[", 2) %>%  str_sub(., 1, -2)
+
+software <- data[25:49] %>%
+    rename_at(vars(colnames(.)), ~ vec) %>% 
+  mutate_at(vars(vec), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0))) %>% 
+  cbind(data[20], .) %>% dplyr::rename(years = !!names(.)[1]) %>% filter(years < 50) %>% 
+  select_if(colSums(.) != 0)
+
+```
+```{r}
+software  %>% 
+  select_if(colSums(.) > 10) %>%  dplyr::select(years, EEGLAB) %>% 
+  ggplot(., aes(x=as.factor(EEGLAB), y=years)) + 
+  geom_boxplot()
+
+software  %>% 
+  select_if(colSums(.) > 10) %>%  dplyr::select(years, FieldTrip) %>% 
+  ggplot(., aes(x=as.factor(FieldTrip), y=years)) + 
+  geom_boxplot()
+software  %>% 
+  select_if(colSums(.) > 10) %>%  dplyr::select(years, "MNE-Python") %>% 
+  ggplot(., aes(x=as.factor(`MNE-Python`), y=years)) + 
+  geom_boxplot()
+
+software  %>% 
+  select_if(colSums(.) > 10) %>%  dplyr::select(years, Brainstorm) %>% 
+  ggplot(., aes(x=as.factor(Brainstorm), y=years)) + 
+  geom_boxplot()
+```
+
+
+```{r}
+a <- software  %>% 
+  select_if(colSums(.) > 10) 
+
+res <- a %>%  dplyr::select(years, BESA) %>% 
+  group_by(BESA) %>% dplyr::summarise(mean(years)) %>% dplyr::rename(., Usage = BESA,BESA = `mean(years)`)
+
+cn <- colnames(a[3:length(a)])
+for (i in 1:length(cn)){
+  tmp <- a %>%  dplyr::select(years, cn[i]) %>% 
+  group_by_at(2) %>% dplyr::summarise( mean(years)) %>%  dplyr::select(-1)
+  colnames(tmp) <- cn[i] 
+  res <- cbind(res, tmp) 
+  
+  
+  print(cn[i])
+}
+res %>% t()  %>%
+  row_to_names(row_number = 1) %>% data.frame() %>% dplyr::rename(., not_used = X0, used = X1)
+
+```
+
+
+
+```{r}
+ny <- merge(data.frame(rowSums(software)), data[20]) %>% 
+   rename_at(vars(colnames(.)), ~ c("n_soft", "years")) %>% filter(years < 50) 
+
+ny %>% 
+  lm(data=., n_soft ~ years) %>% summary(.)
+ny %>% plot(.)
+
+merge(data.frame(rowSums(software)), data[21]) %>% 
+   rename_at(vars(colnames(.)), ~ c("n_soft", "selfass")) %>% 
+  lm(data=., n_soft ~ selfass) %>% summary(.)
+```
+
+## In search of single variable representing experience 
+
+```{r, include=FALSE}
+exp_data <- data[c( 19, 20, 12, 21, 22)]
+colnames(exp_data) <- c("n_papers", "years", "position","self_level", "code_contribution")
+exp_data
+
+
+short <- exp_data[c(1:2, 5)] %>% mutate(code_contribution = ifelse(code_contribution=="Yes", 1, 0))
+
+# standardiye
+#remove outliers 
+```
+
+
+<!-- ```{r} -->
+<!-- cov(short) -->
+<!-- fit <- factanal(~ ., data = short, factors = 1,  rotation = "varimax", na.action = na.exclude) -->
+<!-- fa.diagram(fit$loadings) -->
+<!-- ``` -->
+
+
+
+<!-- ```{r} -->
+<!-- library(FactoMineR) -->
+<!-- library(psych) -->
+
+
+<!-- res.mfa <-MFA(exp_data, group = c(2, 3), type = c("s", "n"),  -->
+<!--      ind.sup = NULL, name.group = c("cont", "cat"), num.group.sup = NULL,  -->
+<!--      graph = TRUE) -->
+<!-- group <- get_mfa_var(res.mfa, "group") -->
+<!-- group -->
+<!-- fviz_mfa_var(res.mfa, "group") -->
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+<!-- cortest.bartlett(exp_data[1:2]) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- library("factoextra") -->
+<!-- m = FAMD(exp_data[1:4],ncp=2,axes=c(1,2)) -->
+<!-- m$ind -->
+
+<!-- ``` -->
+
+
+```{r}
+ggpairs(exp_data[1:2]) 
+```
+
+```{r}
+ggpairs(exp_data[4:5]) 
+```
+
+```{r}
+ggpairs(exp_data[3:5]) 
+```
+
+```{r}
+ggpairs(exp_data) 
+```

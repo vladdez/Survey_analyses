@@ -1,0 +1,4 @@
+"0","library(kableExtra)
+"
+"2","Error in library(kableExtra) : there is no package called ‘kableExtra’
+"

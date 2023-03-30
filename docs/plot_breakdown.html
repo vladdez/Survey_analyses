@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>3.plot_breakdown</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">3.plot_breakdown</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Project description</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./about.html" class="sidebar-item-text sidebar-link">About</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Analyses</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exploration.html" class="sidebar-item-text sidebar-link">1. exploration</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connections.html" class="sidebar-item-text sidebar-link">2. linear models</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plot_breakdown.html" class="sidebar-item-text sidebar-link active">3. plot breakdown</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#plot-naming" id="toc-plot-naming" class="nav-link" data-scroll-target="#plot-naming">Plot naming</a></li>
+  <li><a href="#top-10-plot-names" id="toc-top-10-plot-names" class="nav-link" data-scroll-target="#top-10-plot-names">Top 10 plot names</a></li>
+  <li><a href="#frequency-of-tool-usage" id="toc-frequency-of-tool-usage" class="nav-link" data-scroll-target="#frequency-of-tool-usage">Frequency of tool usage</a></li>
+  <li><a href="#general-struggles-with-plots" id="toc-general-struggles-with-plots" class="nav-link" data-scroll-target="#general-struggles-with-plots">General struggles with plots</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">3.plot_breakdown</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># upload to the git</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(foreach)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tokenizers)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plyr)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quanteda)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SemNetCleaner)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytext)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tm)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(topicmodels)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SnowballC)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Matrix)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(text2vec)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringi)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data/results-survey3.xlsx"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data[<span class="dv">1</span><span class="sc">:</span><span class="dv">121</span>] <span class="sc">%&gt;%</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(.[[<span class="dv">18</span>]] <span class="sc">!=</span><span class="st">'Yes'</span>) <span class="co"># not analysed any EEG method</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>vec <span class="ot">&lt;-</span> <span class="fu">names</span>(data[ , <span class="fu">grepl</span>( <span class="st">"How would you "</span> , <span class="fu">names</span>(data))]) <span class="sc">%&gt;%</span> <span class="fu">str_split_i</span>(., <span class="st">"</span><span class="sc">\\</span><span class="st">....."</span>, <span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">as.numeric</span>()</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>vec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  69  80  85  90  97 102 107 112</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>word_preproc <span class="ot">&lt;-</span> <span class="cf">function</span>(data, N){</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#N = 69</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(.[[N]])) <span class="sc">%&gt;%</span> <span class="fu">select</span>(., N) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">words =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>]) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">tolower</span>(words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">#mutate(words = gsub(" \\(or.*", "", words)) %&gt;% mutate(words = gsub(", or.*", "", words)) %&gt;% </span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">stri_replace_all_regex</span>(words,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">pattern=</span><span class="fu">c</span>(<span class="st">" </span><span class="sc">\\</span><span class="st">(.*"</span>, <span class="st">", or.*"</span>, <span class="st">" across"</span>, <span class="st">" with"</span>, <span class="st">" at"</span>, <span class="st">" by"</span>, <span class="st">" over"</span>, <span class="st">" of"</span>, <span class="st">" per"</span>, <span class="st">"at"</span>, <span class="st">" across"</span>, <span class="st">" accross"</span>),</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">replacement=</span><span class="fu">c</span>(<span class="st">''</span>),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">vectorize=</span><span class="cn">FALSE</span>))</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>     </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(tmp)) <span class="sc">%do%</span> <span class="fu">tokenize_words</span>(tmp<span class="sc">$</span>words)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  stop_list <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"an"</span>, <span class="st">"the"</span>, <span class="st">"wise"</span>, <span class="st">"like"</span>, <span class="st">"s"</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  t2 <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(t)) <span class="sc">%do%</span> t[[<span class="dv">1</span>]][[i]][<span class="sc">!</span>(t[[<span class="dv">1</span>]][[i]] <span class="sc">%in%</span> stop_list)]</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">#t21 &lt;- foreach(i = 1:length(t2)) %do% map(t2[i][[1]], singularize)</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  t3 <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(t2)) <span class="sc">%do%</span> <span class="fu">paste</span>(<span class="fu">sort</span>(<span class="fu">unlist</span>(t2[i])), <span class="at">collapse =</span> <span class="st">' '</span>) </span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  t4 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(t3)) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">words =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>])</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(t4)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="plot-naming" class="level2">
+<h2 class="anchored" data-anchor-id="plot-naming">Plot naming</h2>
+<p>Those who named a plot somehow and those who failed to do that</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>na_table <span class="ot">&lt;-</span> <span class="cf">function</span>(data, vec){</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    temp <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> vec){</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      temp1 <span class="ot">&lt;-</span> <span class="fu">word_preproc</span>(data, i)  <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'idea|sure|confus|aware|do not|why'</span>), <span class="st">"NA"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">nchar</span>(words)<span class="sc">==</span><span class="dv">0</span>, <span class="cn">NA</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">table</span>(.) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(words <span class="sc">!=</span> <span class="st">"NA"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">sum</span>(Freq))  </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      temp <span class="ot">&lt;-</span> <span class="fu">cbind</span>(temp, temp1)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    temp <span class="ot">&lt;-</span> temp[<span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(temp)]</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">colnames</span>(temp) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"line plot"</span>,<span class="st">"butterfly"</span>,<span class="st">"topoplot"</span>,<span class="st">"topoarray"</span>,<span class="st">"topomap"</span>,<span class="st">"ERP image"</span>,<span class="st">"parallel"</span>, <span class="st">"channel image"</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(temp)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>num_named <span class="ot">&lt;-</span> <span class="fu">na_table</span>(data, vec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using an external vector in selections was deprecated in tidyselect 1.1.0.
+ℹ Please use `all_of()` or `any_of()` instead.
+  # Was:
+  data %&gt;% select(N)
+
+  # Now:
+  data %&gt;% select(all_of(N))
+
+See &lt;https://tidyselect.r-lib.org/reference/faq-external-vector.html&gt;.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">slice</span>(num_named, <span class="dv">1</span>)  <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(., plots, succeeded, <span class="st">`</span><span class="at">line plot</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">channel image</span><span class="st">`</span>, <span class="at">factor_key=</span><span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">failed =</span> <span class="fu">nrow</span>(data) <span class="sc">-</span> succeeded) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(., res, score, succeeded<span class="sc">:</span>failed, <span class="at">factor_key=</span><span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">x =</span> plots, <span class="at">y =</span> score, <span class="at">fill =</span> res)) <span class="sc">+</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"dodge"</span>, <span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Category"</span>, <span class="at">y =</span> <span class="st">"Value"</span>, <span class="at">fill =</span> <span class="st">"Group"</span>) <span class="sc">+</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="plot_breakdown_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="top-10-plot-names" class="level2">
+<h2 class="anchored" data-anchor-id="top-10-plot-names">Top 10 plot names</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># does it work?????</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>freq_table <span class="ot">&lt;-</span> <span class="cf">function</span>(data, vec){</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    temp <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> vec){</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>     <span class="co"># i = 112</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>      temp1 <span class="ot">&lt;-</span> <span class="fu">word_preproc</span>(data, i)  <span class="sc">%&gt;%</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'idea|sure|confus|aware|do not|know|why|remember'</span>), <span class="st">"NA"</span>, <span class="fu">as.character</span>(words)),</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">nchar</span>(words)<span class="sc">==</span><span class="dv">0</span>, <span class="cn">NA</span>, words),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'erps|ep|erp plot|event related potential'</span>), <span class="st">"erp_plot"</span>, <span class="fu">as.character</span>(words)),</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'terfly|butte'</span>), <span class="st">"butterfly_plot"</span>, <span class="fu">as.character</span>(words)),</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span> <span class="fu">str_replace</span>(words, <span class="st">'responses'</span>, <span class="st">"response"</span>),  </span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'channels|chanel'</span>, <span class="st">'channel'</span>, words) ,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'.*grand average.*'</span>), <span class="st">"grand_average_erp_plot"</span>, <span class="fu">as.character</span>(words)),</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'classic'</span>), <span class="st">"classic_erp_plot"</span>, <span class="fu">as.character</span>(words)),</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'mean|averaged'</span>, <span class="st">'average'</span>, words),</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'course time'</span>, <span class="st">'timecourse'</span>, words),</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'.*timecourse.*'</span>, <span class="st">'time_course_plot'</span>, words),</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'.*erp waveform.*'</span>, <span class="st">'erp_waveform'</span>, words),</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'average condition.*'</span>, <span class="st">'average_condition_erp'</span>, words),</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'electrode'</span>, <span class="st">'channel'</span>, words),</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'terfly|butte'</span>), <span class="st">"butterfly_plot"</span>, <span class="fu">as.character</span>(words)),</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'spaghetti'</span>), <span class="st">"spaghetti_plot"</span>, <span class="fu">as.character</span>(words)),</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'all channels'</span>), <span class="st">"all_channels_erp"</span>, <span class="fu">as.character</span>(words)),</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'single channel erp|single erp|erp of single channels'</span>), <span class="st">"single_channel_erp"</span>, <span class="fu">as.character</span>(words)),</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'.*channel erp.*'</span>), <span class="st">"channel_erp"</span>, <span class="fu">as.character</span>(words)),</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'amplitude'</span>), <span class="st">"amplitude"</span>, <span class="fu">as.character</span>(words)),</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'x |multi |muti |multeple '</span>, <span class="st">'multiple '</span>, words),</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'several|each|multeple'</span>, <span class="st">'multiple'</span>, words),</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>              <span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'erpimage'</span>, <span class="st">'erp image'</span>, words),</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'heat map'</span>, <span class="st">'heatmap'</span>, words),</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'topomaps'</span>, <span class="st">'topomap'</span>, words),</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'topoplots'</span>, <span class="st">'topoplot'</span>, words),</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'epochs'</span>, <span class="st">'epoch'</span>, words),</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'trials'</span>, <span class="st">'trial'</span>, words),</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>      <span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'topographical'</span>, <span class="st">'topographic'</span>, words)</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>      <span class="fu">table</span>(.) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>      <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span>  <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">lengths</span>(<span class="fu">gregexpr</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">W+"</span>, words)) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>        <span class="fu">filter</span>(n <span class="sc">&lt;</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>n) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(words <span class="sc">!=</span> <span class="st">""</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>      <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq))  <span class="sc">%&gt;%</span>  <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>      <span class="fu">unite</span>(word_freq, <span class="fu">c</span>(<span class="st">"words"</span>, <span class="st">"Freq"</span>)) <span class="sc">%&gt;%</span>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"NA"</span>, word_freq))</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">length</span>(temp1) <span class="sc">&lt;</span> <span class="dv">10</span>){</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>        na_frame <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> <span class="dv">10</span>, <span class="at">ncol =</span> <span class="dv">1</span>))</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>        <span class="fu">names</span>(na_frame) <span class="ot">&lt;-</span> <span class="fu">names</span>(temp1)</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>        temp1 <span class="ot">&lt;-</span> <span class="fu">rbind</span>(temp1, na_frame)  <span class="sc">%&gt;%</span>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>      temp <span class="ot">&lt;-</span> <span class="fu">cbind</span>(temp, temp1)</span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>    temp <span class="ot">&lt;-</span> temp[<span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(temp)]</span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">colnames</span>(temp) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"line plot"</span>,<span class="st">"butterfly plot"</span>,<span class="st">"topoplot"</span>,<span class="st">"topoplot array"</span>,<span class="st">"topographic map"</span>,<span class="st">"ERP image"</span>,<span class="st">"parallel plot"</span>,<span class="st">"channel image"</span>)</span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(temp)</span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>top10 <span class="ot">&lt;-</span> <span class="fu">freq_table</span>(data, vec)</span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a>top10 <span class="sc">%&gt;%</span> </span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> line plot </th>
+   <th style="text-align:left;"> butterfly plot </th>
+   <th style="text-align:left;"> topoplot </th>
+   <th style="text-align:left;"> topoplot array </th>
+   <th style="text-align:left;"> topographic map </th>
+   <th style="text-align:left;"> ERP image </th>
+   <th style="text-align:left;"> parallel plot </th>
+   <th style="text-align:left;"> channel image </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> erp_19 </td>
+   <td style="text-align:left;"> butterfly plot_45 </td>
+   <td style="text-align:left;"> topoplot_38 </td>
+   <td style="text-align:left;"> topoplot_6 </td>
+   <td style="text-align:left;"> multiplot_10 </td>
+   <td style="text-align:left;"> erp image_13 </td>
+   <td style="text-align:left;"> amplitude channel peak_1 </td>
+   <td style="text-align:left;"> erp image_3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> erp plot_18 </td>
+   <td style="text-align:left;"> butterfly_9 </td>
+   <td style="text-align:left;"> topography_14 </td>
+   <td style="text-align:left;"> series topoplot_4 </td>
+   <td style="text-align:left;"> distribution erp scalp_3 </td>
+   <td style="text-align:left;"> erpimage_7 </td>
+   <td style="text-align:left;"> amplitude electrode erp selective_1 </td>
+   <td style="text-align:left;"> hemap_2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> average erp grand_4 </td>
+   <td style="text-align:left;"> all channels erp_2 </td>
+   <td style="text-align:left;"> scalp topography_10 </td>
+   <td style="text-align:left;"> time topoplot_4 </td>
+   <td style="text-align:left;"> erp topo_3 </td>
+   <td style="text-align:left;"> erp single sorted trial_2 </td>
+   <td style="text-align:left;"> amplitude electrode plot_1 </td>
+   <td style="text-align:left;"> 2d channel image plot time_1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> average erp plot_3 </td>
+   <td style="text-align:left;"> butterfly erp plot_2 </td>
+   <td style="text-align:left;"> topomap_8 </td>
+   <td style="text-align:left;"> time topo_3 </td>
+   <td style="text-align:left;"> channel multi plot_2 </td>
+   <td style="text-align:left;"> frequency plot time_2 </td>
+   <td style="text-align:left;"> amplitudes and channels conditions eeg for selected single trial_1 </td>
+   <td style="text-align:left;"> all averages channels in plot same_1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> erp waveform_3 </td>
+   <td style="text-align:left;"> channel erp multi plot_2 </td>
+   <td style="text-align:left;"> plot topographic_7 </td>
+   <td style="text-align:left;"> time topography_3 </td>
+   <td style="text-align:left;"> channel plot_2 </td>
+   <td style="text-align:left;"> plot raster_2 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> all channel channels or plot time_1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> average grand_2 </td>
+   <td style="text-align:left;"> mess_2 </td>
+   <td style="text-align:left;"> map scalp_5 </td>
+   <td style="text-align:left;"> time topoplots_3 </td>
+   <td style="text-align:left;"> erp_2 </td>
+   <td style="text-align:left;"> plot werfall_2 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> all channel erp plot_1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> erp series time_2 </td>
+   <td style="text-align:left;"> all amplitude for in post pre stimulus time voltage_1 </td>
+   <td style="text-align:left;"> map topographic_5 </td>
+   <td style="text-align:left;"> course time topography_2 </td>
+   <td style="text-align:left;"> erp map scalp_2 </td>
+   <td style="text-align:left;"> across erp plot trials_1 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> all channels response_1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> erp wave_2 </td>
+   <td style="text-align:left;"> all average electrodes erps grand_1 </td>
+   <td style="text-align:left;"> topo_4 </td>
+   <td style="text-align:left;"> dynamic topographies_2 </td>
+   <td style="text-align:left;"> erp multiplot_2 </td>
+   <td style="text-align:left;"> activity change trials_1 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> amplitude as average channel eeg function single time_1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> erps_2 </td>
+   <td style="text-align:left;"> all change channels dynamics on recoded time_1 </td>
+   <td style="text-align:left;"> map topographical_3 </td>
+   <td style="text-align:left;"> erp topoplot_2 </td>
+   <td style="text-align:left;"> erp topography_2 </td>
+   <td style="text-align:left;"> aligned response trials_1 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> amplitude channel erp spectral_1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> plot topo_3 </td>
+   <td style="text-align:left;"> map scalp_2 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> NA </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cut after prepositions</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># remove those with 1 voice</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#is sorting is really needed? </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<details>
+<summary>
+For each case separately
+</summary>
+<section id="section" class="level4">
+<h4 class="anchored" data-anchor-id="section">1</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># or - slipt and take first one</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">word_preproc</span>(data, <span class="dv">69</span>)  <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'sure|confus|aware|do not'</span>), <span class="st">"NA"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'.*grand average.*'</span>), <span class="st">"grand_average_erp_plot"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'average erp|averaged erp'</span>), <span class="st">"average_erp_plot"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'erps|ep|erp plot|event related potential'</span>), <span class="st">"erp_plot"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'classic'</span>), <span class="st">"classic_erp_plot"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'responses'</span>, <span class="st">'response'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'mean|averaged'</span>, <span class="st">'average'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'.*time course.*'</span>, <span class="st">'time_course_plot'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'.*erp waveform.*'</span>, <span class="st">'erp_waveform'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'average condition.*'</span>, <span class="st">'average_condition_erp'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">table</span>(.) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(words <span class="sc">!=</span> <span class="st">"NA"</span>) <span class="sc">%&gt;%</span>  <span class="co">#View()</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq)) <span class="co">#%&gt;%   View()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                                                                            words
+1                                                                                        erp_plot
+2                                                                                             erp
+3                                                                                average_erp_plot
+4                                                                           average_condition_erp
+5                                                                                    erp_waveform
+6                                                                                   average grand
+7                                                                                 erp series time
+8                                                                                        erp wave
+9                                                                                       line plot
+10                                                                                           p300
+11                                                                                    plot single
+12                                                                                   2 conditions
+13                                                                2 conditions course erp in time
+14                                                           2 conditions electrode erp for for x
+15                                                                               2 conditions erp
+16                                                  activity bars error evoked plot shaded single
+17                                                                            amplitude erp graph
+18                                                                    amplitude plot plot voltage
+19                                                                               amplitude signal
+20                                                              analysis erp locked time waveform
+21                                                                           analysis series time
+22                                                                and average b conditions da erp
+23                                                              and cars faces neural response to
+24                and compared conditioned erp in in post potential pre stimulus time two voltage
+25 anything but called don't erp ever have i i i in it know particular plot shows think this type
+26                                                                                  area errorbar
+27                                                                                        average
+28                                                                    average channel erp for one
+29                                                                  average da sensor series time
+30                                                average different grand series time trial types
+31                                                                                average erf erp
+32                                                                     average errors median plot
+33                                                            average event grand potential reled
+34                                                     average evoked grand one response specific
+35                                                                        average grand waveforms
+36                                                                                  average group
+37                                                                        average line plot trial
+38                                                                               average waveform
+39                                                                           averages event reled
+40                                                                              bar erroro shaded
+41                                                                bars conditional erp error plot
+42                                                                     bars error plot timeseries
+43                                                                               boundedline plot
+44                                                                         by erp point point sem
+45                                                                         channel contrast singe
+46                                                                 channel domain erp single time
+47                                                                       channel erp single trace
+48                                                                            channel plot single
+49                                                                                         ci erp
+50                                                           comparing conditions evoked plot two
+51                                                                                  comparing erp
+52                                                         comparison condition erp error shading
+53                                                                                 comparison erp
+54                                                                        condition graph voltage
+55                                                              conditions erp for timecourse two
+56                                                                    conditions evoked potential
+57                                                                   confidence erp intervalslaid
+58                                                                                course erp time
+59                                                                    course evoked response time
+60                                                                      dynamics electrode time x
+61                                                                         electrode erp interest
+62                                                                   elicited erp faces houses vs
+63                                                                          erp error lines trace
+64                                                                         erp error plot sd type
+65                                                                            erp error plots sme
+66                                                                              erp grand average
+67                                                                     erp graph or plot waveform
+68                                                                        erp individual variance
+69                                                                     erp intervals sem waveform
+70                                                                    erp locked or response stim
+71                                                                                 erp peaks wave
+72                                                                               erp time voltage
+73                                                                                 erp timeseries
+74                                                                                erp visualizion
+75                                                                                  error average
+76                                                                          event potential reled
+77                                                                         event potentials reled
+78                                                                               evoked potential
+79                                                                   evoked potential series time
+80                                                                                evoked response
+81                                                                    evoked response series time
+82                                                                              response temporal
+83                                                                                    series time
+84                                                                                         single
+   Freq
+1    38
+2    19
+3    17
+4     4
+5     4
+6     2
+7     2
+8     2
+9     2
+10    2
+11    2
+12    1
+13    1
+14    1
+15    1
+16    1
+17    1
+18    1
+19    1
+20    1
+21    1
+22    1
+23    1
+24    1
+25    1
+26    1
+27    1
+28    1
+29    1
+30    1
+31    1
+32    1
+33    1
+34    1
+35    1
+36    1
+37    1
+38    1
+39    1
+40    1
+41    1
+42    1
+43    1
+44    1
+45    1
+46    1
+47    1
+48    1
+49    1
+50    1
+51    1
+52    1
+53    1
+54    1
+55    1
+56    1
+57    1
+58    1
+59    1
+60    1
+61    1
+62    1
+63    1
+64    1
+65    1
+66    1
+67    1
+68    1
+69    1
+70    1
+71    1
+72    1
+73    1
+74    1
+75    1
+76    1
+77    1
+78    1
+79    1
+80    1
+81    1
+82    1
+83    1
+84    1</code></pre>
+</div>
+</div>
+</section>
+<section id="section-1" class="level4">
+<h4 class="anchored" data-anchor-id="section-1">2</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">word_preproc</span>(data, <span class="dv">80</span>)  <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'electrode'</span>, <span class="st">'channel'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'terfly|butte'</span>), <span class="st">"butterfly_plot"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'spaghetti'</span>), <span class="st">"spaghetti_plot"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'sure|confus|aware|do not'</span>), <span class="st">"NA"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'all channels'</span>), <span class="st">"all_channels_erp"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'multiple channel erp|multi channel erp'</span>), <span class="st">"multiple_channel_erp"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'single channel erp|single erp|erp of single channels'</span>), <span class="st">"single_channel_erp"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'.*channel erp.*'</span>), <span class="st">"channel_erp"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'amplitude'</span>), <span class="st">"amplitude"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'several|each|x |multi |muti |multeple '</span>, <span class="st">'multiple'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'multeple chanel'</span>, <span class="st">'multiple channel'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'multichannel'</span>, <span class="st">'multiple channel'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'event related potential'</span>, <span class="st">'erp'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'timecourse'</span>, <span class="st">'time course'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'erps|ep'</span>, <span class="st">'erp'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'.*time course.*'</span>, <span class="st">'time_course_plot'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'responses'</span>, <span class="st">'response'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'channels'</span>, <span class="st">'channel'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'averaged'</span>, <span class="st">'average'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">nchar</span>(words)<span class="sc">==</span><span class="dv">0</span>, <span class="cn">NA</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a> <span class="fu">table</span>(.) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(words <span class="sc">!=</span> <span class="st">"NA"</span>) <span class="sc">%&gt;%</span>  <span class="co">#View()</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq)) <span class="sc">%&gt;%</span>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                                                               words
+1                                                                     butterfly_plot
+2                                                                        channel_erp
+3                                                                    all_channel_erp
+4                                                                          amplitude
+5                                                               channel erp multiple
+6                                                                               mess
+7                                                                     spaghetti_plot
+8                                                                   time_course_plot
+9  again but channel do erp for have i i it it multiple name not shows th understand
+10                                                     all average channel erp grand
+   Freq
+1    66
+2    13
+3     5
+4     3
+5     3
+6     2
+7     2
+8     2
+9     1
+10    1</code></pre>
+</div>
+</div>
+</section>
+<section id="section-2" class="level4">
+<h4 class="anchored" data-anchor-id="section-2">3</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">word_preproc</span>(data, <span class="dv">85</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">words =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'electrode'</span>, <span class="st">'channel'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'several'</span>, <span class="st">'multiple'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'each'</span>, <span class="st">'multiple'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'multi '</span>, <span class="st">'multiple '</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'muti '</span>, <span class="st">'multiple '</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'multeple chanel'</span>, <span class="st">'multiple channel'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'multichannel'</span>, <span class="st">'multiple channel'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'event related potential'</span>, <span class="st">'erp'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'timecourse'</span>, <span class="st">'time course'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'erps|ep'</span>, <span class="st">'erp'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'responses'</span>, <span class="st">'response'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'channels'</span>, <span class="st">'channel'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'averaged'</span>, <span class="st">'average'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'topomaps'</span>, <span class="st">'topomap'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'topoplots'</span>, <span class="st">'topoplot'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'don|unclear'</span>), <span class="st">"NA"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">nchar</span>(words)<span class="sc">==</span><span class="dv">0</span>, <span class="cn">NA</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">table</span>(.) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(words <span class="sc">!=</span> <span class="st">"NA"</span>) <span class="sc">%&gt;%</span>  <span class="co">#View()</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq)) <span class="sc">%&gt;%</span>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               words Freq
+1           topoplot   39
+2         topography   14
+3   scalp topography   10
+4            topomap    8
+5   plot topographic    7
+6          map scalp    5
+7    map topographic    5
+8               topo    4
+9  map topographical    3
+10         plot topo    3</code></pre>
+</div>
+</div>
+</section>
+<section id="section-3" class="level4">
+<h4 class="anchored" data-anchor-id="section-3">4</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">word_preproc</span>(data, <span class="dv">90</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">words =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'electrode'</span>, <span class="st">'channel'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'several'</span>, <span class="st">'multiple'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'each'</span>, <span class="st">'multiple'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'multi '</span>, <span class="st">'multiple '</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'muti '</span>, <span class="st">'multiple '</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'multeple chanel'</span>, <span class="st">'multiple channel'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'multichannel'</span>, <span class="st">'multiple channel'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'event related potential'</span>, <span class="st">'erp'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'timecourse'</span>, <span class="st">'time course'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'erps|ep'</span>, <span class="st">'erp'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'responses'</span>, <span class="st">'response'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'channels'</span>, <span class="st">'channel'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'averaged'</span>, <span class="st">'average'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'topomaps'</span>, <span class="st">'topomap'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'topoplots'</span>, <span class="st">'topoplot'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'don|unclear'</span>), <span class="st">"NA"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">nchar</span>(words)<span class="sc">==</span><span class="dv">0</span>, <span class="cn">NA</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a> <span class="fu">table</span>(.) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(words <span class="sc">!=</span> <span class="st">"NA"</span>) <span class="sc">%&gt;%</span>  <span class="co">#View()</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq)) <span class="sc">%&gt;%</span>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    words Freq
+1           time topoplot    7
+2                topoplot    7
+3         series topoplot    5
+4    series time topoplot    4
+5               time topo    3
+6         time topography    3
+7                 topomap    3
+8  course time topography    2
+9    dynamic topographies    2
+10           erp topoplot    2</code></pre>
+</div>
+</div>
+</section>
+<section id="section-4" class="level4">
+<h4 class="anchored" data-anchor-id="section-4">5</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">word_preproc</span>(data, <span class="dv">97</span>)  <span class="sc">%&gt;%</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'electrode'</span>, <span class="st">'channel'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'several'</span>, <span class="st">'multiple'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'each'</span>, <span class="st">'multiple'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'multi '</span>, <span class="st">'multiple '</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'muti '</span>, <span class="st">'multiple '</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'multeple chanel'</span>, <span class="st">'multiple channel'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'multichannel'</span>, <span class="st">'multiple channel'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'event related potential'</span>, <span class="st">'erp'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'timecourse'</span>, <span class="st">'time course'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'channelplot'</span>, <span class="st">'channel plot'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'erps|ep'</span>, <span class="st">'erp'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'responses'</span>, <span class="st">'response'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'channels'</span>, <span class="st">'channel'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'averaged'</span>, <span class="st">'average'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'topomaps'</span>, <span class="st">'topomap'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'topoplots'</span>, <span class="st">'topoplot'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">nchar</span>(words)<span class="sc">==</span><span class="dv">0</span>, <span class="cn">NA</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'don|sure|useless|not|ugly'</span>), <span class="st">"NA"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a> <span class="fu">table</span>(.) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(words <span class="sc">!=</span> <span class="st">"NA"</span>) <span class="sc">%&gt;%</span>  <span class="co">#View()</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq)) <span class="sc">%&gt;%</span>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    words Freq
+1               multiplot   10
+2            channel plot    4
+3                erp topo    4
+4             channel erp    3
+5  distribution erp scalp    3
+6          erp topography    3
+7      channel erp layout    2
+8    channel multiple erp    2
+9   channel multiple plot    2
+10                    erp    2</code></pre>
+</div>
+</div>
+</section>
+<section id="section-5" class="level4">
+<h4 class="anchored" data-anchor-id="section-5">6</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">word_preproc</span>(data, <span class="dv">102</span>)  <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">words =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'electrode'</span>, <span class="st">'channel'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'several'</span>, <span class="st">'multiple'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'each'</span>, <span class="st">'multiple'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'multi '</span>, <span class="st">'multiple '</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'muti '</span>, <span class="st">'multiple '</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'multeple chanel'</span>, <span class="st">'multiple channel'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'multichannel'</span>, <span class="st">'multiple channel'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'event related potential'</span>, <span class="st">'erp'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'timecourse'</span>, <span class="st">'time course'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'channelplot'</span>, <span class="st">'channel plot'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'erps|ersp'</span>, <span class="st">'erp'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'erpimage'</span>, <span class="st">'erp image'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'heat map'</span>, <span class="st">'heatmap'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'responses'</span>, <span class="st">'response'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'channels'</span>, <span class="st">'channel'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'averaged'</span>, <span class="st">'average'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'topomaps'</span>, <span class="st">'topomap'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'topoplots'</span>, <span class="st">'topoplot'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'epochs'</span>, <span class="st">'epoch'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'trials'</span>, <span class="st">'trial'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">nchar</span>(words)<span class="sc">==</span><span class="dv">0</span>, <span class="cn">NA</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'don|sure|useless|not|ugly|x|good'</span>), <span class="st">"NA"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a> <span class="fu">table</span>(.) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(words <span class="sc">!=</span> <span class="st">"NA"</span>) <span class="sc">%&gt;%</span>  <span class="co">#View()</span></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq)) <span class="sc">%&gt;%</span>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     words Freq
+1                erp image   20
+2  erp single sorted trial    3
+3              epoch image    2
+4          erp hemap trial    2
+5                erp trial    2
+6      frequency plot time    2
+7              plot raster    2
+8             plot werfall    2
+9    across erp plot trial    1
+10   activity change trial    1</code></pre>
+</div>
+</div>
+</section>
+<section id="section-6" class="level4">
+<h4 class="anchored" data-anchor-id="section-6">7</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">word_preproc</span>(data, <span class="dv">105</span>)  <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">words =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'electrode'</span>, <span class="st">'channel'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'several'</span>, <span class="st">'multiple'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'each'</span>, <span class="st">'multiple'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'multi '</span>, <span class="st">'multiple '</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'muti '</span>, <span class="st">'multiple '</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'multeple chanel'</span>, <span class="st">'multiple channel'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'multichannel'</span>, <span class="st">'multiple channel'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'event related potential'</span>, <span class="st">'erp'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'timecourse'</span>, <span class="st">'time course'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'channelplot'</span>, <span class="st">'channel plot'</span>, words)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'erps|ersp'</span>, <span class="st">'erp'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'erpimage'</span>, <span class="st">'erp image'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'heat map'</span>, <span class="st">'heatmap'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'responses'</span>, <span class="st">'response'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'channels'</span>, <span class="st">'channel'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'averaged'</span>, <span class="st">'average'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'topomaps'</span>, <span class="st">'topomap'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'topoplots'</span>, <span class="st">'topoplot'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'epochs'</span>, <span class="st">'epoch'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span>  <span class="fu">gsub</span>(<span class="st">'trials'</span>, <span class="st">'trial'</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">nchar</span>(words)<span class="sc">==</span><span class="dv">0</span>, <span class="cn">NA</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'don|sure|useless|not|ugly|x|good'</span>), <span class="st">"NA"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a> <span class="fu">table</span>(.) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(words <span class="sc">!=</span> <span class="st">"NA"</span>) <span class="sc">%&gt;%</span>  <span class="co">#View()</span></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq)) <span class="sc">%&gt;%</span>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                                           words Freq
+1                                                           none   10
+2                                                              n    2
+3                                                        sorting    2
+4                  according arbitrary criteria sorting to trial    1
+5                       adding additional sorting time variables    1
+6                                                   all easy was    1
+7                and between correspondance reaction times trial    1
+8  any but chance different epoch have have i lenght to to would    1
+9                                        between smoothing trial    1
+10                                             color map setting    1</code></pre>
+</div>
+</div>
+</section>
+<section id="section-7" class="level4">
+<h4 class="anchored" data-anchor-id="section-7">8</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">word_preproc</span>(data, <span class="dv">112</span>)  <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">nchar</span>(words)<span class="sc">==</span><span class="dv">0</span>, <span class="cn">NA</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'don|sure|useless|not|ugly|x|good|remember|idea|nan'</span>), <span class="st">"NA"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a> <span class="co"># filter(words != "NA") %&gt;% </span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">table</span>(.) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq)) <span class="co">#%&gt;% View()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                                                          words
+1                                                                            NA
+2                                                                     erp image
+3                                                                         hemap
+4                                                    2d channel image plot time
+5                                            all averages channels in plot same
+6                                             all channel channels or plot time
+7                                                          all channel erp plot
+8  all channels coded color for in post pre stimulus time value voltage voltage
+9                                                         all channels response
+10                        amplitude as average channel eeg function single time
+11                                               amplitude channel erp spectral
+12                                                amplitude channels color plot
+13                                                     amplitude electrode plot
+14                                               amplitude electrodes erp hemap
+15                                       as eeg electrode function plot voltage
+16                                             average carpet channels erp plot
+17                                            average channel channel erp grand
+18                                                  average channel hemap multi
+19                                               by chanel channel time voltage
+20                                      changes each electrode for site voltage
+21                                                                    chanimage
+22                                                           channel cross plot
+23                                         channel each erp for in time voltage
+24                                                            channel erp hemap
+25                                                            channel erp image
+26                                                                 channel erps
+27                                              channel evoked responses sorted
+28                                                           channel hemap time
+29                                                                channel image
+30                                                         channel plot stacked
+31                                                               channel raster
+32                                            channel represention time voltage
+33                                                                 channel time
+34                                                        channels colormap erp
+35                                                    channels courses erp time
+36                                                         channels eeg voltage
+37                         channels electrodes ersp individual multiple plotted
+38                                                            channels erpimage
+39                                                                channels erps
+40                                                     channels he plot voltage
+41                                                  channels image time voltage
+42                                                 channels variability voltage
+43                                                    channels variions voltage
+44                                                             channelwise plot
+45                                                                        clear
+46                                                              coded color erp
+47                                                                  custer plot
+48                                                  density plot power spectral
+49                                                         electrode image time
+50                                                electrode plot single stacked
+51                                                 electrodes erp hemap lencies
+52                                                                   erp he map
+53                                                                    erp hemap
+54                                                              erp plot raster
+55                                                               erp scalp wide
+56                                                                     erpimage
+57                                                                 evoked image
+58                                                           field global power
+59                                                    for hemap sensors voltage
+60                                            frequency looks plot plot th time
+61                                                       frequency plot voltage
+62                                                                 hemap sensor
+63                                                                   image plot
+64                                                            image plot trials
+65                                                                image voltage
+66                                         imagesc multichannel plot timeseries
+67                                                                       normal
+68                                                                  plot raster
+69                                                         plot topographicview
+70                                                                   rasterplot
+71                                                                         sort
+72                                                                     wehermap
+   Freq
+1    30
+2     3
+3     2
+4     1
+5     1
+6     1
+7     1
+8     1
+9     1
+10    1
+11    1
+12    1
+13    1
+14    1
+15    1
+16    1
+17    1
+18    1
+19    1
+20    1
+21    1
+22    1
+23    1
+24    1
+25    1
+26    1
+27    1
+28    1
+29    1
+30    1
+31    1
+32    1
+33    1
+34    1
+35    1
+36    1
+37    1
+38    1
+39    1
+40    1
+41    1
+42    1
+43    1
+44    1
+45    1
+46    1
+47    1
+48    1
+49    1
+50    1
+51    1
+52    1
+53    1
+54    1
+55    1
+56    1
+57    1
+58    1
+59    1
+60    1
+61    1
+62    1
+63    1
+64    1
+65    1
+66    1
+67    1
+68    1
+69    1
+70    1
+71    1
+72    1</code></pre>
+</div>
+</div>
+</section></details>
+</section>
+
+<section id="frequency-of-tool-usage" class="level2">
+<h2 class="anchored" data-anchor-id="frequency-of-tool-usage">Frequency of tool usage</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>vec <span class="ot">&lt;-</span> <span class="fu">names</span>(data[ , <span class="fu">grepl</span>( <span class="st">".*Which plotting"</span> , <span class="fu">names</span>(data))]) <span class="sc">%&gt;%</span> <span class="fu">str_split_i</span>(., <span class="st">"</span><span class="sc">\\</span><span class="st">]"</span>, <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">str_split_i</span>(., <span class="st">"</span><span class="sc">\\</span><span class="st">..."</span>, <span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">as.numeric</span>()</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>vec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  71  82  87  92  99 104 109 114</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>word_preproc_tool <span class="ot">&lt;-</span> <span class="cf">function</span>(data, N, lim){</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  N <span class="ot">=</span> <span class="dv">71</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#lim = 10</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(N) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(.)) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">words =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>]) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'own|costum'</span>), <span class="st">"custom"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">lengths</span>(<span class="fu">gregexpr</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">W+"</span>, words)) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(n))</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  rest <span class="ot">&lt;-</span> tmp <span class="sc">%&gt;%</span> <span class="fu">filter</span>(n <span class="sc">&gt;=</span> lim) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(words)</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> tmp <span class="sc">%&gt;%</span> <span class="fu">filter</span>(n <span class="sc">&lt;</span> lim) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(words)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(tmp)) <span class="sc">%do%</span> <span class="fu">strsplit</span>(tmp[[<span class="dv">1</span>]][i], <span class="st">",|/|</span><span class="sc">\\</span><span class="st">|+| and |&amp;| or |</span><span class="sc">\\</span><span class="st">n|</span><span class="sc">\\</span><span class="st">r|;"</span>)</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>  tul <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(tmp)) <span class="sc">%do%</span> <span class="fu">unlist</span>(t[[i]])</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  tul1 <span class="ot">&lt;-</span> <span class="fu">unlist</span>(tul)</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>  tul2 <span class="ot">&lt;-</span> tul1[tul1<span class="sc">!=</span><span class="st">""</span>]</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>  tul2[tul2<span class="sc">==</span><span class="st">"-"</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>  tul2 <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(tul2)</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#t &lt;- foreach(i = 1:nrow(tmp)) %do% tokenize_words(as.character(tmp[i, N]), strip_punct = FALSE)</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>  stop_list <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"an"</span>, <span class="st">"the"</span>, <span class="st">"wise"</span>, <span class="st">"by"</span>, <span class="st">"over"</span>, <span class="st">"of"</span>, <span class="st">"per"</span>, <span class="st">"for"</span>, <span class="st">"like"</span>, <span class="st">"s"</span>, <span class="st">"at"</span>, <span class="st">"code"</span>, <span class="st">"script"</span>, <span class="st">"recently"</span>, <span class="st">"my"</span>, <span class="st">"in"</span>, <span class="st">"written"</span>, <span class="st">"using"</span>, <span class="st">"built"</span>, <span class="st">"function"</span>, <span class="st">"plot"</span>, <span class="st">"with"</span>,  <span class="st">"itself"</span>, <span class="st">"scripting"</span>, <span class="st">"scrip"</span>, <span class="st">"scripts"</span>, <span class="st">"basic"</span>)<span class="co">#, "custom")</span></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>  t1 <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(tul2)) <span class="sc">%do%</span> <span class="fu">tokenize_words</span>(<span class="fu">as.character</span>(tul2[i]))</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>  t2 <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(t1)) <span class="sc">%do%</span> <span class="fu">map</span>(t1[i][[<span class="dv">1</span>]], singularize)</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>  t21 <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(t2)) <span class="sc">%do%</span> <span class="fu">tokenize_words</span>(<span class="fu">as.character</span>(t2[i][[<span class="dv">1</span>]]))</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>  t22 <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(t21)) <span class="sc">%do%</span> t21[i][[<span class="dv">1</span>]][[<span class="dv">1</span>]][<span class="sc">!</span>(t21[i][[<span class="dv">1</span>]][[<span class="dv">1</span>]] <span class="sc">%in%</span> stop_list)]</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>  t3 <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(t22)) <span class="sc">%do%</span> <span class="fu">paste</span>((<span class="fu">unlist</span>(t22[i])), <span class="at">collapse =</span> <span class="st">' '</span>) </span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>  t4 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(t3)) <span class="co">#%&gt;% dplyr::rename(words = !!names(.)[1])</span></span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">c</span>(t4, rest))</span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="section-8" class="level4">
+<h4 class="anchored" data-anchor-id="section-8">1</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">word_preproc_tool</span>(data, <span class="dv">71</span>, <span class="dv">10</span>) </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>rest <span class="ot">&lt;-</span> test[[<span class="dv">2</span>]]</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>fromrest <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">words =</span> <span class="fu">c</span>(<span class="st">"fieldtrip"</span>,<span class="st">"r"</span>, <span class="st">"matlab"</span>, <span class="st">"fieldtrip"</span>, <span class="st">"adobe illustrator"</span>, <span class="st">"custom matlab"</span>, <span class="st">"custom matlab"</span>, <span class="st">"mne"</span> ))</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>base <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(test[[<span class="dv">1</span>]]))<span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">words =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>])<span class="sc">%&gt;%</span> </span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">nchar</span>(words)<span class="sc">==</span><span class="dv">0</span>, <span class="cn">NA</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'brain vision'</span>), <span class="st">"brain vision analyser"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'mne'</span>), <span class="st">"mne"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span>  <span class="fu">rbind</span>(., fromrest) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'ggplot'</span>), <span class="st">"ggplot"</span>, <span class="fu">as.character</span>(words))) </span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>words <span class="ot">&lt;-</span> base <span class="sc">%&gt;%</span> </span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">table</span>(.) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq)) </span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>narrow1 <span class="ot">&lt;-</span> base <span class="sc">%&gt;%</span> </span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'matlab|bar.m|boundedline'</span>), <span class="st">"custom matlab"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'fieldtrip'</span>), <span class="st">"fieldtrip"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'eeglab'</span>), <span class="st">"EEGLAB"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'erplab'</span>), <span class="st">"ERPLAB"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'python|seaborn|matplotlib|plotly'</span>), <span class="st">"custom python"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'mne'</span>), <span class="st">"MNE"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'ggplot|</span><span class="sc">\\</span><span class="st">br</span><span class="sc">\\</span><span class="st">b'</span>), <span class="st">"custom r"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">table</span>(.) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq))</span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a>narrow1 <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          words Freq
+1 custom matlab   45
+2           MNE   35
+3     fieldtrip   31
+4 custom python   24
+5        EEGLAB   24
+6        custom   16</code></pre>
+</div>
+</div>
+</section>
+<section id="section-9" class="level4">
+<h4 class="anchored" data-anchor-id="section-9">2</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">word_preproc_tool</span>(data, <span class="dv">82</span>, <span class="dv">10</span>) </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>rest <span class="ot">&lt;-</span> test[[<span class="dv">2</span>]]</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>fromrest <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">words =</span> <span class="fu">c</span>(<span class="st">"fieldtrip"</span>,<span class="st">"r"</span>, <span class="st">"matlab"</span>, <span class="st">"fieldtrip"</span>, <span class="st">"adobe illustrator"</span>, <span class="st">"custom matlab"</span>, <span class="st">"custom matlab"</span>, <span class="st">"mne"</span> ))</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>base <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(test[[<span class="dv">1</span>]]))<span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">words =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>])<span class="sc">%&gt;%</span> </span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">nchar</span>(words)<span class="sc">==</span><span class="dv">0</span>, <span class="cn">NA</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'brain vision'</span>), <span class="st">"brain vision analyser"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'mne'</span>), <span class="st">"MNE"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span>  <span class="fu">rbind</span>(., fromrest) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'ggplot'</span>), <span class="st">"ggplot"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'own|cusom'</span>), <span class="st">"custom"</span>, <span class="fu">as.character</span>(words))) </span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>words <span class="ot">&lt;-</span> base <span class="sc">%&gt;%</span> </span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">table</span>(.) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq)) </span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>narrow2 <span class="ot">&lt;-</span> base <span class="sc">%&gt;%</span> </span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'matlab|bar.m|boundedline'</span>), <span class="st">"custom matlab"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'fieldtrip|fieldteip|field trip'</span>), <span class="st">"fieldtrip"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'eeglab'</span>), <span class="st">"EEGLAB"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'erplab'</span>), <span class="st">"ERPLAB"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'python|seaborn|matplotlib|plotly'</span>), <span class="st">"custom python"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span></span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'ggplot|</span><span class="sc">\\</span><span class="st">br</span><span class="sc">\\</span><span class="st">b'</span>), <span class="st">"custom r"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(words, <span class="st">'cartool'</span>), <span class="st">"cartool"</span>, <span class="fu">as.character</span>(words))) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">table</span>(.) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq))</span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>narrow2 <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          words Freq
+1 custom matlab   45
+2           MNE   34
+3     fieldtrip   31
+4 custom python   24
+5        EEGLAB   24
+6        custom   16</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="general-struggles-with-plots" class="level2">
+<h2 class="anchored" data-anchor-id="general-struggles-with-plots">General struggles with plots</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>word_preproc_tool_2 <span class="ot">&lt;-</span> <span class="cf">function</span>(data, N, lim){</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#lim = 10</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(N, N<span class="sc">+</span><span class="dv">1</span>, N<span class="sc">+</span><span class="dv">2</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">soft =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>], <span class="at">parts =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">2</span>], <span class="at">new_feature =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">3</span>]) <span class="sc">%&gt;%</span> </span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(soft)) <span class="sc">%&gt;%</span> </span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="fu">funs</span>(<span class="fu">tolower</span>(.))) <span class="sc">%&gt;%</span> </span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">soft =</span> <span class="fu">str_replace</span>(soft, <span class="st">'own'</span>, <span class="st">"custom"</span>), </span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">soft =</span> <span class="fu">str_replace</span>(soft, <span class="st">'(matlab)'</span>, <span class="st">"matlab"</span>), </span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">soft =</span> <span class="fu">case_when</span>(</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_detect</span>(soft, <span class="st">'brain vision'</span>) <span class="sc">~</span> <span class="st">"brain vision analyser"</span>,</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>      <span class="co">#str_detect(soft, 'matlab|bar.m|boundedline') ~ "custom matlab",</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_detect</span>(soft, <span class="st">'mne'</span>) <span class="sc">~</span> <span class="st">"mne"</span>,</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fu">as.character</span>(soft)</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>    ), </span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">parts =</span> <span class="fu">case_when</span>(</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_detect</span>(parts, <span class="st">'none|n/a|nope|na|idk|nothing|sure|know|can</span><span class="sc">\'</span><span class="st">t|don</span><span class="sc">\'</span><span class="st">t'</span>) <span class="sc">~</span> <span class="st">"-"</span>,</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fu">as.character</span>(parts)</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_feature =</span> <span class="fu">case_when</span>(</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_detect</span>(new_feature, <span class="st">'none|n/a|nope|na|idk|nothing|sure|know|can</span><span class="sc">\'</span><span class="st">t|don</span><span class="sc">\'</span><span class="st">t'</span>) <span class="sc">~</span> <span class="st">"-"</span>,</span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fu">as.character</span>(new_feature)</span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">%&gt;%</span> </span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_at</span>(<span class="fu">vars</span>(parts, new_feature), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.))) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">lengths</span>(<span class="fu">gregexpr</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">W+"</span>, soft)) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(parts <span class="sc">!=</span> <span class="st">"-"</span> <span class="sc">|</span> new_feature <span class="sc">!=</span> <span class="st">"-"</span>, n <span class="sc">&lt;</span> lim) <span class="sc">%&gt;%</span>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span><span class="dv">4</span>) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(soft)</span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(tmp)</span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>struggle1 <span class="ot">&lt;-</span> <span class="fu">word_preproc_tool_2</span>(data, <span class="dv">71</span>, <span class="dv">10</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `funs()` was deprecated in dplyr 0.8.0.
+ℹ Please use a list of either functions or lambdas:
+
+# Simple named list: list(mean = mean, median = median)
+
+# Auto named with `tibble::lst()`: tibble::lst(mean, median)
+
+# Using lambdas list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>struggle1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>( parts <span class="sc">!=</span> <span class="st">"-"</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(parts) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 91 × 1
+   parts                                                                        
+   &lt;chr&gt;                                                                        
+ 1 "plotting is easy. getting the relevant data to plot (conditions, channels, …
+ 2 "plot the intersecting axes at 0,0"                                          
+ 3 "scaling"                                                                    
+ 4 "compute the se interval requires having the sd stored or calling all partic…
+ 5 "shading for error"                                                          
+ 6 "indicating significant differences (hotly debated esthetic issue)\r\nshadin…
+ 7 "sme"                                                                        
+ 8 "error and baseline correction"                                              
+ 9 "it was initially annoying to figure out how to get the legend only for the …
+10 "first time understanding the code"                                          
+# … with 81 more rows</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

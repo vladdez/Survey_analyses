@@ -1,0 +1,532 @@
+---
+title: "3.plot_breakdown"
+format: html
+editor: visual
+---
+
+## Setup
+
+```{r, message= FALSE, warning=FALSE}
+# upload to the git
+library(readxl)
+library(foreach)
+library(stringr)
+library(dplyr)
+library(tokenizers)
+library(data.table)
+library(ggplot2)
+library(plyr)
+library(quanteda)
+library(SemNetCleaner)
+library(purrr)
+library(tidytext)
+library(tm)
+library(topicmodels)
+library(SnowballC)
+library(Matrix)
+library(text2vec)
+library(tidyr)
+library(kableExtra)
+library(stringi)
+```
+
+```{r, message= FALSE, warning=FALSE}
+data <- read_excel("data/results-survey3.xlsx")
+data <- data[1:121] %>% 
+  filter(.[[18]] !='Yes') # not analysed any EEG method
+vec <- names(data[ , grepl( "How would you " , names(data))]) %>% str_split_i(., "\\.....", 2) %>% as.numeric()
+vec
+```
+
+
+```{r}
+word_preproc <- function(data, N){
+  #N = 69
+  tmp <- data %>% filter(!is.na(.[[N]])) %>% select(., N) %>% dplyr::rename(words = !!names(.)[1]) %>% mutate(words = tolower(words)) %>% 
+    #mutate(words = gsub(" \\(or.*", "", words)) %>% mutate(words = gsub(", or.*", "", words)) %>% 
+    mutate(words = stri_replace_all_regex(words,
+                                  pattern=c(" \\(.*", ", or.*", " across", " with", " at", " by", " over", " of", " per", "at", " across", " accross"),
+                                  replacement=c(''),
+                                  vectorize=FALSE))
+     
+  t <- foreach(i = 1:nrow(tmp)) %do% tokenize_words(tmp$words)
+  stop_list = c("a", "an", "the", "wise", "like", "s")
+  t2 <- foreach(i = 1:length(t)) %do% t[[1]][[i]][!(t[[1]][[i]] %in% stop_list)]
+  #t21 <- foreach(i = 1:length(t2)) %do% map(t2[i][[1]], singularize)
+  t3 <- foreach(i = 1:length(t2)) %do% paste(sort(unlist(t2[i])), collapse = ' ') 
+  t4 <- data.frame(matrix(t3)) %>% dplyr::rename(words = !!names(.)[1])
+  return(t4)
+}
+
+```
+
+## Plot naming
+
+Those who named a plot somehow and those who failed to do that
+
+```{r}
+na_table <- function(data, vec){
+    temp <- data.frame(1:10)
+    for (i in vec){
+      temp1 <- word_preproc(data, i)  %>%
+      mutate(words = ifelse(str_detect(words, 'idea|sure|confus|aware|do not|why'), "NA", as.character(words))) %>%
+      mutate(words = ifelse(nchar(words)==0, NA, words)) %>% 
+      table(.) %>% 
+      data.frame(.) %>% filter(words != "NA") %>% 
+      summarise(n = sum(Freq))  
+      temp <- cbind(temp, temp1)
+    }
+    temp <- temp[2:length(temp)]
+    colnames(temp) <- c("line plot","butterfly","topoplot","topoarray","topomap","ERP image","parallel", "channel image")
+    return(temp)
+}
+
+num_named <- na_table(data, vec)
+slice(num_named, 1)  %>% 
+  gather(., plots, succeeded, `line plot`:`channel image`, factor_key=TRUE) %>% 
+  mutate(failed = nrow(data) - succeeded) %>% 
+  gather(., res, score, succeeded:failed, factor_key=TRUE) %>% 
+
+  ggplot(., aes(x = plots, y = score, fill = res)) +
+    geom_bar(position = "dodge", stat = "identity") +
+    labs(x = "Category", y = "Value", fill = "Group") +
+    theme_classic()
+
+```
+
+## Top 10 plot names 
+
+
+```{r}
+# does it work?????
+freq_table <- function(data, vec){
+    temp <- data.frame(1:10)
+    for (i in vec){
+     # i = 112
+      
+      temp1 <- word_preproc(data, i)  %>%
+      mutate(words = ifelse(str_detect(words, 'idea|sure|confus|aware|do not|know|why|remember'), "NA", as.character(words)),
+      words = ifelse(nchar(words)==0, NA, words),
+      words = ifelse(str_detect(words, 'erps|ep|erp plot|event related potential'), "erp_plot", as.character(words)),
+      words = ifelse(str_detect(words, 'terfly|butte'), "butterfly_plot", as.character(words)),
+      words = str_replace(words, 'responses', "response"),  
+      words =  gsub('channels|chanel', 'channel', words) ,
+      
+      words = ifelse(str_detect(words, '.*grand average.*'), "grand_average_erp_plot", as.character(words)),
+      words = ifelse(str_detect(words, 'classic'), "classic_erp_plot", as.character(words)),
+      words =  gsub('mean|averaged', 'average', words),
+      words =  gsub('course time', 'timecourse', words),
+      words =  gsub('.*timecourse.*', 'time_course_plot', words),
+      words =  gsub('.*erp waveform.*', 'erp_waveform', words),
+      words =  gsub('average condition.*', 'average_condition_erp', words),
+      words =  gsub('electrode', 'channel', words),
+      words = ifelse(str_detect(words, 'terfly|butte'), "butterfly_plot", as.character(words)),
+      words = ifelse(str_detect(words, 'spaghetti'), "spaghetti_plot", as.character(words)),
+      words = ifelse(str_detect(words, 'all channels'), "all_channels_erp", as.character(words)),
+      words = ifelse(str_detect(words, 'single channel erp|single erp|erp of single channels'), "single_channel_erp", as.character(words)),
+      words = ifelse(str_detect(words, '.*channel erp.*'), "channel_erp", as.character(words)),
+      words = ifelse(str_detect(words, 'amplitude'), "amplitude", as.character(words)),
+      words =  gsub('x |multi |muti |multeple ', 'multiple ', words),
+      words =  gsub('several|each|multeple', 'multiple', words),
+              words =  gsub('erpimage', 'erp image', words),
+      words =  gsub('heat map', 'heatmap', words),
+      words =  gsub('topomaps', 'topomap', words),
+      words =  gsub('topoplots', 'topoplot', words),
+      words =  gsub('epochs', 'epoch', words),
+      words =  gsub('trials', 'trial', words),
+      words =  gsub('topographical', 'topographic', words)
+      ) %>% 
+      table(.) %>% 
+      data.frame(.) %>%  mutate(n = lengths(gregexpr("\\W+", words)) + 1) %>% 
+        filter(n < 10) %>% dplyr::select(-n) %>% filter(words != "") %>% 
+      arrange(desc(Freq))  %>%  head(10) %>% 
+      unite(word_freq, c("words", "Freq")) %>%  filter(!grepl("NA", word_freq))
+      if (length(temp1) < 10){
+        na_frame <- as.data.frame(matrix(NA, nrow = 10, ncol = 1))
+        names(na_frame) <- names(temp1)
+        temp1 <- rbind(temp1, na_frame)  %>%  head(10)
+      }
+      
+      temp <- cbind(temp, temp1)
+    }
+    temp <- temp[2:length(temp)]
+    colnames(temp) <- c("line plot","butterfly plot","topoplot","topoplot array","topographic map","ERP image","parallel plot","channel image")
+    return(temp)
+}
+
+top10 <- freq_table(data, vec)
+top10 %>% 
+  kbl() %>% 
+  kable_styling()
+
+# cut after prepositions
+# remove those with 1 voice
+#is sorting is really needed? 
+
+ 
+```
+<details>
+  <summary>For each case separately</summary>
+  
+#### 1
+
+```{r}
+# or - slipt and take first one
+word_preproc(data, 69)  %>%
+  mutate(words = ifelse(str_detect(words, 'sure|confus|aware|do not'), "NA", as.character(words))) %>%
+  mutate(words = ifelse(str_detect(words, '.*grand average.*'), "grand_average_erp_plot", as.character(words))) %>% 
+  mutate(words = ifelse(str_detect(words, 'average erp|averaged erp'), "average_erp_plot", as.character(words))) %>%
+  mutate(words = ifelse(str_detect(words, 'erps|ep|erp plot|event related potential'), "erp_plot", as.character(words))) %>%
+  mutate(words = ifelse(str_detect(words, 'classic'), "classic_erp_plot", as.character(words))) %>%
+  mutate(words =  gsub('responses', 'response', words)) %>% 
+  mutate(words =  gsub('mean|averaged', 'average', words)) %>% 
+  mutate(words =  gsub('.*time course.*', 'time_course_plot', words)) %>% 
+  mutate(words =  gsub('.*erp waveform.*', 'erp_waveform', words)) %>%
+  mutate(words =  gsub('average condition.*', 'average_condition_erp', words)) %>%
+   
+  table(.) %>% 
+  data.frame(.) %>% filter(words != "NA") %>%  #View()
+  arrange(desc(Freq)) #%>%   View()
+```
+
+
+#### 2
+
+```{r}
+word_preproc(data, 80)  %>% 
+  mutate(words =  gsub('electrode', 'channel', words)) %>% 
+  mutate(words = ifelse(str_detect(words, 'terfly|butte'), "butterfly_plot", as.character(words))) %>% 
+  mutate(words = ifelse(str_detect(words, 'spaghetti'), "spaghetti_plot", as.character(words))) %>%
+  mutate(words = ifelse(str_detect(words, 'sure|confus|aware|do not'), "NA", as.character(words))) %>%
+  mutate(words = ifelse(str_detect(words, 'all channels'), "all_channels_erp", as.character(words))) %>%
+   mutate(words = ifelse(str_detect(words, 'multiple channel erp|multi channel erp'), "multiple_channel_erp", as.character(words))) %>%
+  mutate(words = ifelse(str_detect(words, 'single channel erp|single erp|erp of single channels'), "single_channel_erp", as.character(words))) %>%
+  mutate(words = ifelse(str_detect(words, '.*channel erp.*'), "channel_erp", as.character(words))) %>%
+  mutate(words = ifelse(str_detect(words, 'amplitude'), "amplitude", as.character(words))) %>%
+  mutate(words =  gsub('several|each|x |multi |muti |multeple ', 'multiple', words)) %>% 
+  mutate(words =  gsub('multeple chanel', 'multiple channel', words)) %>%
+  mutate(words =  gsub('multichannel', 'multiple channel', words)) %>%
+  mutate(words =  gsub('event related potential', 'erp', words)) %>% 
+  mutate(words =  gsub('timecourse', 'time course', words)) %>% 
+  mutate(words =  gsub('erps|ep', 'erp', words)) %>% 
+  mutate(words =  gsub('.*time course.*', 'time_course_plot', words)) %>% 
+  mutate(words =  gsub('responses', 'response', words)) %>% 
+  mutate(words =  gsub('channels', 'channel', words)) %>% 
+  mutate(words =  gsub('averaged', 'average', words)) %>% 
+  mutate(words = ifelse(nchar(words)==0, NA, words)) %>% 
+ table(.) %>% 
+  data.frame(.) %>% filter(words != "NA") %>%  #View()
+  arrange(desc(Freq)) %>%  head(10)
+
+
+```
+
+#### 3
+
+```{r}
+word_preproc(data, 85) %>% dplyr::rename(words = !!names(.)[1]) %>%
+  mutate(words =  gsub('electrode', 'channel', words)) %>% 
+  mutate(words =  gsub('several', 'multiple', words)) %>% 
+  mutate(words =  gsub('each', 'multiple', words)) %>% 
+  mutate(words =  gsub('multi ', 'multiple ', words)) %>% 
+  mutate(words =  gsub('muti ', 'multiple ', words)) %>%
+  mutate(words =  gsub('multeple chanel', 'multiple channel', words)) %>%
+  mutate(words =  gsub('multichannel', 'multiple channel', words)) %>%
+  mutate(words =  gsub('event related potential', 'erp', words)) %>% 
+  mutate(words =  gsub('timecourse', 'time course', words)) %>% 
+  mutate(words =  gsub('erps|ep', 'erp', words)) %>% 
+  mutate(words =  gsub('responses', 'response', words)) %>% 
+  mutate(words =  gsub('channels', 'channel', words)) %>% 
+  mutate(words =  gsub('averaged', 'average', words)) %>% 
+  mutate(words =  gsub('topomaps', 'topomap', words)) %>% 
+  mutate(words =  gsub('topoplots', 'topoplot', words)) %>% 
+  mutate(words = ifelse(str_detect(words, 'don|unclear'), "NA", as.character(words))) %>%
+  mutate(words = ifelse(nchar(words)==0, NA, words)) %>% 
+  table(.) %>% 
+  data.frame(.) %>% filter(words != "NA") %>%  #View()
+  arrange(desc(Freq)) %>%  head(10)
+
+
+```
+
+#### 4
+
+```{r}
+word_preproc(data, 90) %>% dplyr::rename(words = !!names(.)[1]) %>%
+  mutate(words =  gsub('electrode', 'channel', words)) %>% 
+  mutate(words =  gsub('several', 'multiple', words)) %>% 
+  mutate(words =  gsub('each', 'multiple', words)) %>% 
+  mutate(words =  gsub('multi ', 'multiple ', words)) %>% 
+  mutate(words =  gsub('muti ', 'multiple ', words)) %>%
+  mutate(words =  gsub('multeple chanel', 'multiple channel', words)) %>%
+  mutate(words =  gsub('multichannel', 'multiple channel', words)) %>%
+  mutate(words =  gsub('event related potential', 'erp', words)) %>% 
+  mutate(words =  gsub('timecourse', 'time course', words)) %>% 
+  mutate(words =  gsub('erps|ep', 'erp', words)) %>% 
+  mutate(words =  gsub('responses', 'response', words)) %>% 
+  mutate(words =  gsub('channels', 'channel', words)) %>% 
+  mutate(words =  gsub('averaged', 'average', words)) %>% 
+  mutate(words =  gsub('topomaps', 'topomap', words)) %>% 
+  mutate(words =  gsub('topoplots', 'topoplot', words)) %>% 
+  mutate(words = ifelse(str_detect(words, 'don|unclear'), "NA", as.character(words))) %>%
+  mutate(words = ifelse(nchar(words)==0, NA, words)) %>% 
+ table(.) %>% 
+  data.frame(.) %>% filter(words != "NA") %>%  #View()
+  arrange(desc(Freq)) %>%  head(10)
+
+
+```
+
+#### 5
+
+```{r}
+word_preproc(data, 97)  %>% 
+  mutate(words =  gsub('electrode', 'channel', words)) %>% 
+  mutate(words =  gsub('several', 'multiple', words)) %>% 
+  mutate(words =  gsub('each', 'multiple', words)) %>% 
+  mutate(words =  gsub('multi ', 'multiple ', words)) %>% 
+  mutate(words =  gsub('muti ', 'multiple ', words)) %>%
+  mutate(words =  gsub('multeple chanel', 'multiple channel', words)) %>%
+  mutate(words =  gsub('multichannel', 'multiple channel', words)) %>%
+  mutate(words =  gsub('event related potential', 'erp', words)) %>% 
+  mutate(words =  gsub('timecourse', 'time course', words)) %>%
+  mutate(words =  gsub('channelplot', 'channel plot', words)) %>%
+  
+  mutate(words =  gsub('erps|ep', 'erp', words)) %>% 
+  mutate(words =  gsub('responses', 'response', words)) %>% 
+  mutate(words =  gsub('channels', 'channel', words)) %>% 
+  mutate(words =  gsub('averaged', 'average', words)) %>% 
+  mutate(words =  gsub('topomaps', 'topomap', words)) %>% 
+  mutate(words =  gsub('topoplots', 'topoplot', words)) %>% 
+  mutate(words = ifelse(nchar(words)==0, NA, words)) %>% 
+  mutate(words = ifelse(str_detect(words, 'don|sure|useless|not|ugly'), "NA", as.character(words))) %>%
+  
+ table(.) %>% 
+  data.frame(.) %>% filter(words != "NA") %>%  #View()
+  arrange(desc(Freq)) %>%  head(10)
+
+
+```
+
+#### 6
+
+```{r}
+word_preproc(data, 102)  %>% dplyr::rename(words = !!names(.)[1]) %>%
+  mutate(words =  gsub('electrode', 'channel', words)) %>% 
+  mutate(words =  gsub('several', 'multiple', words)) %>% 
+  mutate(words =  gsub('each', 'multiple', words)) %>% 
+  mutate(words =  gsub('multi ', 'multiple ', words)) %>% 
+  mutate(words =  gsub('muti ', 'multiple ', words)) %>%
+  mutate(words =  gsub('multeple chanel', 'multiple channel', words)) %>%
+  mutate(words =  gsub('multichannel', 'multiple channel', words)) %>%
+  mutate(words =  gsub('event related potential', 'erp', words)) %>% 
+  mutate(words =  gsub('timecourse', 'time course', words)) %>%
+  mutate(words =  gsub('channelplot', 'channel plot', words)) %>%
+  
+  mutate(words =  gsub('erps|ersp', 'erp', words)) %>% 
+  mutate(words =  gsub('erpimage', 'erp image', words)) %>% 
+  mutate(words =  gsub('heat map', 'heatmap', words)) %>% 
+  mutate(words =  gsub('responses', 'response', words)) %>% 
+  mutate(words =  gsub('channels', 'channel', words)) %>% 
+  mutate(words =  gsub('averaged', 'average', words)) %>% 
+  mutate(words =  gsub('topomaps', 'topomap', words)) %>% 
+  mutate(words =  gsub('topoplots', 'topoplot', words)) %>% 
+  mutate(words =  gsub('epochs', 'epoch', words)) %>% 
+  mutate(words =  gsub('trials', 'trial', words)) %>% 
+  mutate(words = ifelse(nchar(words)==0, NA, words)) %>% 
+  mutate(words = ifelse(str_detect(words, 'don|sure|useless|not|ugly|x|good'), "NA", as.character(words))) %>%
+  
+ table(.) %>% 
+  data.frame(.) %>% filter(words != "NA") %>%  #View()
+  arrange(desc(Freq)) %>%  head(10)
+
+
+```
+
+#### 7
+
+```{r}
+word_preproc(data, 105)  %>% dplyr::rename(words = !!names(.)[1]) %>%
+  mutate(words =  gsub('electrode', 'channel', words)) %>% 
+  mutate(words =  gsub('several', 'multiple', words)) %>% 
+  mutate(words =  gsub('each', 'multiple', words)) %>% 
+  mutate(words =  gsub('multi ', 'multiple ', words)) %>% 
+  mutate(words =  gsub('muti ', 'multiple ', words)) %>%
+  mutate(words =  gsub('multeple chanel', 'multiple channel', words)) %>%
+  mutate(words =  gsub('multichannel', 'multiple channel', words)) %>%
+  mutate(words =  gsub('event related potential', 'erp', words)) %>% 
+  mutate(words =  gsub('timecourse', 'time course', words)) %>%
+  mutate(words =  gsub('channelplot', 'channel plot', words)) %>%
+  
+  mutate(words =  gsub('erps|ersp', 'erp', words)) %>% 
+  mutate(words =  gsub('erpimage', 'erp image', words)) %>% 
+  mutate(words =  gsub('heat map', 'heatmap', words)) %>% 
+  mutate(words =  gsub('responses', 'response', words)) %>% 
+  mutate(words =  gsub('channels', 'channel', words)) %>% 
+  mutate(words =  gsub('averaged', 'average', words)) %>% 
+  mutate(words =  gsub('topomaps', 'topomap', words)) %>% 
+  mutate(words =  gsub('topoplots', 'topoplot', words)) %>% 
+  mutate(words =  gsub('epochs', 'epoch', words)) %>% 
+  mutate(words =  gsub('trials', 'trial', words)) %>% 
+  mutate(words = ifelse(nchar(words)==0, NA, words)) %>% 
+  mutate(words = ifelse(str_detect(words, 'don|sure|useless|not|ugly|x|good'), "NA", as.character(words))) %>%
+ table(.) %>% 
+  data.frame(.) %>% filter(words != "NA") %>%  #View()
+  arrange(desc(Freq)) %>%  head(10)
+
+
+```
+
+#### 8
+
+```{r}
+word_preproc(data, 112)  %>%
+
+  mutate(words = ifelse(nchar(words)==0, NA, words)) %>% 
+  mutate(words = ifelse(str_detect(words, 'don|sure|useless|not|ugly|x|good|remember|idea|nan'), "NA", as.character(words))) %>%
+  
+ # filter(words != "NA") %>% 
+  table(.) %>% 
+  data.frame(.) %>%  arrange(desc(Freq)) #%>% View()
+```
+
+</details> 
+
+## Frequency of tool usage
+
+```{r}
+vec <- names(data[ , grepl( ".*Which plotting" , names(data))]) %>% str_split_i(., "\\]", 2) %>% 
+  str_split_i(., "\\...", 2) %>% as.numeric()
+vec
+```
+
+```{r}
+word_preproc_tool <- function(data, N, lim){
+  N = 71
+  #lim = 10
+  tmp <- data %>% dplyr::select(N) %>% filter(!is.na(.)) %>% dplyr::rename(words = !!names(.)[1]) %>% 
+    mutate(words = ifelse(str_detect(words, 'own|costum'), "custom", as.character(words))) %>% 
+  mutate(n = lengths(gregexpr("\\W+", words)) + 1) %>% arrange(desc(n))
+  rest <- tmp %>% filter(n >= lim) %>% dplyr::select(words)
+  tmp <- tmp %>% filter(n < lim) %>% dplyr::select(words)
+  
+  t <- foreach(i = 1:nrow(tmp)) %do% strsplit(tmp[[1]][i], ",|/|\\|+| and |&| or |\\n|\\r|;")
+  tul <- foreach(i = 1:nrow(tmp)) %do% unlist(t[[i]])
+  tul1 <- unlist(tul)
+  tul2 <- tul1[tul1!=""]
+  tul2[tul2=="-"] <- NA
+  tul2 <- na.omit(tul2)
+  
+  #t <- foreach(i = 1:nrow(tmp)) %do% tokenize_words(as.character(tmp[i, N]), strip_punct = FALSE)
+  stop_list = c("a", "an", "the", "wise", "by", "over", "of", "per", "for", "like", "s", "at", "code", "script", "recently", "my", "in", "written", "using", "built", "function", "plot", "with",  "itself", "scripting", "scrip", "scripts", "basic")#, "custom")
+  t1 <- foreach(i = 1:length(tul2)) %do% tokenize_words(as.character(tul2[i]))
+  
+  
+  t2 <- foreach(i = 1:length(t1)) %do% map(t1[i][[1]], singularize)
+  t21 <- foreach(i = 1:length(t2)) %do% tokenize_words(as.character(t2[i][[1]]))
+  t22 <- foreach(i = 1:length(t21)) %do% t21[i][[1]][[1]][!(t21[i][[1]][[1]] %in% stop_list)]
+  t3 <- foreach(i = 1:length(t22)) %do% paste((unlist(t22[i])), collapse = ' ') 
+  t4 <- data.frame(matrix(t3)) #%>% dplyr::rename(words = !!names(.)[1])
+  return(c(t4, rest))
+}
+```
+
+#### 1
+
+```{r}
+test <- word_preproc_tool(data, 71, 10) 
+rest <- test[[2]]
+fromrest <- data.frame(words = c("fieldtrip","r", "matlab", "fieldtrip", "adobe illustrator", "custom matlab", "custom matlab", "mne" ))
+
+base <- data.frame(matrix(test[[1]]))%>% dplyr::rename(words = !!names(.)[1])%>% 
+  mutate(words = ifelse(nchar(words)==0, NA, words)) %>% 
+  mutate(words = ifelse(str_detect(words, 'brain vision'), "brain vision analyser", as.character(words))) %>% 
+  mutate(words = ifelse(str_detect(words, 'mne'), "mne", as.character(words))) %>%  rbind(., fromrest) %>% 
+  mutate(words = ifelse(str_detect(words, 'ggplot'), "ggplot", as.character(words))) 
+
+words <- base %>% 
+  table(.) %>% 
+  data.frame(.) %>%  arrange(desc(Freq)) 
+
+narrow1 <- base %>% 
+  mutate(words = ifelse(str_detect(words, 'matlab|bar.m|boundedline'), "custom matlab", as.character(words))) %>% 
+  mutate(words = ifelse(str_detect(words, 'fieldtrip'), "fieldtrip", as.character(words))) %>% 
+  mutate(words = ifelse(str_detect(words, 'eeglab'), "EEGLAB", as.character(words))) %>% 
+  mutate(words = ifelse(str_detect(words, 'erplab'), "ERPLAB", as.character(words))) %>% 
+  mutate(words = ifelse(str_detect(words, 'python|seaborn|matplotlib|plotly'), "custom python", as.character(words))) %>%
+  mutate(words = ifelse(str_detect(words, 'mne'), "MNE", as.character(words))) %>%
+  mutate(words = ifelse(str_detect(words, 'ggplot|\\br\\b'), "custom r", as.character(words))) %>% 
+  table(.) %>% 
+  data.frame(.) %>%  arrange(desc(Freq))
+narrow1 %>% head()
+```
+
+#### 2
+
+```{r}
+test <- word_preproc_tool(data, 82, 10) 
+rest <- test[[2]]
+fromrest <- data.frame(words = c("fieldtrip","r", "matlab", "fieldtrip", "adobe illustrator", "custom matlab", "custom matlab", "mne" ))
+
+base <- data.frame(matrix(test[[1]]))%>% dplyr::rename(words = !!names(.)[1])%>% 
+  mutate(words = ifelse(nchar(words)==0, NA, words)) %>% 
+  mutate(words = ifelse(str_detect(words, 'brain vision'), "brain vision analyser", as.character(words))) %>% 
+  mutate(words = ifelse(str_detect(words, 'mne'), "MNE", as.character(words))) %>%  rbind(., fromrest) %>% 
+  mutate(words = ifelse(str_detect(words, 'ggplot'), "ggplot", as.character(words))) %>% 
+  mutate(words = ifelse(str_detect(words, 'own|cusom'), "custom", as.character(words))) 
+
+words <- base %>% 
+  table(.) %>% 
+  data.frame(.) %>%  arrange(desc(Freq)) 
+
+narrow2 <- base %>% 
+  mutate(words = ifelse(str_detect(words, 'matlab|bar.m|boundedline'), "custom matlab", as.character(words))) %>% 
+  mutate(words = ifelse(str_detect(words, 'fieldtrip|fieldteip|field trip'), "fieldtrip", as.character(words))) %>% 
+  mutate(words = ifelse(str_detect(words, 'eeglab'), "EEGLAB", as.character(words))) %>% 
+  mutate(words = ifelse(str_detect(words, 'erplab'), "ERPLAB", as.character(words))) %>% 
+  mutate(words = ifelse(str_detect(words, 'python|seaborn|matplotlib|plotly'), "custom python", as.character(words))) %>%
+  mutate(words = ifelse(str_detect(words, 'ggplot|\\br\\b'), "custom r", as.character(words))) %>% 
+   mutate(words = ifelse(str_detect(words, 'cartool'), "cartool", as.character(words))) %>% 
+  table(.) %>% 
+  data.frame(.) %>%  arrange(desc(Freq))
+narrow2 %>% head()
+
+```
+
+## General struggles with plots
+
+```{r}
+word_preproc_tool_2 <- function(data, N, lim){
+  #lim = 10
+  tmp <- data %>% dplyr::select(N, N+1, N+2) %>% dplyr::rename(soft = !!names(.)[1], parts = !!names(.)[2], new_feature = !!names(.)[3]) %>% 
+    filter(!is.na(soft)) %>% 
+    mutate_at(vars(colnames(.)), funs(tolower(.))) %>% 
+    mutate(soft = str_replace(soft, 'own', "custom"), 
+           soft = str_replace(soft, '(matlab)', "matlab"), 
+           soft = case_when(
+      str_detect(soft, 'brain vision') ~ "brain vision analyser",
+      #str_detect(soft, 'matlab|bar.m|boundedline') ~ "custom matlab",
+      str_detect(soft, 'mne') ~ "mne",
+      TRUE ~ as.character(soft)
+    ), 
+    parts = case_when(
+      str_detect(parts, 'none|n/a|nope|na|idk|nothing|sure|know|can\'t|don\'t') ~ "-",
+      TRUE ~ as.character(parts)
+    ),
+    new_feature = case_when(
+      str_detect(new_feature, 'none|n/a|nope|na|idk|nothing|sure|know|can\'t|don\'t') ~ "-",
+      TRUE ~ as.character(new_feature)
+    )) %>% 
+  
+    filter_at(vars(parts, new_feature), all_vars(!is.na(.))) %>% mutate(n = lengths(gregexpr("\\W+", soft)) + 1) %>% 
+    filter(parts != "-" | new_feature != "-", n < lim) %>%  dplyr::select(-4) %>% arrange(soft)
+  return(tmp)
+}
+```
+
+```{r}
+struggle1 <- word_preproc_tool_2(data, 71, 10) 
+
+struggle1 %>% filter( parts != "-") %>% dplyr::select(parts) 
+
+```

@@ -1,0 +1,5 @@
+"0","data %>% filter(.[[20]] < 50) %>% ggplot(data = ., aes_(as.name(names(data)[20]))) +"
+"0","  geom_histogram() +  scale_x_continuous(breaks=seq(0, 30, 5)) +"
+"0","    labs(x =""Years of experience with EEG, MEG, or iEEG analysis"")"
+"2","Warning: `aes_()` was deprecated in ggplot2 3.0.0.
+Please use tidy evaluation idioms with `aes()`"

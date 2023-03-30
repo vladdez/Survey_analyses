@@ -1,0 +1,176 @@
+"0","# upload to the git"
+"0","library(readxl)"
+"2","Warning: package ‘readxl’ was built under R version 4.2.2"
+"0","library(foreach)"
+"2","Warning: package ‘foreach’ was built under R version 4.2.2"
+"0","library(stringr)"
+"2","Warning: package ‘stringr’ was built under R version 4.2.2"
+"0","library(dplyr)"
+"2","
+Attaching package: ‘dplyr’
+
+"
+"2","The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+"
+"2","The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+"
+"0","library(tokenizers)"
+"2","Warning: package ‘tokenizers’ was built under R version 4.2.2"
+"0","library(data.table)"
+"2","Registered S3 method overwritten by 'data.table':
+  method           from
+  print.data.table     
+"
+"2","data.table 1.14.2 using 8 threads (see ?getDTthreads).  Latest news: r-datatable.com
+"
+"2","
+Attaching package: ‘data.table’
+
+"
+"2","The following objects are masked from ‘package:dplyr’:
+
+    between, first, last
+
+"
+"0","library(ggplot2)"
+"2","Warning: package ‘ggplot2’ was built under R version 4.2.3"
+"0","library(plyr)"
+"2","Warning: package ‘plyr’ was built under R version 4.2.2"
+"2","---------------------------------------------------------------------------------------------------------------------------------------------------------------
+"
+"2","You have loaded plyr after dplyr - this is likely to cause problems.
+If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+library(plyr); library(dplyr)
+"
+"2","---------------------------------------------------------------------------------------------------------------------------------------------------------------
+"
+"2","
+Attaching package: ‘plyr’
+
+"
+"2","The following objects are masked from ‘package:dplyr’:
+
+    arrange, count, desc, failwith, id, mutate, rename, summarise, summarize
+
+"
+"0","library(quanteda)"
+"2","Warning: package ‘quanteda’ was built under R version 4.2.2"
+"2","Package version: 3.2.4
+Unicode version: 13.0
+ICU version: 69.1
+"
+"2","Parallel computing: 16 of 16 threads used.
+"
+"2","See https://quanteda.io for tutorials and examples.
+"
+"0","library(SemNetCleaner)"
+"2","Warning: package ‘SemNetCleaner’ was built under R version 4.2.2"
+"2","Loading required package: SemNetDictionaries
+"
+"2","Warning: package ‘SemNetDictionaries’ was built under R version 4.2.2"
+"2","[1;m[4;m
+SemNetDictionaries (version 0.2.0)[0m[0m 
+For help getting started, see <https://doi.org/10.1037/met0000463> 
+
+ Submit your own dictionary and moniker glossaries to:
+ <https://github.com/AlexChristensen/SemNetDictionaries/issues/new/choose>
+
+"
+"2","[1;m[4;m
+SemNetCleaner (version 1.3.4)[0m[0m 
+For help getting started, see <https://doi.org/10.31234/osf.io/eht87> 
+ For bugs and errors, submit an issue to <https://github.com/AlexChristensen/SemNetCleaner/issues>
+
+WARNING: There have been major updates to the SemNetCleaner package.
+ Please see 'Package NEWS' for a detailed list of updates (see 'Changes in version 1.2.0')
+
+"
+"0","library(purrr)"
+"2","Warning: package ‘purrr’ was built under R version 4.2.2"
+"2","
+Attaching package: ‘purrr’
+
+"
+"2","The following object is masked from ‘package:plyr’:
+
+    compact
+
+"
+"2","The following object is masked from ‘package:data.table’:
+
+    transpose
+
+"
+"2","The following objects are masked from ‘package:foreach’:
+
+    accumulate, when
+
+"
+"0","library(tidytext)"
+"2","Warning: package ‘tidytext’ was built under R version 4.2.2"
+"0","library(tm)"
+"2","Warning: package ‘tm’ was built under R version 4.2.2"
+"2","Loading required package: NLP
+"
+"2","
+Attaching package: ‘NLP’
+
+"
+"2","The following objects are masked from ‘package:quanteda’:
+
+    meta, meta<-
+
+"
+"2","The following object is masked from ‘package:ggplot2’:
+
+    annotate
+
+"
+"2","
+Attaching package: ‘tm’
+
+"
+"2","The following object is masked from ‘package:quanteda’:
+
+    stopwords
+
+"
+"0","library(topicmodels)"
+"2","Warning: package ‘topicmodels’ was built under R version 4.2.2"
+"0","library(SnowballC)"
+"0","library(Matrix)"
+"2","Warning: package ‘Matrix’ was built under R version 4.2.2"
+"0","library(text2vec)"
+"2","Warning: package ‘text2vec’ was built under R version 4.2.2"
+"2","
+Attaching package: ‘text2vec’
+
+"
+"2","The following object is masked from ‘package:topicmodels’:
+
+    perplexity
+
+"
+"0","library(tidyr)"
+"2","Warning: package ‘tidyr’ was built under R version 4.2.2"
+"2","
+Attaching package: ‘tidyr’
+
+"
+"2","The following objects are masked from ‘package:Matrix’:
+
+    expand, pack, unpack
+
+"
+"0","library(GGally)"
+"2","Warning: package ‘GGally’ was built under R version 4.2.3"
+"2","Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2
+"

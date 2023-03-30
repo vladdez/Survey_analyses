@@ -1,0 +1,6 @@
+"0","d %>% arrange(desc(sum_scores)) %>% 
+    ggplot(., aes(x = reorder(method, sum_scores), y = sum_scores, fill = method)) +
+    geom_col(stat = ""identity"") + labs(x = ""Method"", y = ""Value"", fill = ""Method"") +
+    theme_classic() + theme(legend.position=""none"")
+"
+"2","Warning: [38;5;232mIgnoring unknown parameters: `stat`[39m"

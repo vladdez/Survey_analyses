@@ -1,0 +1,28 @@
+{
+    "id": "26CC6AA9",
+    "path": null,
+    "project_path": null,
+    "type": "object_explorer",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1679932889141.0,
+    "source_on_save": false,
+    "relative_order": 9,
+    "properties": {
+        "id": "b382a32456ab40aba27b7ee4bf63877e",
+        "name": "t3",
+        "title": "t3",
+        "language": "R",
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 8242266180789298540,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1679932889141,
+    "read_only": false,
+    "read_only_alternatives": []
+}

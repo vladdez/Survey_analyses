@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>exploration</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">exploration</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Project description</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./about.html" class="sidebar-item-text sidebar-link">About</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Analyses</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exploration.html" class="sidebar-item-text sidebar-link active">1. exploration</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./connections.html" class="sidebar-item-text sidebar-link">2. linear models</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plot_breakdown.html" class="sidebar-item-text sidebar-link">3. plot breakdown</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#bio-stats" id="toc-bio-stats" class="nav-link" data-scroll-target="#bio-stats">Bio stats</a>
+  <ul class="collapse">
+  <li><a href="#area" id="toc-area" class="nav-link" data-scroll-target="#area">Area</a></li>
+  <li><a href="#method" id="toc-method" class="nav-link" data-scroll-target="#method">Method</a></li>
+  <li><a href="#experience" id="toc-experience" class="nav-link" data-scroll-target="#experience">Experience</a></li>
+  <li><a href="#channels" id="toc-channels" class="nav-link" data-scroll-target="#channels">Channels</a></li>
+  </ul></li>
+  <li><a href="#software-usage" id="toc-software-usage" class="nav-link" data-scroll-target="#software-usage">Software usage</a></li>
+  <li><a href="#important-features" id="toc-important-features" class="nav-link" data-scroll-target="#important-features">Important features</a></li>
+  <li><a href="#familiarity-with-plots" id="toc-familiarity-with-plots" class="nav-link" data-scroll-target="#familiarity-with-plots">Familiarity with plots</a></li>
+  <li><a href="#have-you-ever-plotted-this-king-of-figure" id="toc-have-you-ever-plotted-this-king-of-figure" class="nav-link" data-scroll-target="#have-you-ever-plotted-this-king-of-figure">Have you ever plotted this king of figure</a></li>
+  <li><a href="#familiar-and-plotted" id="toc-familiar-and-plotted" class="nav-link" data-scroll-target="#familiar-and-plotted">Familiar and plotted</a></li>
+  <li><a href="#up-or-down" id="toc-up-or-down" class="nav-link" data-scroll-target="#up-or-down">Up or down</a></li>
+  <li><a href="#error-bars" id="toc-error-bars" class="nav-link" data-scroll-target="#error-bars">Error bars</a></li>
+  <li><a href="#baseline" id="toc-baseline" class="nav-link" data-scroll-target="#baseline">Baseline</a>
+  <ul class="collapse">
+  <li><a href="#periods" id="toc-periods" class="nav-link" data-scroll-target="#periods">periods</a></li>
+  <li><a href="#justification" id="toc-justification" class="nav-link" data-scroll-target="#justification">justification</a></li>
+  </ul></li>
+  <li><a href="#colorbars" id="toc-colorbars" class="nav-link" data-scroll-target="#colorbars">Colorbars</a></li>
+  <li><a href="#feedback" id="toc-feedback" class="nav-link" data-scroll-target="#feedback">Feedback</a></li>
+  <li><a href="#time-in-minutes" id="toc-time-in-minutes" class="nav-link" data-scroll-target="#time-in-minutes">Time in minutes</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">exploration</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># upload to the git</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(foreach)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tokenizers)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plyr)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quanteda)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SemNetCleaner)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytext)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tm)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(topicmodels)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SnowballC)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Matrix)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(text2vec)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data/results-survey3.xlsx"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data[<span class="dv">1</span><span class="sc">:</span><span class="dv">121</span>] <span class="sc">%&gt;%</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(.[[<span class="dv">18</span>]] <span class="sc">!=</span><span class="st">'Yes'</span>) <span class="co"># not analysed any EEG method</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="bio-stats" class="level2">
+<h2 class="anchored" data-anchor-id="bio-stats">Bio stats</h2>
+<p>Country</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="fu">table</span>(data[<span class="dv">8</span>])) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq)) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">country_work =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">reorder</span>(country_work, Freq),  <span class="at">x=</span> Freq)) <span class="sc">+</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Country of work for participant"</span>) <span class="sc">+</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Freq), </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.2</span>)<span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="exploration_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Field</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>field <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">table</span>(data[<span class="dv">9</span>])) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq)) <span class="sc">%&gt;%</span> <span class="fu">head</span>(<span class="dv">3</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>field<span class="sc">$</span>Freq[<span class="dv">1</span>] <span class="ot">&lt;-</span> field<span class="sc">$</span>Freq[<span class="dv">1</span>] <span class="sc">+</span> <span class="dv">1</span> <span class="co"># from Others</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>field<span class="sc">$</span>Freq[<span class="dv">2</span>] <span class="ot">&lt;-</span> field<span class="sc">$</span>Freq[<span class="dv">2</span>] <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>field<span class="sc">$</span>Freq[<span class="dv">3</span>] <span class="ot">&lt;-</span> field<span class="sc">$</span>Freq[<span class="dv">3</span>] <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>field <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">area =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(area, Freq),  <span class="at">y=</span> Freq, <span class="at">fill =</span> area)) <span class="sc">+</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Area of research"</span>) <span class="sc">+</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Freq), </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.2</span>)<span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="exploration_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<section id="area" class="level3">
+<h3 class="anchored" data-anchor-id="area">Area</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>t <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(data)) <span class="sc">%do%</span> <span class="fu">tokenize_words</span>(<span class="fu">as.character</span>(data[i, <span class="dv">11</span>]))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>tt <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(t)) <span class="sc">%do%</span> <span class="fu">paste</span>(<span class="fu">unlist</span>(t[i]), <span class="at">collapse =</span> <span class="st">' '</span>) </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>area <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(tt)) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">words =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'emot|empathy'</span>), <span class="st">"affective neuroscience"</span>, words)) <span class="sc">%&gt;%</span>  </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#mutate(words =ifelse(str_detect(.[[1]], 'spatial'), "spatial", words)) %&gt;% </span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span><span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'memory'</span>), <span class="st">"memory"</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span><span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'hearing|audit'</span>), <span class="st">"auditory"</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span><span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'cognition|consciousness|meditation|cognitive control|self|executive functions'</span>), <span class="st">"cognitive control"</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span><span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'dbs'</span>), <span class="st">"deep brain stimulation"</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span><span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'decision making|reward'</span>), <span class="st">"decision making"</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span><span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'ageing'</span>), <span class="st">"ageing"</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span><span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'social'</span>), <span class="st">"social cognition"</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span><span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'olfac'</span>), <span class="st">"olfaction"</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span><span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'communication|language|speech|biling|english|language processing'</span>), <span class="st">"language and speech"</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span><span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'bci'</span>), <span class="st">"bci"</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span><span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'sleep'</span>), <span class="st">"sleep"</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span><span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'timing|time|temporal'</span>), <span class="st">"time"</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span><span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'cognitive load|selective attention|attention|perception'</span>), <span class="st">"attention and perception"</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span><span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'vis'</span>), <span class="st">"vision"</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span><span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'developmental|development'</span>), <span class="st">"development"</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span><span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'spatial|brain body|motor|motion'</span>), <span class="st">"motor control"</span>, words)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span><span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'diagnostics|disorder|psychiatry|epilepsy|autism|patients|therapy|psychopharmacology'</span>), <span class="st">"mental disorders"</span>, words)) <span class="sc">%&gt;%</span>   </span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">words =</span><span class="fu">ifelse</span>(<span class="fu">str_detect</span>(.[[<span class="dv">1</span>]], <span class="st">'signal processing|event related potentials|method|sdf|ieeg'</span>), <span class="st">"dsp"</span>, words))</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>area <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(words) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">Freq =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(.)  <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">as.character</span>(words)) <span class="sc">%&gt;%</span>  <span class="co">#arrange(desc(Freq)) %&gt;% </span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">reorder</span>(words, Freq),  <span class="at">x=</span> Freq)) <span class="sc">+</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Words"</span>) <span class="sc">+</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Freq), </span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="exploration_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="method" class="level3">
+<h3 class="anchored" data-anchor-id="method">Method</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>method <span class="ot">&lt;-</span> data[<span class="dv">14</span><span class="sc">:</span><span class="dv">17</span>]</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ch <span class="ot">&lt;-</span> <span class="fu">colnames</span>(method)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>ch1 <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> ch) <span class="sc">%do%</span> <span class="fu">str_split_i</span>(i, <span class="st">"</span><span class="sc">\\</span><span class="st">["</span>, <span class="dv">2</span>) </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(method) <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> ch1) <span class="sc">%do%</span> <span class="fu">str_sub</span>(i, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">2</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">rowSums</span>(<span class="fu">t</span>(<span class="fu">data.frame</span>(<span class="fu">foreach</span>(<span class="at">i =</span> <span class="fu">colnames</span>(method)) <span class="sc">%do%</span> <span class="fu">ifelse</span>(method[i]<span class="sc">==</span><span class="st">"Yes"</span>, <span class="dv">1</span>, <span class="dv">0</span>))))) </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(d, <span class="st">"plots"</span>) </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(d) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"method"</span>, <span class="st">"sum_scores"</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(sum_scores)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(method, sum_scores), <span class="at">y =</span> sum_scores, <span class="at">fill =</span> method)) <span class="sc">+</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Method"</span>, <span class="at">y =</span> <span class="st">"Value"</span>, <span class="at">fill =</span> <span class="st">"Method"</span>) <span class="sc">+</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_classic</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in geom_col(stat = "identity"): Ignoring unknown parameters: `stat`</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="exploration_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="experience" class="level3">
+<h3 class="anchored" data-anchor-id="experience">Experience</h3>
+<p>Papers</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>data[<span class="dv">19</span>] <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">papers =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>]) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(papers <span class="sc">&lt;</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span>  <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(papers)) <span class="sc">+</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span><span class="st">"How many published papers/preprints do you have, where you used EEG, MEG or iEEG analysis?"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="exploration_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># PCA for clustering it </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Position</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#na.omit(data[13]) # recode Others</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.frame</span>(<span class="fu">table</span>(<span class="fu">na.omit</span>(data[<span class="dv">12</span>]))) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">position =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq)) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">reorder</span>(position, Freq),  <span class="at">x=</span> Freq, <span class="at">fill =</span> position)) <span class="sc">+</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Position"</span>) <span class="sc">+</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Freq), </span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.2</span>)<span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="exploration_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Years</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(.[[<span class="dv">20</span>]] <span class="sc">&lt;</span> <span class="dv">50</span>) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes_</span>(<span class="fu">as.name</span>(<span class="fu">names</span>(data)[<span class="dv">20</span>]))) <span class="sc">+</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">30</span>, <span class="dv">5</span>)) <span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span><span class="st">"Years of experience with EEG, MEG, or iEEG analysis"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `aes_()` was deprecated in ggplot2 3.0.0.
+ℹ Please use tidy evaluation idioms with `aes()`</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="exploration_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Self-assessed level</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data[<span class="dv">21</span>]) <span class="sc">%&gt;%</span> <span class="fu">data.frame</span>()<span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">level =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(<span class="at">x =</span> level, <span class="at">y=</span> Freq, <span class="at">fill =</span> level)) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Self-assessed level"</span>) <span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Freq), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.2</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_discrete</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="st">"Beginner"</span>, <span class="st">"Intermediate"</span>, <span class="st">"Expert"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="exploration_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Code contribution</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data[<span class="dv">22</span>])  <span class="sc">%&gt;%</span> <span class="fu">data.frame</span>()<span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">level =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(level, Freq),  <span class="at">y=</span> Freq, <span class="at">fill =</span> level)) <span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Code contribution"</span>) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Freq), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.2</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="exploration_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="channels" class="level3">
+<h3 class="anchored" data-anchor-id="channels">Channels</h3>
+<p>How many channels do you typically measure?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes_</span>(<span class="fu">as.name</span>(<span class="fu">names</span>(data)[<span class="dv">23</span>]))) <span class="sc">+</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">300</span>, <span class="dv">30</span>)) <span class="sc">+</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span><span class="st">"How many channels do you typically measure?"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="exploration_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>How many channels do you typically measure?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(.[[<span class="dv">24</span>]] <span class="sc">&lt;</span> <span class="dv">500</span>) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes_</span>(<span class="fu">as.name</span>(<span class="fu">names</span>(data)[<span class="dv">24</span>]))) <span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">300</span>, <span class="dv">30</span>))<span class="sc">+</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span><span class="st">"How many channels of those you measured do you typically analyse?"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="exploration_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plots should be combined</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="software-usage" class="level2">
+<h2 class="anchored" data-anchor-id="software-usage">Software usage</h2>
+<section id="frequency" class="level4">
+<h4 class="anchored" data-anchor-id="frequency">frequency</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>vec <span class="ot">&lt;-</span> <span class="fu">names</span>(data[<span class="dv">25</span><span class="sc">:</span><span class="dv">49</span>]) <span class="sc">%&gt;%</span> <span class="fu">str_split_i</span>(., <span class="st">"</span><span class="sc">\\</span><span class="st">["</span>, <span class="dv">2</span>) <span class="sc">%&gt;%</span>  <span class="fu">str_sub</span>(., <span class="dv">1</span>, <span class="sc">-</span><span class="dv">2</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>software <span class="ot">&lt;-</span> data[<span class="dv">25</span><span class="sc">:</span><span class="dv">49</span>] <span class="sc">%&gt;%</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> vec) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_at</span>(<span class="fu">vars</span>(vec), <span class="cf">function</span>(., <span class="at">na.rm =</span> <span class="cn">FALSE</span>) (<span class="at">x =</span> <span class="fu">ifelse</span>(.<span class="sc">==</span><span class="st">"Yes"</span>, <span class="dv">1</span>, <span class="dv">0</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using an external vector in selections was deprecated in tidyselect 1.1.0.
+ℹ Please use `all_of()` or `any_of()` instead.
+  # Was:
+  data %&gt;% select(vec)
+
+  # Now:
+  data %&gt;% select(all_of(vec))
+
+See &lt;https://tidyselect.r-lib.org/reference/faq-external-vector.html&gt;.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">rowSums</span>(<span class="fu">t</span>(software))) <span class="sc">%&gt;%</span>  tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(., <span class="st">"soft"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> <span class="fu">c</span>(<span class="st">"soft"</span>, <span class="st">"sum_scores"</span>))  <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(., <span class="fu">desc</span>(sum_scores)) </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>d </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 soft sum_scores
+1              EEGLAB        112
+2           FieldTrip         85
+3          MNE-Python         72
+4  Brain Vision An..          41
+5              ERPLAB         37
+6          Brainstorm         31
+7                 SPM         18
+8                LIMO         14
+9                BESA         12
+10              Curry          9
+11    EGI Net Station          8
+12            Cartool          7
+13             mnelab          7
+14             Unfold          6
+15            EEProbe          4
+16               Scan          4
+17           EEGUtils          3
+18                ASA          2
+19             EEGKit          1
+20            fitgrid          1
+21         ephyviewer          0
+22          ERPsystem          0
+23               eVox          0
+24             InstEP          0
+25               MMVT          0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># piechart and cooccuerence plot </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># how many items were choosen</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">data.frame</span>(<span class="fu">rowSums</span>(software)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>rowSums.software.
+ 0  1  2  3  4  5  6  7  8  9 10 
+ 4 46 53 37 23  9  4  2  1  2  1 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">na.omit</span>(data[<span class="dv">51</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 20 × 1
+   `Which EEG, MEG,..  [Other]`                         
+   &lt;chr&gt;                                                
+ 1 R                                                    
+ 2 R                                                    
+ 3 bti 4D neuroimaging                                  
+ 4 Letswave (matlab)                                    
+ 5 Ggplot                                               
+ 6 Matlab, Python                                       
+ 7 Almost never don't plot ERP, my field is oscillations
+ 8 ggplot2                                              
+ 9 Matlab                                               
+10 mTRF                                                 
+11 IGOR Pro                                             
+12 EEGProcessor                                         
+13 basic Matlab                                         
+14 letswave                                             
+15 RAGU                                                 
+16 ELAN                                                 
+17 letswave                                             
+18 WinEEG                                               
+19 Matlab                                               
+20 own developments                                     </code></pre>
+</div>
+</div>
+</section>
+<section id="cooccurence" class="level4">
+<h4 class="anchored" data-anchor-id="cooccurence">cooccurence</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># how to order by diagonal matrix </span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>software <span class="ot">&lt;-</span> data[<span class="dv">25</span><span class="sc">:</span><span class="dv">49</span>]</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>ch <span class="ot">&lt;-</span> <span class="fu">colnames</span>(software)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>ch1 <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> ch) <span class="sc">%do%</span> <span class="fu">str_split_i</span>(i, <span class="st">"</span><span class="sc">\\</span><span class="st">["</span>, <span class="dv">2</span>) </span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>ch1 <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> ch1) <span class="sc">%do%</span> <span class="fu">str_sub</span>(i, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">2</span>)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>d1 <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="fu">colnames</span>(software)) <span class="sc">%do%</span> <span class="fu">ifelse</span>(software[i]<span class="sc">==</span><span class="st">"Yes"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">crossprod</span>(<span class="fu">matrix</span>(<span class="fu">unlist</span>(d1), <span class="at">ncol =</span> <span class="dv">25</span>))</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(d) <span class="ot">&lt;-</span> ch1</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="co">#d &lt;- data.frame(d) </span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="co">#d$diag &lt;- rowSums(d)</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="co">#d &lt;- d[order(d$diag),] %&gt;% dplyr::select(-diag)</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(d) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(d)</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="co">#d &lt;- as.matrix(d)</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="fu">melt</span>(d) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">x=</span>Var1, <span class="at">y=</span>Var2)) <span class="sc">+</span> </span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="fu">aes</span>(<span class="at">fill =</span> value)) <span class="sc">+</span> </span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> value)) <span class="sc">+</span></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.title =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>                      <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust=</span><span class="sc">-</span><span class="fl">0.2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in melt(d): The melt generic in data.table has been passed a matrix
+and will attempt to redirect to the relevant reshape2 method; please note that
+reshape2 is deprecated, and this redirection is now deprecated as well. To
+continue using melt methods from reshape2 while both libraries are attached,
+e.g. melt.list, you can prepend the namespace like reshape2::melt(d). In the
+next version, this warning will become an error.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="exploration_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="important-features" class="level2">
+<h2 class="anchored" data-anchor-id="important-features">Important features</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>features <span class="ot">&lt;-</span> data[<span class="dv">52</span><span class="sc">:</span><span class="dv">60</span>]</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>ch <span class="ot">&lt;-</span> <span class="fu">colnames</span>(features)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>ch1 <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> ch) <span class="sc">%do%</span> <span class="fu">str_split_i</span>(i, <span class="st">"</span><span class="sc">\\</span><span class="st">["</span>, <span class="dv">2</span>) </span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(features) <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> ch1) <span class="sc">%do%</span> <span class="fu">str_sub</span>(i, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">2</span>)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>features <span class="ot">&lt;-</span> features <span class="sc">%&gt;%</span>  <span class="fu">mutate_at</span>(<span class="fu">c</span>(<span class="fu">colnames</span>(features)), </span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>        <span class="fu">funs</span>(<span class="fu">recode</span>(.,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Very important"</span><span class="ot">=</span> <span class="dv">2</span>, <span class="st">"Important"</span><span class="ot">=</span> <span class="dv">1</span>, <span class="st">"Neutral"</span><span class="ot">=</span> <span class="dv">0</span>,</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Low importance"</span><span class="ot">=</span> <span class="sc">-</span><span class="dv">1</span>, <span class="st">"Not at all important"</span> <span class="ot">=</span> <span class="sc">-</span><span class="dv">2</span> ))) <span class="sc">%&gt;%</span> </span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colSums</span>(., <span class="at">na.rm =</span>T) <span class="sc">%&gt;%</span> <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span>  tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(., <span class="st">"Feature"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(.))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `funs()` was deprecated in dplyr 0.8.0.
+ℹ Please use a list of either functions or lambdas:
+
+# Simple named list: list(mean = mean, median = median)
+
+# Auto named with `tibble::lst()`: tibble::lst(mean, median)
+
+# Using lambdas list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Unreplaced values treated as NA as `.x` is not compatible.
+Unreplaced values treated as NA as `.x` is not compatible.
+Unreplaced values treated as NA as `.x` is not compatible.
+Unreplaced values treated as NA as `.x` is not compatible.
+Unreplaced values treated as NA as `.x` is not compatible.
+Unreplaced values treated as NA as `.x` is not compatible.
+Unreplaced values treated as NA as `.x` is not compatible.
+Unreplaced values treated as NA as `.x` is not compatible.
+Unreplaced values treated as NA as `.x` is not compatible.
+Please specify replacements exhaustively or supply `.default`.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(features) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Feature"</span>, <span class="st">"sum_scores"</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>features</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  Feature sum_scores
+1      Flexible tweaki..         284
+2      Presentation/pu..         222
+3      Reproducibility..         215
+4 Generating plot.. ]...6        213
+5      Combine with a ..         115
+6      Zooming or pann..         104
+7       Speed of plotting         77
+8      Interactive sel..          68
+9 Generating plot.. ]...5        -68</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># divide by number of people </span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="co"># individual plots</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co"># correlation with experience factor</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="familiarity-with-plots" class="level2">
+<h2 class="anchored" data-anchor-id="familiarity-with-plots">Familiarity with plots</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>vec <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"line"</span>, <span class="st">"butterfly"</span>, <span class="st">"topo"</span>, <span class="st">"topo_array"</span>, <span class="st">"topo_map"</span>, <span class="st">"erp_image"</span>, <span class="st">"parallel"</span>, <span class="st">"channel_image"</span>)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>familiar <span class="ot">&lt;-</span>  data[<span class="dv">61</span><span class="sc">:</span><span class="dv">68</span>] <span class="sc">%&gt;%</span> <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> vec) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_at</span>(<span class="fu">vars</span>(vec), <span class="cf">function</span>(., <span class="at">na.rm =</span> <span class="cn">FALSE</span>) (<span class="at">x =</span> <span class="fu">ifelse</span>(.<span class="sc">==</span><span class="st">"Yes"</span>, <span class="dv">1</span>, <span class="dv">0</span>)))</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="fu">rowSums</span>(<span class="fu">t</span>(familiar))) <span class="sc">%&gt;%</span>  tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(., <span class="st">"plot"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> <span class="fu">c</span>(<span class="st">"plot"</span>, <span class="st">"sum_scores"</span>))  <span class="sc">%&gt;%</span> </span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(., <span class="fu">desc</span>(sum_scores)) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">reorder</span>(plot, sum_scores), <span class="at">x=</span> sum_scores)) <span class="sc">+</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="exploration_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="fu">rowSums</span>(<span class="fu">t</span>(familiar))) <span class="sc">%&gt;%</span>  tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(., <span class="st">"plot"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> <span class="fu">c</span>(<span class="st">"plot"</span>, <span class="st">"Yes"</span>)) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">No =</span> <span class="fu">nrow</span>(data) <span class="sc">-</span> Yes) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           plot Yes  No
+1          line 169  13
+2     butterfly 142  40
+3          topo 163  19
+4    topo_array 166  16
+5      topo_map 160  22
+6     erp_image 113  69
+7      parallel   7 175
+8 channel_image 104  78</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># #  two bars knowing and using</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="have-you-ever-plotted-this-king-of-figure" class="level2">
+<h2 class="anchored" data-anchor-id="have-you-ever-plotted-this-king-of-figure">Have you ever plotted this king of figure</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>vec <span class="ot">&lt;-</span> <span class="fu">names</span>(data[ , <span class="fu">grepl</span>( <span class="st">"Have you ever"</span> , <span class="fu">names</span>(data))]) <span class="sc">%&gt;%</span> <span class="fu">str_split_i</span>(., <span class="st">"</span><span class="sc">\\</span><span class="st">....."</span>, <span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">as.numeric</span>()</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>vec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  22  70  81  86  91  98 103 108 113</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>do_vec <span class="ot">&lt;-</span> <span class="cf">function</span>(vec, data){</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  t1 <span class="ot">&lt;-</span> <span class="fu">table</span>(data[vec[<span class="dv">1</span>]])</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(vec)) {</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>    t <span class="ot">&lt;-</span> <span class="fu">table</span>(data[vec[i]])</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>    t1 <span class="ot">&lt;-</span> <span class="fu">rbind</span>(t1, t)</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(t1) <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="fu">paste0</span>(<span class="st">"t_"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(vec)))</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(t1)</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">do_vec</span>(vec, data) <span class="sc">%&gt;%</span>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span> tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(., <span class="st">"plots"</span>) <span class="sc">%&gt;%</span>  </span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(., answer, score, <span class="st">`</span><span class="at">N.A</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">Yes</span><span class="st">`</span>, <span class="at">factor_key=</span><span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">answer =</span> <span class="fu">str_replace</span>(answer, <span class="st">'N.A'</span>, <span class="st">"No"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in rbind(t1, t): number of columns of result is not a multiple of vector
+length (arg 1)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>tab <span class="sc">%&gt;%</span> </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">x =</span> plots, <span class="at">y =</span> score, <span class="at">fill =</span> answer)) <span class="sc">+</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"dodge"</span>, <span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Category"</span>, <span class="at">y =</span> <span class="st">"Value"</span>, <span class="at">fill =</span> <span class="st">"Group"</span>) <span class="sc">+</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="exploration_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="familiar-and-plotted" class="level2">
+<h2 class="anchored" data-anchor-id="familiar-and-plotted">Familiar and plotted</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>vec <span class="ot">&lt;-</span> <span class="fu">names</span>(data[ , <span class="fu">grepl</span>( <span class="st">"Have you ever"</span> , <span class="fu">names</span>(data))]) <span class="sc">%&gt;%</span> <span class="fu">str_split_i</span>(., <span class="st">"</span><span class="sc">\\</span><span class="st">....."</span>, <span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">as.numeric</span>()</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>plot_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"line"</span>, <span class="st">"butterfly"</span>, <span class="st">"topo"</span>, <span class="st">"topo_array"</span>, <span class="st">"topo_map"</span>, <span class="st">"erp_img"</span>, <span class="st">"parallel"</span>, <span class="st">"channel_img"</span>)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>do_vec <span class="ot">&lt;-</span> <span class="cf">function</span>(vec, data, plot_names){</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  t1 <span class="ot">&lt;-</span> <span class="fu">table</span>(data[vec[<span class="dv">1</span>]])</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(vec)) {</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>    t <span class="ot">&lt;-</span> <span class="fu">table</span>(data[vec[i]])</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>    t1 <span class="ot">&lt;-</span> <span class="fu">rbind</span>(t1, t)</span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(t1) <span class="ot">&lt;-</span> plot_names <span class="co">#array(paste0("t_", 1:length(vec)))</span></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(t1)</span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">do_vec</span>(vec[<span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(vec)], data, plot_names) <span class="sc">%&gt;%</span>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span> tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(., <span class="st">"plots"</span>) <span class="sc">%&gt;%</span>  </span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(., type, plotted, <span class="st">`</span><span class="at">N.A</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">Yes</span><span class="st">`</span>, <span class="at">factor_key=</span><span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">"Yes"</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>type) </span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a>familiar <span class="ot">&lt;-</span>  data[<span class="dv">61</span><span class="sc">:</span><span class="dv">68</span>] <span class="sc">%&gt;%</span> <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> plot_names) <span class="sc">%&gt;%</span> </span>
+<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_at</span>(<span class="fu">vars</span>(plot_names), <span class="cf">function</span>(., <span class="at">na.rm =</span> <span class="cn">FALSE</span>) (<span class="at">x =</span> <span class="fu">ifelse</span>(.<span class="sc">==</span><span class="st">"Yes"</span>, <span class="dv">1</span>, <span class="dv">0</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using an external vector in selections was deprecated in tidyselect 1.1.0.
+ℹ Please use `all_of()` or `any_of()` instead.
+  # Was:
+  data %&gt;% select(plot_names)
+
+  # Now:
+  data %&gt;% select(all_of(plot_names))
+
+See &lt;https://tidyselect.r-lib.org/reference/faq-external-vector.html&gt;.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="fu">rowSums</span>(<span class="fu">t</span>(familiar))) <span class="sc">%&gt;%</span>  tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(., <span class="st">"plot"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> <span class="fu">c</span>(<span class="st">"plots"</span>, <span class="st">"recognized"</span>)) <span class="sc">%&gt;%</span> <span class="fu">merge</span>(., tab)  <span class="sc">%&gt;%</span> </span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(., type, score,  recognized<span class="sc">:</span>plotted, <span class="at">factor_key=</span><span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(plots, <span class="sc">-</span>score), <span class="at">y =</span> score, <span class="at">fill =</span> type)) <span class="sc">+</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"dodge"</span>, <span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Plot type"</span>, <span class="at">y =</span> <span class="st">"Number of users"</span>, <span class="at">fill =</span> <span class="st">"Level of familiarity</span><span class="sc">\n</span><span class="st">with plot"</span>) <span class="sc">+</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_classic</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> score, <span class="at">group =</span> type), <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> .<span class="dv">9</span>), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="exploration_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="up-or-down" class="level2">
+<h2 class="anchored" data-anchor-id="up-or-down">Up or down</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data[<span class="dv">79</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>In this plot, s..
+Down   Up 
+  31  138 </code></pre>
+</div>
+</div>
+</section>
+<section id="error-bars" class="level2">
+<h2 class="anchored" data-anchor-id="error-bars">Error bars</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data[<span class="dv">74</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Think about you..
+Never published this plot                        No                       Yes 
+                       22                        57                        79 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>data[<span class="dv">75</span>] <span class="sc">%&gt;%</span>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(.)) <span class="sc">%&gt;%</span> <span class="fu">table</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>What did the er..
+      Confidence intervals                      Other 
+                        17                          5 
+Standart error of the mean 
+                        57 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>data[<span class="dv">76</span>] <span class="sc">%&gt;%</span>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(.)) <span class="sc">%&gt;%</span> <span class="fu">table</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>What did the er..  [Other]
+68% CI, which is close to SEM under normality 
+                                            1 
+                    95% ci over channel means 
+                                            1 
+          i'm not sure but i think it was sem 
+                                            1 
+        median absolute deviaton or quantiles 
+                                            1 
+                                           Sd 
+                                            1 </code></pre>
+</div>
+</div>
+</section>
+<section id="baseline" class="level2">
+<h2 class="anchored" data-anchor-id="baseline">Baseline</h2>
+<section id="periods" class="level3">
+<h3 class="anchored" data-anchor-id="periods">periods</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">abs</span>(data[<span class="dv">77</span>])) <span class="sc">%&gt;%</span> <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">baseline =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(<span class="at">y =</span> baseline, <span class="at">x=</span> Freq)) <span class="sc">+</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"baseline"</span>)<span class="sc">+</span>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">60</span>, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="exploration_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="justification" class="level3">
+<h3 class="anchored" data-anchor-id="justification">justification</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># depends on what??</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="co"># manual categorization of depending</span></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>j <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span>    </span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">q =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">78</span>]) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(q)) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(q) <span class="sc">%&gt;%</span> </span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">q =</span> <span class="fu">tolower</span>(q), </span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">q =</span> <span class="fu">gsub</span>(<span class="st">'.*depends in*.'</span>, <span class="st">'depends on '</span>, q),</span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">dependson =</span> <span class="fu">ifelse</span>(<span class="fu">grepl</span>(<span class="st">"depends"</span>, q), q, <span class="cn">NA</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(dependson, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"a"</span>,<span class="st">"b"</span>), <span class="at">sep =</span> <span class="st">"on "</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>a) <span class="sc">%&gt;%</span> </span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">dependson =</span> b) <span class="co">#%&gt;% </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expected 2 pieces. Additional pieces discarded in 2 rows [23, 27].</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 1 rows [11].</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>j</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 49 × 2
+   q                                                                     depen…¹
+   &lt;chr&gt;                                                                 &lt;chr&gt;  
+ 1 "minimum 200ms for erps and theta or beta power"                       &lt;NA&gt;  
+ 2 "depends on the design of course"                                     "the d…
+ 3 "depend on the topic"                                                  &lt;NA&gt;  
+ 4 "i think that there can be no one correct answer.       it depends o… "the s…
+ 5 "depends on the experiment and research question"                     "the e…
+ 6 "should match the duration of baseline-correction"                     &lt;NA&gt;  
+ 7 "as a rule of thumb, i would plot at least 1/3 of the duration (post…  &lt;NA&gt;  
+ 8 "half of the illustrated task interval"                                &lt;NA&gt;  
+ 9 "in general i would always try to plot the full baseline period used…  &lt;NA&gt;  
+10 "depends on the rest period between the measured evoked responses. e… "the r…
+# … with 39 more rows, and abbreviated variable name ¹​dependson</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#View()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="colorbars" class="level2">
+<h2 class="anchored" data-anchor-id="colorbars">Colorbars</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data[<span class="dv">117</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Are you aware o..
+ No Yes 
+ 73 109 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data[<span class="dv">118</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Do you know abo..
+ No Yes 
+ 55 127 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data[<span class="dv">119</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Would you like ..
+Maybe    No   Yes 
+   23     6    98 </code></pre>
+</div>
+</div>
+</section>
+<section id="feedback" class="level2">
+<h2 class="anchored" data-anchor-id="feedback">Feedback</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> data[<span class="dv">120</span>] <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">feed =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>]) <span class="sc">%&gt;%</span>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(feed), feed <span class="sc">!=</span> <span class="st">"-"</span>) <span class="co">#%&gt;% View()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+
+</div>
+</section>
+<section id="time-in-minutes" class="level2">
+<h2 class="anchored" data-anchor-id="time-in-minutes">Time in minutes</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(<span class="fu">as.numeric</span>(data<span class="sc">$</span><span class="st">`</span><span class="at">Total time</span><span class="st">`</span>)) <span class="sc">/</span> <span class="dv">60</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 14.0435</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
