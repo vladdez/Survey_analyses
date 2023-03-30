@@ -379,7 +379,7 @@ data[76] %>%  filter(!is.na(.)) %>% table()
 ### periods
 
 ```{r}
-table(abs(data[77])) %>% data.frame() %>% dplyr::rename(baseline = !!names(.)[1]) %>%
+table(abs(data[77])) %>% data.frame() %>%  dplyr::rename(baseline = !!names(.)[1]) %>%
     ggplot(data = ., aes(y = baseline, x= Freq)) +
     geom_bar(stat="identity") + ylab("baseline")+  scale_x_continuous(breaks=seq(0, 60, 5))
 ```
