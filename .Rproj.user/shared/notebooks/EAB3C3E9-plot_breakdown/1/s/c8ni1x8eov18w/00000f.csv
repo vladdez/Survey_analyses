@@ -1,5 +1,8 @@
-"0","vec
-"
+"0","data <- read_excel(""data/results-survey3.xlsx"")"
+"0","data <- data[1:121] %>% "
+"0","  filter(.[[18]] !='Yes') # not analysed any EEG method"
+"0","vec <- names(data[ , grepl( ""How would you "" , names(data))]) %>% str_split_i(., ""\\....."", 2) %>% as.numeric()"
+"0","vec"
 "1","[1]"
 "1","  69"
 "1","  80"

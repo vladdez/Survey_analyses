@@ -30,7 +30,7 @@ library(SnowballC)
 library(Matrix)
 library(text2vec)
 library(tidyr)
-
+library(kableExtra)
 
 ```
 
@@ -203,58 +203,64 @@ data %>% filter(.[[24]] < 500) %>% ggplot(data = ., aes_(as.name(names(data)[24]
 #### frequency
 
 ```{r}
-vec <- names(data[25:49]) %>% str_split_i(., "\\[", 2) %>%  str_sub(., 1, -2)
+na.omit(data[51]) %>% nrow()
+ 
 
-software <- data[25:49] %>%
+other <- c(rep("Custom scripts",each=9), "4DBTi", rep("letswave", 3), "mTRF", "RAGU", "IGOR Pro", "EEGProcessor", "ELAN", "WinEEG") %>% table(.) %>% data.frame(.) %>% rename_at(vars(colnames(.)), ~ c("soft", "sum_scores"))
+```
+
+```{r, warning=FALSE}
+vec <- names(data[25:50]) %>% str_split_i(., "\\[", 2) %>%  str_sub(., 1, -2)
+
+software <- data[25:50] %>%
     rename_at(vars(colnames(.)), ~ vec) %>% 
   mutate_at(vars(vec), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0)))
 
 
 d <- data.frame(rowSums(t(software))) %>%  tibble::rownames_to_column(., "soft") %>% 
-   rename_at(vars(colnames(.)), ~ c("soft", "sum_scores"))  %>% arrange(., desc(sum_scores)) 
-d 
-# piechart and cooccuerence plot 
-```
-```{r}
-# how many items were choosen
-table(data.frame(rowSums(software)))
+   rename_at(vars(colnames(.)), ~ c("soft", "sum_scores"))   %>% 
+  rbind(., other) %>% dplyr::group_by(soft) %>% dplyr::summarise(sum_scores = sum(sum_scores)) %>% 
+  arrange(., desc(sum_scores))
+
+d  %>% filter(sum_scores >= 1) %>% 
+    ggplot(data = ., aes(y = reorder(soft, sum_scores),  x= sum_scores, fill = soft)) +
+    geom_bar(stat="identity") + ylab("Soft") +
+    geom_text(aes(label = sum_scores), 
+    hjust = -0.2) + theme(legend.position="none")
 ```
 
-```{r}
-na.omit(data[51])
-```
 
 #### cooccurence
 
-```{r}
+```{r, warning=FALSE}
 # how to order by diagonal matrix 
-software <- data[25:49]
+# how to add others
+software <- data[25:50]
 ch <- colnames(software)
 ch1 <- foreach(i = ch) %do% str_split_i(i, "\\[", 2) 
 ch1 <- foreach(i = ch1) %do% str_sub(i, 1, -2)
 d1 <- foreach(i = colnames(software)) %do% ifelse(software[i]=="Yes", 1, 0)
-d <- crossprod(matrix(unlist(d1), ncol = 25))
-rownames(d) <- ch1
-#d <- data.frame(d) 
-#d$diag <- rowSums(d)
-#d <- d[order(d$diag),] %>% dplyr::select(-diag)
-colnames(d) <- rownames(d)
-#d <- as.matrix(d)
+c <- crossprod(matrix(unlist(d1), ncol = 26))
+rownames(c) <- ch1
+colnames(c) <- rownames(c)
 
-melt(d) %>% ggplot(., aes(x=Var1, y=Var2)) + 
+diag.order <- order(diag(c), decreasing = FALSE)
+mat_reordered <- c[diag.order, diag.order]
+
+melt(mat_reordered) %>% ggplot(., aes(x=Var1, y=Var2)) + 
   geom_tile(aes(fill = value)) + 
   geom_text(aes(label = value)) +
   scale_fill_gradient(low = "white", high = "red") +
   theme(legend.title = element_blank(),
         axis.title=element_blank(),
-                      axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=-0.2))
-
+        axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) 
 
 ```
 
+
 ## Important features
 
-```{r}
+```{r, warning=FALSE}
 features <- data[52:60]
 ch <- colnames(features)
 ch1 <- foreach(i = ch) %do% str_split_i(i, "\\[", 2) 
@@ -267,13 +273,14 @@ features <- features %>%  mutate_at(c(colnames(features)),
   colSums(., na.rm =T) %>% data.frame(.) %>%  tibble::rownames_to_column(., "Feature") %>% 
   arrange(desc(.))
 colnames(features) <- c("Feature", "sum_scores")
-features
+features %>%   kbl() 
 # divide by number of people 
 # individual plots
 # correlation with experience factor
 ```
 
 ## Familiarity with plots
+#### Recognition
 
 ```{r}
 vec <- c("line", "butterfly", "topo", "topo_array", "topo_map", "erp_image", "parallel", "channel_image")
@@ -283,20 +290,17 @@ familiar <-  data[61:68] %>% rename_at(vars(colnames(.)), ~ vec) %>%
 data.frame(rowSums(t(familiar))) %>%  tibble::rownames_to_column(., "plot") %>% 
    rename_at(vars(colnames(.)), ~ c("plot", "sum_scores"))  %>% 
   arrange(., desc(sum_scores)) %>% 
-  ggplot(data = ., aes(y = reorder(plot, sum_scores), x= sum_scores)) +
-  geom_bar(stat="identity") + ylab("plot")
+  ggplot(data = ., aes(y = reorder(plot, sum_scores), x= sum_scores, fill=plot)) +
+  geom_bar(stat="identity") + ylab("plot") + 
+  theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
+  ggtitle("Select ERP plot you are familiar with")
 
-data.frame(rowSums(t(familiar))) %>%  tibble::rownames_to_column(., "plot") %>% 
-   rename_at(vars(colnames(.)), ~ c("plot", "Yes")) %>% mutate(No = nrow(data) - Yes) 
-
-# #  two bars knowing and using
 ```
 
-## Have you ever plotted this king of figure
+#### Plotting
 
 ```{r}
 vec <- names(data[ , grepl( "Have you ever" , names(data))]) %>% str_split_i(., "\\.....", 2) %>% as.numeric()
-vec
 ```
 
 ```{r}
@@ -318,12 +322,14 @@ tab %>%
   ggplot(., aes(x = plots, y = score, fill = answer)) +
     geom_bar(position = "dodge", stat = "identity") +
     labs(x = "Category", y = "Value", fill = "Group") +
-    theme_classic()
+    theme_classic() +  theme(plot.title = element_text(hjust = 0.5)) +
+  ggtitle("Have you ever plotted this kind of figure?")
+
 
 
 ```
 
-## Familiar and plotted
+#### Recognition and plotting
 
 ```{r}
 vec <- names(data[ , grepl( "Have you ever" , names(data))]) %>% str_split_i(., "\\.....", 2) %>% as.numeric()
@@ -351,23 +357,39 @@ data.frame(rowSums(t(familiar))) %>%  tibble::rownames_to_column(., "plot") %>%
   ggplot(., aes(x = reorder(plots, -score), y = score, fill = type)) +
     geom_bar(position = "dodge", stat = "identity") +
     labs(x = "Plot type", y = "Number of users", fill = "Level of familiarity\nwith plot") +
-    theme_classic() + geom_text(aes(label = score, group = type), position = position_dodge(width = .9), vjust = -0.2)
+    theme_classic() + geom_text(aes(label = score, group = type), position = position_dodge(width = .9), vjust = -0.2) +  theme(plot.title = element_text(hjust = 0.5)) +
+  ggtitle("Familiarity with plots")
 ```
 
 ## Up or down
 
 ```{r}
-table(data[79])
+table(data[79]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>% 
+    ggplot(., aes(x = position, y = scores, fill = as.factor(scores))) +
+    geom_bar(position = "dodge", stat = "identity", width=0.5) + theme_classic() +
+  theme(axis.title.x=element_blank(), legend.position="none", plot.title = element_text(hjust = 0.5)) +
+  geom_text(aes(label = scores, group = position), position = position_dodge(width = .9), vjust = -0.2) +
+  ggtitle("In ERP plot, should positive voltages be plotted upwards, or downwards?")
 ```
 
 ## Error bars
 
 ```{r}
-table(data[74])
+table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>% 
+    ggplot(., aes(x = position, y = scores, fill = as.factor(scores))) +
+    geom_bar(position = "dodge", stat = "identity", width=0.5) + theme_classic() +
+  theme(axis.title.x=element_blank(), legend.position="none", plot.title = element_text(hjust = 0.5)) +
+  geom_text(aes(label = scores, group = position), position = position_dodge(width = .9), vjust = -0.2) +
+  ggtitle("In your paper, did you published ERP plot with error bars?")
 ```
 
 ```{r}
-data[75] %>%  filter(!is.na(.)) %>% table()
+data[75] %>%  filter(!is.na(.)) %>% table()  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>% 
+    ggplot(., aes(x = position, y = scores, fill = as.factor(scores))) +
+    geom_bar(position = "dodge", stat = "identity", width=0.5) + theme_classic() +
+  theme(axis.title.x=element_blank(), legend.position="none", plot.title = element_text(hjust = 0.5)) +
+  geom_text(aes(label = scores, group = position), position = position_dodge(width = .9), vjust = -0.2) +
+  ggtitle("In your figure, what did error bars depicted?")
 ```
 
 ```{r}
@@ -376,44 +398,70 @@ data[76] %>%  filter(!is.na(.)) %>% table()
 
 ## Baseline
 
-### periods
+#### periods
 
 ```{r}
 table(abs(data[77])) %>% data.frame() %>%  dplyr::rename(baseline = !!names(.)[1]) %>%
-    ggplot(data = ., aes(y = baseline, x= Freq)) +
-    geom_bar(stat="identity") + ylab("baseline")+  scale_x_continuous(breaks=seq(0, 60, 5))
+    ggplot(data = ., aes(x = baseline, y= Freq)) +
+    geom_bar(stat="identity") + xlab("Recomended baseline in msec") +  
+  scale_y_continuous(breaks=seq(0, 60, 5)) + theme_classic() +
+  theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
+  geom_text(aes(label = Freq, group = baseline), position = position_dodge(width = .9), vjust = -0.2)
 ```
 
-### justification
+#### justification
 
 ```{r}
+# If you don't want to provide a number on previous question, please, provide a justification
 # depends on what??
 # manual categorization of depending
 j <- data %>%    
   dplyr::rename(q = !!names(.)[78]) %>% filter(!is.na(q)) %>% dplyr::select(q) %>% 
-  mutate(q = tolower(q), 
-         q = gsub('.*depends in*.', 'depends on ', q),
-         dependson = ifelse(grepl("depends", q), q, NA)) %>% 
-  separate(dependson, into = c("a","b"), sep = "on ") %>% 
+  mutate(q = tolower(q)) %>% mutate(q = gsub('depends in|depending on', 'depends on', q),
+         dependson = ifelse(grepl("depends|depend", q), q, NA)) %>% 
+  separate(dependson, into = c("a","b"), sep = "depends on |depend on ") %>% 
   dplyr::select(-a) %>% 
   dplyr::rename(dependson = b) #%>% 
-j
+j %>% filter(is.na(dependson))
+j %>% filter(!is.na(dependson)) %>% select(dependson)
   #View()
 ```
 
 ## Colorbars
 
 ```{r}
-table(data[117])
-table(data[118])
-table(data[119])
+table(data[117]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>% 
+  ggplot(., aes(x = position, y = scores, fill = as.factor(scores))) +
+    geom_bar(position = "dodge", stat = "identity", width=0.5) + theme_classic() +
+  theme(axis.title.x=element_blank(), legend.position="none", plot.title = element_text(hjust = 0.5)) +
+  geom_text(aes(label = scores, group = position), position = position_dodge(width = .9), vjust = -0.2) +
+  ggtitle("Are you aware of perceptual controvericies of colorbars?")
+```
 
+```{r}
+table(data[118]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>% 
+  ggplot(., aes(x = position, y = scores, fill = as.factor(scores))) +
+    geom_bar(position = "dodge", stat = "identity", width=0.5) + theme_classic() +
+  theme(axis.title.x=element_blank(), legend.position="none", plot.title = element_text(hjust = 0.5)) +
+  geom_text(aes(label = scores, group = position), position = position_dodge(width = .9), vjust = -0.2) +
+  ggtitle("Do you know about two-dimensional colorbars?")
+```
+
+```{r}
+table(data[119])  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>% 
+  ggplot(., aes(x = position, y = scores, fill = as.factor(scores))) +
+    geom_bar(stat = "identity", width=0.5)  + theme_classic() +
+  theme(axis.title.x=element_blank(), legend.position="none", plot.title = element_text(hjust = 0.5)) +
+  geom_text(aes(label = scores, group = position), position = position_dodge(width = .9), vjust = -0.2) +
+  ggtitle("Would you like to use a two-dimensional colorbar\nin your publications, if it was easily available?")
 ```
 
 ## Feedback
 
 ```{r}
-d <- data[120] %>% dplyr::rename(feed = !!names(.)[1]) %>%  filter(!is.na(feed), feed != "-") #%>% View()
+feed <- data[120] %>% dplyr::rename(feed = !!names(.)[1]) %>%  filter(!is.na(feed), feed != "-") #%>% View()
+feed  %>%
+  filter(!row_number() %in% c(3, 14, 17, 32, 37, 41))# just appreciation
 ```
 
 ```{r, eval = FALSE, echo = FALSE}
@@ -436,7 +484,7 @@ terms(lda, 10)
 
 ```
 
-## Time in minutes
+## Time of finishing survey in minutes
 
 ```{r}
 median(as.numeric(data$`Total time`)) / 60

@@ -64,7 +64,7 @@ word_preproc <- function(data, N){
 
 Those who named a plot somehow and those who failed to do that
 
-```{r}
+```{r, warning=FALSE}
 na_table <- function(data, vec){
     temp <- data.frame(1:10)
     for (i in vec){
@@ -90,7 +90,10 @@ slice(num_named, 1)  %>%
   ggplot(., aes(x = plots, y = score, fill = res)) +
     geom_bar(position = "dodge", stat = "identity") +
     labs(x = "Category", y = "Value", fill = "Group") +
-    theme_classic()
+    theme_classic() + theme(axis.title.x=element_blank(), plot.title = element_text(hjust = 0.5)) +
+  geom_text(aes(label = score, group = res), position = position_dodge(width = .9), vjust = -0.2) +
+  ggtitle("Plot naming")
+
 
 ```
 
@@ -156,8 +159,7 @@ freq_table <- function(data, vec){
 
 top10 <- freq_table(data, vec)
 top10 %>% 
-  kbl() %>% 
-  kable_styling()
+  kbl() 
 
 # cut after prepositions
 # remove those with 1 voice
