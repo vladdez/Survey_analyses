@@ -282,7 +282,7 @@ features %>%   kbl()
 ## Familiarity with plots
 #### Recognition
 
-```{r}
+```{r, warning=FALSE}
 vec <- c("line", "butterfly", "topo", "topo_array", "topo_map", "erp_image", "parallel", "channel_image")
 familiar <-  data[61:68] %>% rename_at(vars(colnames(.)), ~ vec) %>% 
   mutate_at(vars(vec), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0)))
@@ -331,7 +331,7 @@ tab %>%
 
 #### Recognition and plotting
 
-```{r}
+```{r, warning=FALSE}
 vec <- names(data[ , grepl( "Have you ever" , names(data))]) %>% str_split_i(., "\\.....", 2) %>% as.numeric()
 plot_names <- c("line", "butterfly", "topo", "topo_array", "topo_map", "erp_img", "parallel", "channel_img")
 
@@ -422,7 +422,7 @@ j <- data %>%
   separate(dependson, into = c("a","b"), sep = "depends on |depend on ") %>% 
   dplyr::select(-a) %>% 
   dplyr::rename(dependson = b) #%>% 
-j %>% filter(is.na(dependson))
+j %>% filter(is.na(dependson))  %>% select(-dependson)
 j %>% filter(!is.na(dependson)) %>% select(dependson)
   #View()
 ```

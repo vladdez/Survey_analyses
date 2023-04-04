@@ -204,9 +204,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul>
   <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">Setup</a></li>
   <li><a href="#plot-naming" id="toc-plot-naming" class="nav-link" data-scroll-target="#plot-naming">Plot naming</a></li>
-  <li><a href="#top-10-plot-names" id="toc-top-10-plot-names" class="nav-link" data-scroll-target="#top-10-plot-names">Top 10 plot names</a></li>
   <li><a href="#frequency-of-tool-usage" id="toc-frequency-of-tool-usage" class="nav-link" data-scroll-target="#frequency-of-tool-usage">Frequency of tool usage</a></li>
-  <li><a href="#general-struggles-with-plots" id="toc-general-struggles-with-plots" class="nav-link" data-scroll-target="#general-struggles-with-plots">General struggles with plots</a></li>
+  <li><a href="#struggles-with-plots" id="toc-struggles-with-plots" class="nav-link" data-scroll-target="#struggles-with-plots">Struggles with plots</a></li>
+  <li><a href="#new-features" id="toc-new-features" class="nav-link" data-scroll-target="#new-features">New features</a></li>
   </ul>
 </nav>
     </div>
@@ -321,9 +321,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="plot_breakdown_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-</section>
-<section id="top-10-plot-names" class="level2">
-<h2 class="anchored" data-anchor-id="top-10-plot-names">Top 10 plot names</h2>
+<section id="top-10-plot-names" class="level4">
+<h4 class="anchored" data-anchor-id="top-10-plot-names">Top 10 plot names</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># does it work?????</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>freq_table <span class="ot">&lt;-</span> <span class="cf">function</span>(data, vec){</span>
@@ -512,6 +511,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <summary>
 For each case separately
 </summary>
+</details></section>
 <section id="section" class="level4">
 <h4 class="anchored" data-anchor-id="section">1</h4>
 <div class="cell">
@@ -1129,9 +1129,9 @@ For each case separately
 72    1</code></pre>
 </div>
 </div>
-</section></details>
-</section>
 
+</section>
+</section>
 <section id="frequency-of-tool-usage" class="level2">
 <h2 class="anchored" data-anchor-id="frequency-of-tool-usage">Frequency of tool usage</h2>
 <div class="cell">
@@ -1252,38 +1252,47 @@ For each case separately
 </div>
 </section>
 </section>
-<section id="general-struggles-with-plots" class="level2">
-<h2 class="anchored" data-anchor-id="general-struggles-with-plots">General struggles with plots</h2>
+<section id="struggles-with-plots" class="level2">
+<h2 class="anchored" data-anchor-id="struggles-with-plots">Struggles with plots</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>word_preproc_tool_2 <span class="ot">&lt;-</span> <span class="cf">function</span>(data, N, lim){</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#lim = 10</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(N, N<span class="sc">+</span><span class="dv">1</span>, N<span class="sc">+</span><span class="dv">2</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">soft =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>], <span class="at">parts =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">2</span>], <span class="at">new_feature =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">3</span>]) <span class="sc">%&gt;%</span> </span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(soft)) <span class="sc">%&gt;%</span> </span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="fu">funs</span>(<span class="fu">tolower</span>(.))) <span class="sc">%&gt;%</span> </span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">soft =</span> <span class="fu">str_replace</span>(soft, <span class="st">'own'</span>, <span class="st">"custom"</span>), </span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">soft =</span> <span class="fu">str_replace</span>(soft, <span class="st">'(matlab)'</span>, <span class="st">"matlab"</span>), </span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">soft =</span> <span class="fu">case_when</span>(</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_detect</span>(soft, <span class="st">'brain vision'</span>) <span class="sc">~</span> <span class="st">"brain vision analyser"</span>,</span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>      <span class="co">#str_detect(soft, 'matlab|bar.m|boundedline') ~ "custom matlab",</span></span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_detect</span>(soft, <span class="st">'mne'</span>) <span class="sc">~</span> <span class="st">"mne"</span>,</span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fu">as.character</span>(soft)</span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>    ), </span>
-<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">parts =</span> <span class="fu">case_when</span>(</span>
-<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_detect</span>(parts, <span class="st">'none|n/a|nope|na|idk|nothing|sure|know|can</span><span class="sc">\'</span><span class="st">t|don</span><span class="sc">\'</span><span class="st">t'</span>) <span class="sc">~</span> <span class="st">"-"</span>,</span>
-<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fu">as.character</span>(parts)</span>
-<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_feature =</span> <span class="fu">case_when</span>(</span>
-<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_detect</span>(new_feature, <span class="st">'none|n/a|nope|na|idk|nothing|sure|know|can</span><span class="sc">\'</span><span class="st">t|don</span><span class="sc">\'</span><span class="st">t'</span>) <span class="sc">~</span> <span class="st">"-"</span>,</span>
-<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fu">as.character</span>(new_feature)</span>
-<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">%&gt;%</span> </span>
-<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_at</span>(<span class="fu">vars</span>(parts, new_feature), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.))) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">lengths</span>(<span class="fu">gregexpr</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">W+"</span>, soft)) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(parts <span class="sc">!=</span> <span class="st">"-"</span> <span class="sc">|</span> new_feature <span class="sc">!=</span> <span class="st">"-"</span>, n <span class="sc">&lt;</span> lim) <span class="sc">%&gt;%</span>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span><span class="dv">4</span>) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(soft)</span>
-<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(tmp)</span>
-<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>vec <span class="ot">&lt;-</span> <span class="fu">names</span>(data[ , <span class="fu">grepl</span>( <span class="st">".*Which parts of*."</span> , <span class="fu">names</span>(data))]) <span class="sc">%&gt;%</span> <span class="fu">str_split_i</span>(., <span class="st">"</span><span class="sc">\\</span><span class="st">]"</span>, <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">str_split_i</span>(., <span class="st">"</span><span class="sc">\\</span><span class="st">..."</span>, <span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">as.numeric</span>()</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>vec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  72  83  88  93 100 105 110 115</code></pre>
+</div>
+</div>
+<p>####1</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>word_preproc_tool_2 <span class="ot">&lt;-</span> <span class="cf">function</span>(data, N, lim){</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#lim = 10</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(N, N<span class="sc">+</span><span class="dv">1</span>, N<span class="sc">+</span><span class="dv">2</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">soft =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>], <span class="at">parts =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">2</span>], <span class="at">new_feature =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">3</span>]) <span class="sc">%&gt;%</span> </span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(soft)) <span class="sc">%&gt;%</span> </span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="fu">funs</span>(<span class="fu">tolower</span>(.))) <span class="sc">%&gt;%</span> </span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">soft =</span> <span class="fu">str_replace</span>(soft, <span class="st">'own'</span>, <span class="st">"custom"</span>), </span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">soft =</span> <span class="fu">str_replace</span>(soft, <span class="st">'(matlab)'</span>, <span class="st">"matlab"</span>), </span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">soft =</span> <span class="fu">case_when</span>(</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_detect</span>(soft, <span class="st">'brain vision'</span>) <span class="sc">~</span> <span class="st">"brain vision analyser"</span>,</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>      <span class="co">#str_detect(soft, 'matlab|bar.m|boundedline') ~ "custom matlab",</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_detect</span>(soft, <span class="st">'mne'</span>) <span class="sc">~</span> <span class="st">"mne"</span>,</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fu">as.character</span>(soft)</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>    ), </span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">parts =</span> <span class="fu">case_when</span>(</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_detect</span>(parts, <span class="st">'none|n/a|nope|na|idk|nothing|sure|know|can</span><span class="sc">\'</span><span class="st">t|don</span><span class="sc">\'</span><span class="st">t'</span>) <span class="sc">~</span> <span class="st">"-"</span>,</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fu">as.character</span>(parts)</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_feature =</span> <span class="fu">case_when</span>(</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_detect</span>(new_feature, <span class="st">'none|n/a|nope|na|idk|nothing|sure|know|can</span><span class="sc">\'</span><span class="st">t|don</span><span class="sc">\'</span><span class="st">t'</span>) <span class="sc">~</span> <span class="st">"-"</span>,</span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fu">as.character</span>(new_feature)</span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">%&gt;%</span> </span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter_at</span>(<span class="fu">vars</span>(parts, new_feature), <span class="fu">all_vars</span>(<span class="sc">!</span><span class="fu">is.na</span>(.))) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">lengths</span>(<span class="fu">gregexpr</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">W+"</span>, soft)) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(parts <span class="sc">!=</span> <span class="st">"-"</span> <span class="sc">|</span> new_feature <span class="sc">!=</span> <span class="st">"-"</span>, n <span class="sc">&lt;</span> lim) <span class="sc">%&gt;%</span>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span><span class="dv">4</span>) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(soft)</span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(tmp)</span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>struggle1 <span class="ot">&lt;-</span> <span class="fu">word_preproc_tool_2</span>(data, <span class="dv">71</span>, <span class="dv">10</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>struggle1 <span class="ot">&lt;-</span> <span class="fu">word_preproc_tool_2</span>(data, <span class="dv">71</span>, <span class="dv">10</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: `funs()` was deprecated in dplyr 0.8.0.
 ℹ Please use a list of either functions or lambdas:
@@ -1294,7 +1303,7 @@ For each case separately
 
 # Using lambdas list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>struggle1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>( parts <span class="sc">!=</span> <span class="st">"-"</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(parts) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>struggle1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>( parts <span class="sc">!=</span> <span class="st">"-"</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(parts) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 91 × 1
    parts                                                                        
@@ -1312,6 +1321,9 @@ For each case separately
 # … with 81 more rows</code></pre>
 </div>
 </div>
+</section>
+<section id="new-features" class="level2">
+<h2 class="anchored" data-anchor-id="new-features">New features</h2>
 
 
 </section>

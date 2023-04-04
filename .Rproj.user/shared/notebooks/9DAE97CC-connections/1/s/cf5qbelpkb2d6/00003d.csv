@@ -1,16 +1,8 @@
-"0","vec <- names(data[25:49]) %>% str_split_i(., ""\\["", 2) %>%  str_sub(., 1, -2)"
+"0","vec <- names(data[25:50]) %>% str_split_i(., ""\\["", 2) %>%  str_sub(., 1, -2)"
 "0",""
-"0","software <- data[25:49] %>%"
+"0","software <- data[25:50] %>%"
 "0","    rename_at(vars(colnames(.)), ~ vec) %>% "
 "0","  mutate_at(vars(vec), function(., na.rm = FALSE) (x = ifelse(.==""Yes"", 1, 0))) %>% "
 "0","  cbind(data[20], .) %>% dplyr::rename(years = !!names(.)[1]) %>% filter(years < 50) %>% "
 "0","  select_if(colSums(.) != 0)"
-"2","Warning: Using an external vector in selections was deprecated in tidyselect 1.1.0.
-Please use `all_of()` or `any_of()` instead.
-# Was:
-data %>% select(vec)
-
-# Now:
-data %>% select(all_of(vec))
-
-See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>."
+"0",""

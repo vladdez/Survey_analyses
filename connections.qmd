@@ -7,7 +7,6 @@ editor: visual
 ## Setup
 
 ```{r, message= FALSE, warning=FALSE}
-# upload to the git 1
 library(readxl)
 library(foreach)
 library(stringr)
@@ -28,7 +27,8 @@ library(text2vec)
 library(tidyr)
 library(janitor)
 library(GGally)
-
+library(formattable)
+library(kableExtra)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
@@ -65,17 +65,18 @@ summary(log.model)
 ## Experience ~ tools 
 
 
-```{r}
-vec <- names(data[25:49]) %>% str_split_i(., "\\[", 2) %>%  str_sub(., 1, -2)
+```{r, warning=FALSE}
+vec <- names(data[25:50]) %>% str_split_i(., "\\[", 2) %>%  str_sub(., 1, -2)
 
-software <- data[25:49] %>%
+software <- data[25:50] %>%
     rename_at(vars(colnames(.)), ~ vec) %>% 
   mutate_at(vars(vec), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0))) %>% 
   cbind(data[20], .) %>% dplyr::rename(years = !!names(.)[1]) %>% filter(years < 50) %>% 
   select_if(colSums(.) != 0)
 
 ```
-```{r}
+
+```{r, include=FALSE}
 software  %>% 
   select_if(colSums(.) > 10) %>%  dplyr::select(years, EEGLAB) %>% 
   ggplot(., aes(x=as.factor(EEGLAB), y=years)) + 
@@ -96,7 +97,7 @@ software  %>%
   geom_boxplot()
 ```
 
-
+#### Tools and year of experince
 ```{r}
 a <- software  %>% 
   select_if(colSums(.) > 10) 
@@ -114,25 +115,39 @@ for (i in 1:length(cn)){
   
   print(cn[i])
 }
-res %>% t()  %>%
-  row_to_names(row_number = 1) %>% data.frame() %>% dplyr::rename(., not_used = X0, used = X1)
+ res %>% t()  %>%
+  row_to_names(row_number = 1) %>% data.frame() %>% dplyr::rename(., not_used = X0, used = X1) %>% 
+  tibble::rownames_to_column(., "software") %>%  
+  dplyr::mutate(., not_used = round(not_used, 2), used = round(used, 2)) %>% 
+  dplyr::mutate(., status = ifelse(not_used > used, "younger", "older")) %>% 
+  mutate(status = cell_spec(status, color = ifelse(status == "younger", "green", "black")))   %>% 
+  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>%
+   add_header_above(header = c(" " = 1, "Years of user experience" = 3))   %>%
+  kable_classic(full_width = T, html_font = "Arial")
+
+
 
 ```
 
 
 
 ```{r}
+# number of used software and years of experience
 ny <- merge(data.frame(rowSums(software)), data[20]) %>% 
-   rename_at(vars(colnames(.)), ~ c("n_soft", "years")) %>% filter(years < 50) 
+   rename_at(vars(colnames(.)), ~ c("n_soft", "years")) %>% filter(years < 50)  %>% data.frame()
 
 ny %>% 
   lm(data=., n_soft ~ years) %>% summary(.)
-ny %>% plot(.)
-
+ny %>% ggplot(., aes(x=n_soft, y=years)) + geom_point()
+```
+```{r}
+# number of used software and  self assessment
 merge(data.frame(rowSums(software)), data[21]) %>% 
    rename_at(vars(colnames(.)), ~ c("n_soft", "selfass")) %>% 
-  lm(data=., n_soft ~ selfass) %>% summary(.)
+  #lm(data=., n_soft ~ selfass) %>% summary(.)
+  ggplot(., aes(y=n_soft, x=selfass)) + geom_violin()
 ```
+
 
 ## In search of single variable representing experience 
 

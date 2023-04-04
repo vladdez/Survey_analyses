@@ -97,7 +97,7 @@ slice(num_named, 1)  %>%
 
 ```
 
-## Top 10 plot names 
+#### Top 10 plot names 
 
 
 ```{r}
@@ -465,6 +465,7 @@ narrow1 %>% head()
 
 #### 2
 
+
 ```{r}
 test <- word_preproc_tool(data, 82, 10) 
 rest <- test[[2]]
@@ -495,9 +496,16 @@ narrow2 %>% head()
 
 ```
 
-## General struggles with plots
-
+## Struggles with plots
 ```{r}
+vec <- names(data[ , grepl( ".*Which parts of*." , names(data))]) %>% str_split_i(., "\\]", 2) %>% 
+  str_split_i(., "\\...", 2) %>% as.numeric()
+vec
+```
+
+####1
+
+```{r, warning=FALSE}
 word_preproc_tool_2 <- function(data, N, lim){
   #lim = 10
   tmp <- data %>% dplyr::select(N, N+1, N+2) %>% dplyr::rename(soft = !!names(.)[1], parts = !!names(.)[2], new_feature = !!names(.)[3]) %>% 
@@ -532,3 +540,7 @@ struggle1 <- word_preproc_tool_2(data, 71, 10)
 struggle1 %>% filter( parts != "-") %>% dplyr::select(parts) 
 
 ```
+
+## New features
+
+
