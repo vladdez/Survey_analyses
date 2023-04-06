@@ -1,7 +1,0 @@
-"0","#na.omit(data[13]) # recode Others"
-"0","as.data.frame(table(na.omit(data[12]))) %>% dplyr::rename(position = !!names(.)[1]) %>%"
-"0","  arrange(desc(Freq)) %>% "
-"0","    ggplot(data = ., aes(y = reorder(position, Freq),  x= Freq, fill = position)) +"
-"0","    geom_bar(stat=""identity"") + ylab(""Position"") +"
-"0","    geom_text(aes(label = Freq), "
-"0","    hjust = -0.2)+ theme(legend.position=""none"")"

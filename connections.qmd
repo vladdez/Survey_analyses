@@ -66,7 +66,7 @@ summary(log.model)
 
 
 ```{r, warning=FALSE}
-vec <- names(data[25:50]) %>% str_split_i(., "\\[", 2) %>%  str_sub(., 1, -2)
+vec <- names(data[25:50]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
 
 software <- data[25:50] %>%
     rename_at(vars(colnames(.)), ~ vec) %>% 
@@ -98,6 +98,7 @@ software  %>%
 ```
 
 #### Tools and year of experince
+
 ```{r}
 a <- software  %>% 
   select_if(colSums(.) > 10) 
@@ -129,19 +130,37 @@ for (i in 1:length(cn)){
 
 ```
 
+```{r}
+# na.omit(data[51]) %>% nrow() # change others here 
+# other <- c(rep("Custom scripts", each=9), "4DBTi", rep("letswave", 3), "mTRF", "RAGU", "IGOR Pro", "EEGProcessor", "ELAN", "WinEEG") %>% table(.) %>% data.frame(.) %>% rename_at(vars(colnames(.)), ~ c("soft", "sum_scores"))
+# data.frame(rowSums(t(software))) %>%  tibble::rownames_to_column(., "soft") %>% 
+#   rename_at(vars(colnames(.)), ~ c("soft", "sum_scores")) %>% 
+#  rbind(., other) %>% dplyr::group_by(soft) %>% dplyr::summarise(sum_scores = sum(sum_scores)) 
+```
 
+## Number of used software
+#### and years of experience
 
 ```{r}
-# number of used software and years of experience
-ny <- merge(data.frame(rowSums(software)), data[20]) %>% 
-   rename_at(vars(colnames(.)), ~ c("n_soft", "years")) %>% filter(years < 50)  %>% data.frame()
+
+
+software <- data[25:50] %>%
+    rename_at(vars(colnames(.)), ~ vec) %>% 
+  mutate_at(vars(vec), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0))) 
+
+
+  
+ny <- cbind(data.frame(rowSums(software)), data[20]) %>% 
+   rename_at(vars(colnames(.)), ~ c("n_soft", "years")) %>% filter(years < 50, n_soft != 0)  %>% data.frame()
 
 ny %>% 
   lm(data=., n_soft ~ years) %>% summary(.)
-ny %>% ggplot(., aes(x=n_soft, y=years)) + geom_point()
+
+ny %>% ggplot(., aes(x=n_soft, y=years)) + geom_jitter() + geom_smooth()
 ```
+#### and self assessment
+
 ```{r}
-# number of used software and  self assessment
 merge(data.frame(rowSums(software)), data[21]) %>% 
    rename_at(vars(colnames(.)), ~ c("n_soft", "selfass")) %>% 
   #lm(data=., n_soft ~ selfass) %>% summary(.)

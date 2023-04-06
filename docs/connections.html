@@ -205,6 +205,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">Setup</a></li>
   <li><a href="#up-or-down" id="toc-up-or-down" class="nav-link" data-scroll-target="#up-or-down">Up or down</a></li>
   <li><a href="#experience-tools" id="toc-experience-tools" class="nav-link" data-scroll-target="#experience-tools">Experience ~ tools</a></li>
+  <li><a href="#number-of-used-software" id="toc-number-of-used-software" class="nav-link" data-scroll-target="#number-of-used-software">Number of used software</a></li>
   <li><a href="#in-search-of-single-variable-representing-experience" id="toc-in-search-of-single-variable-representing-experience" class="nav-link" data-scroll-target="#in-search-of-single-variable-representing-experience">In search of single variable representing experience</a></li>
   </ul>
 </nav>
@@ -273,7 +274,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="experience-tools" class="level2">
 <h2 class="anchored" data-anchor-id="experience-tools">Experience ~ tools</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>vec <span class="ot">&lt;-</span> <span class="fu">names</span>(data[<span class="dv">25</span><span class="sc">:</span><span class="dv">50</span>]) <span class="sc">%&gt;%</span> <span class="fu">str_split_i</span>(., <span class="st">"</span><span class="sc">\\</span><span class="st">["</span>, <span class="dv">2</span>) <span class="sc">%&gt;%</span>  <span class="fu">str_sub</span>(., <span class="dv">1</span>, <span class="sc">-</span><span class="dv">2</span>)</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>vec <span class="ot">&lt;-</span> <span class="fu">names</span>(data[<span class="dv">25</span><span class="sc">:</span><span class="dv">50</span>]) <span class="sc">%&gt;%</span> <span class="fu">str_split_i</span>(., <span class="st">"</span><span class="sc">\\</span><span class="st">? </span><span class="sc">\\</span><span class="st">["</span>, <span class="dv">2</span>) <span class="sc">%&gt;%</span>  <span class="fu">str_sub</span>(., <span class="dv">1</span>, <span class="sc">-</span><span class="dv">2</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>software <span class="ot">&lt;-</span> data[<span class="dv">25</span><span class="sc">:</span><span class="dv">50</span>] <span class="sc">%&gt;%</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> vec) <span class="sc">%&gt;%</span> </span>
@@ -302,13 +303,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Brainstorm"
-[1] "Brain Vision An.. "
+[1] "Brain Vision Analyser"
 [1] "EEGLAB"
 [1] "ERPLAB"
 [1] "FieldTrip"
 [1] "LIMO"
 [1] "MNE-Python"
-[1] "SPM"
+[1] "SPM "
 [1] "Custom scripts"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a> res <span class="sc">%&gt;%</span> <span class="fu">t</span>()  <span class="sc">%&gt;%</span></span>
@@ -338,62 +339,62 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> BESA </td>
-   <td style="text-align:right;"> 7.68 </td>
+   <td style="text-align:right;"> 7.74 </td>
    <td style="text-align:right;"> 8.58 </td>
    <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Brainstorm </td>
-   <td style="text-align:right;"> 7.54 </td>
-   <td style="text-align:right;"> 8.71 </td>
+   <td style="text-align:right;"> 7.64 </td>
+   <td style="text-align:right;"> 8.53 </td>
    <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Brain Vision An.. </td>
-   <td style="text-align:right;"> 7.76 </td>
-   <td style="text-align:right;"> 7.70 </td>
-   <td style="text-align:left;"> <span style="     color: green !important;">younger</span> </td>
+   <td style="text-align:left;"> Brain Vision Analyser </td>
+   <td style="text-align:right;"> 7.74 </td>
+   <td style="text-align:right;"> 8.00 </td>
+   <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
   </tr>
   <tr>
    <td style="text-align:left;"> EEGLAB </td>
    <td style="text-align:right;"> 6.27 </td>
-   <td style="text-align:right;"> 8.68 </td>
+   <td style="text-align:right;"> 8.72 </td>
    <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
   </tr>
   <tr>
    <td style="text-align:left;"> ERPLAB </td>
-   <td style="text-align:right;"> 7.39 </td>
-   <td style="text-align:right;"> 9.17 </td>
+   <td style="text-align:right;"> 7.46 </td>
+   <td style="text-align:right;"> 9.08 </td>
    <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
   </tr>
   <tr>
    <td style="text-align:left;"> FieldTrip </td>
-   <td style="text-align:right;"> 7.53 </td>
-   <td style="text-align:right;"> 7.99 </td>
+   <td style="text-align:right;"> 7.51 </td>
+   <td style="text-align:right;"> 8.11 </td>
    <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
   </tr>
   <tr>
    <td style="text-align:left;"> LIMO </td>
-   <td style="text-align:right;"> 7.49 </td>
-   <td style="text-align:right;"> 11.08 </td>
+   <td style="text-align:right;"> 7.57 </td>
+   <td style="text-align:right;"> 10.50 </td>
    <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
   </tr>
   <tr>
    <td style="text-align:left;"> MNE-Python </td>
    <td style="text-align:right;"> 8.22 </td>
-   <td style="text-align:right;"> 7.02 </td>
+   <td style="text-align:right;"> 7.19 </td>
    <td style="text-align:left;"> <span style="     color: green !important;">younger</span> </td>
   </tr>
   <tr>
    <td style="text-align:left;"> SPM </td>
-   <td style="text-align:right;"> 7.65 </td>
+   <td style="text-align:right;"> 7.71 </td>
    <td style="text-align:right;"> 8.58 </td>
    <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Custom scripts </td>
-   <td style="text-align:right;"> 7.17 </td>
-   <td style="text-align:right;"> 8.74 </td>
+   <td style="text-align:right;"> 7.32 </td>
+   <td style="text-align:right;"> 8.62 </td>
    <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
   </tr>
 </tbody>
@@ -402,45 +403,68 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># number of used software and years of experience</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>ny <span class="ot">&lt;-</span> <span class="fu">merge</span>(<span class="fu">data.frame</span>(<span class="fu">rowSums</span>(software)), data[<span class="dv">20</span>]) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> <span class="fu">c</span>(<span class="st">"n_soft"</span>, <span class="st">"years"</span>)) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(years <span class="sc">&lt;</span> <span class="dv">50</span>)  <span class="sc">%&gt;%</span> <span class="fu">data.frame</span>()</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>ny <span class="sc">%&gt;%</span> </span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(<span class="at">data=</span>., n_soft <span class="sc">~</span> years) <span class="sc">%&gt;%</span> <span class="fu">summary</span>(.)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># na.omit(data[51]) %&gt;% nrow() # change others here </span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># other &lt;- c(rep("Custom scripts", each=9), "4DBTi", rep("letswave", 3), "mTRF", "RAGU", "IGOR Pro", "EEGProcessor", "ELAN", "WinEEG") %&gt;% table(.) %&gt;% data.frame(.) %&gt;% rename_at(vars(colnames(.)), ~ c("soft", "sum_scores"))</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># data.frame(rowSums(t(software))) %&gt;%  tibble::rownames_to_column(., "soft") %&gt;% </span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   rename_at(vars(colnames(.)), ~ c("soft", "sum_scores")) %&gt;% </span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  rbind(., other) %&gt;% dplyr::group_by(soft) %&gt;% dplyr::summarise(sum_scores = sum(sum_scores)) </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="number-of-used-software" class="level2">
+<h2 class="anchored" data-anchor-id="number-of-used-software">Number of used software</h2>
+<section id="and-years-of-experience" class="level4">
+<h4 class="anchored" data-anchor-id="and-years-of-experience">and years of experience</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>software <span class="ot">&lt;-</span> data[<span class="dv">25</span><span class="sc">:</span><span class="dv">50</span>] <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> vec) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_at</span>(<span class="fu">vars</span>(vec), <span class="cf">function</span>(., <span class="at">na.rm =</span> <span class="cn">FALSE</span>) (<span class="at">x =</span> <span class="fu">ifelse</span>(.<span class="sc">==</span><span class="st">"Yes"</span>, <span class="dv">1</span>, <span class="dv">0</span>))) </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>ny <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="fu">data.frame</span>(<span class="fu">rowSums</span>(software)), data[<span class="dv">20</span>]) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> <span class="fu">c</span>(<span class="st">"n_soft"</span>, <span class="st">"years"</span>)) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(years <span class="sc">&lt;</span> <span class="dv">50</span>, n_soft <span class="sc">!=</span> <span class="dv">0</span>)  <span class="sc">%&gt;%</span> <span class="fu">data.frame</span>()</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>ny <span class="sc">%&gt;%</span> </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(<span class="at">data=</span>., n_soft <span class="sc">~</span> years) <span class="sc">%&gt;%</span> <span class="fu">summary</span>(.)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
 lm(formula = n_soft ~ years, data = .)
 
 Residuals:
-   Min     1Q Median     3Q    Max 
--9.206 -4.706 -1.206  2.544 23.294 
+    Min      1Q  Median      3Q     Max 
+-4.0538 -1.2453 -0.2453  0.8452  7.3026 
 
 Coefficients:
-              Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)  1.071e+01  5.988e-02   178.8   &lt;2e-16 ***
-years       -8.780e-16  6.211e-03     0.0        1    
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  2.34098    0.21896   10.69  &lt; 2e-16 ***
+years        0.09043    0.02307    3.92 0.000125 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 6.421 on 32398 degrees of freedom
-Multiple R-squared:  4.853e-28, Adjusted R-squared:  -3.087e-05 
-F-statistic: 1.572e-23 on 1 and 32398 DF,  p-value: 1</code></pre>
+Residual standard error: 1.754 on 181 degrees of freedom
+Multiple R-squared:  0.07827,   Adjusted R-squared:  0.07317 
+F-statistic: 15.37 on 1 and 181 DF,  p-value: 0.0001253</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ny <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">x=</span>n_soft, <span class="at">y=</span>years)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="connections_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ny <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">x=</span>n_soft, <span class="at">y=</span>years)) <span class="sc">+</span> <span class="fu">geom_jitter</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using method = 'loess' and formula = 'y ~ x'</code></pre>
 </div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># number of used software and  self assessment</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">merge</span>(<span class="fu">data.frame</span>(<span class="fu">rowSums</span>(software)), data[<span class="dv">21</span>]) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> <span class="fu">c</span>(<span class="st">"n_soft"</span>, <span class="st">"selfass"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#lm(data=., n_soft ~ selfass) %&gt;% summary(.)</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">y=</span>n_soft, <span class="at">x=</span>selfass)) <span class="sc">+</span> <span class="fu">geom_violin</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="connections_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="and-self-assessment" class="level4">
+<h4 class="anchored" data-anchor-id="and-self-assessment">and self assessment</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">merge</span>(<span class="fu">data.frame</span>(<span class="fu">rowSums</span>(software)), data[<span class="dv">21</span>]) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> <span class="fu">c</span>(<span class="st">"n_soft"</span>, <span class="st">"selfass"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#lm(data=., n_soft ~ selfass) %&gt;% summary(.)</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">y=</span>n_soft, <span class="at">x=</span>selfass)) <span class="sc">+</span> <span class="fu">geom_violin</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="connections_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -471,25 +495,25 @@ F-statistic: 1.572e-23 on 1 and 32398 DF,  p-value: 1</code></pre>
 <!-- m$ind -->
 <!-- ``` -->
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpairs</span>(exp_data[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="connections_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpairs</span>(exp_data[<span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>]) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpairs</span>(exp_data[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="connections_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpairs</span>(exp_data[<span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>]) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpairs</span>(exp_data[<span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>]) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="connections_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpairs</span>(exp_data) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpairs</span>(exp_data[<span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>]) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="connections_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpairs</span>(exp_data) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
@@ -499,7 +523,7 @@ F-statistic: 1.572e-23 on 1 and 32398 DF,  p-value: 1</code></pre>
 `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="connections_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<p><img src="connections_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 

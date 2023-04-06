@@ -42,18 +42,20 @@ data <- data[1:121] %>%
 
 ## Bio stats
 
-Country
+#### Country
 
 ```{r}
-data.frame(table(data[8])) %>% arrange(desc(Freq)) %>% dplyr::rename(country_work = !!names(.)[1]) %>%
-    ggplot(data = ., aes(y = reorder(country_work, Freq),  x= Freq)) +
+data.frame(table(data[8]))  %>% dplyr::rename(country_work = !!names(.)[1]) %>%
+  mutate(country_work = ifelse(Freq >= 3, as.character(country_work), "_Others")) %>% group_by(country_work) %>% 
+  dplyr::summarise(Freq = sum(Freq)) %>% 
+    ggplot(data = ., aes(y = reorder(country_work, Freq),  x= Freq, fill = country_work)) +
     geom_bar(stat="identity") + ylab("Country of work for participant") +
     geom_text(aes(label = Freq), 
-    hjust = -0.2)+ theme(legend.position="none")
+    hjust = -0.2) + theme_classic() + theme(legend.position="none")
 
 ```
 
-Field
+#### Field
 
 ```{r}
 field <- as.data.frame(table(data[9])) %>% arrange(desc(Freq)) %>% head(3)
@@ -64,7 +66,7 @@ field %>% dplyr::rename(area = !!names(.)[1]) %>%
     ggplot(data = ., aes(x = reorder(area, Freq),  y= Freq, fill = area)) +
     geom_bar(stat="identity") + xlab("Area of research") +
     geom_text(aes(label = Freq), 
-    vjust = -0.2)+ theme(legend.position="none")
+    vjust = -0.2) + theme_classic() + theme(legend.position="none")
 ```
 
 ```{r, include=FALSE}
@@ -104,10 +106,10 @@ area <- data.frame(matrix(tt)) %>% dplyr::rename(words = !!names(.)[1]) %>%
    
 area %>% group_by(words) %>% dplyr::summarise(Freq = n()) %>% 
   data.frame(.)  %>% mutate(words = as.character(words)) %>%  #arrange(desc(Freq)) %>% 
-    ggplot(data = ., aes(y = reorder(words, Freq),  x= Freq)) +
+    ggplot(data = ., aes(y = reorder(words, Freq),  x= Freq, fill = words)) +
     geom_bar(stat="identity") + ylab("Words") +
     geom_text(aes(label = Freq), 
-    hjust = -0.2)
+    hjust = -0.2) + theme_classic() + theme(legend.position="none")
 
 ```
 
@@ -116,7 +118,7 @@ area %>% group_by(words) %>% dplyr::summarise(Freq = n()) %>%
 ```{r}
 method <- data[14:17]
 ch <- colnames(method)
-ch1 <- foreach(i = ch) %do% str_split_i(i, "\\[", 2) 
+ch1 <- foreach(i = ch) %do% str_split_i(i, "\\? \\[", 2) 
 colnames(method) <- foreach(i = ch1) %do% str_sub(i, 1, -2)
 d <- data.frame(rowSums(t(data.frame(foreach(i = colnames(method)) %do% ifelse(method[i]=="Yes", 1, 0))))) 
 d <- tibble::rownames_to_column(d, "plots") 
@@ -134,7 +136,7 @@ Papers
 ```{r}
 data[19] %>% dplyr::rename(papers = !!names(.)[1]) %>% filter(papers < 100) %>%  ggplot(data = ., aes(papers)) +
   geom_histogram() +
-  labs(x ="How many published papers/preprints do you have, where you used EEG, MEG or iEEG analysis?")
+  labs(x ="How many published papers/preprints do you have, where you used EEG, MEG or iEEG analysis?") + theme_classic()
 # PCA for clustering it 
 ```
 
@@ -147,7 +149,7 @@ as.data.frame(table(na.omit(data[12]))) %>% dplyr::rename(position = !!names(.)[
     ggplot(data = ., aes(y = reorder(position, Freq),  x= Freq, fill = position)) +
     geom_bar(stat="identity") + ylab("Position") +
     geom_text(aes(label = Freq), 
-    hjust = -0.2)+ theme(legend.position="none")
+    hjust = -0.2) + theme_classic() + theme(legend.position="none")
 ```
 
 Years
@@ -155,7 +157,7 @@ Years
 ```{r}
 data %>% filter(.[[20]] < 50) %>% ggplot(data = ., aes_(as.name(names(data)[20]))) +
   geom_histogram() +  scale_x_continuous(breaks=seq(0, 30, 5)) +
-    labs(x ="Years of experience with EEG, MEG, or iEEG analysis")
+    labs(x ="Years of experience with EEG, MEG, or iEEG analysis") + theme_classic()
 ```
 
 Self-assessed level
@@ -164,8 +166,8 @@ Self-assessed level
 table(data[21]) %>% data.frame()%>% dplyr::rename(level = !!names(.)[1]) %>%
     ggplot(data = ., aes(x = level, y= Freq, fill = level)) +
     geom_bar(stat="identity") + xlab("Self-assessed level") +
-    geom_text(aes(label = Freq), vjust = -0.2) + theme(legend.position="none") +
-    scale_x_discrete(limits = c("Beginner", "Intermediate", "Expert"))
+    geom_text(aes(label = Freq), vjust = -0.2) + theme_classic() + theme(legend.position="none") +
+    scale_x_discrete(limits = c("Beginner", "Intermediate", "Expert")) 
 
 ```
 
@@ -175,7 +177,7 @@ Code contribution
 table(data[22])  %>% data.frame()%>% dplyr::rename(level = !!names(.)[1]) %>%
     ggplot(data = ., aes(x = reorder(level, Freq),  y= Freq, fill = level)) +
     geom_bar(stat="identity") + xlab("Code contribution") +
-    geom_text(aes(label = Freq), vjust = -0.2) + theme(legend.position="none")
+    geom_text(aes(label = Freq), vjust = -0.2)  + theme_classic() + theme(legend.position="none")
 ```
 
 ### Channels
@@ -210,7 +212,7 @@ other <- c(rep("Custom scripts",each=9), "4DBTi", rep("letswave", 3), "mTRF", "R
 ```
 
 ```{r, warning=FALSE}
-vec <- names(data[25:50]) %>% str_split_i(., "\\[", 2) %>%  str_sub(., 1, -2)
+vec <- names(data[25:50]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
 
 software <- data[25:50] %>%
     rename_at(vars(colnames(.)), ~ vec) %>% 
@@ -222,11 +224,13 @@ d <- data.frame(rowSums(t(software))) %>%  tibble::rownames_to_column(., "soft")
   rbind(., other) %>% dplyr::group_by(soft) %>% dplyr::summarise(sum_scores = sum(sum_scores)) %>% 
   arrange(., desc(sum_scores))
 
-d  %>% filter(sum_scores >= 1) %>% 
+d  %>% filter(sum_scores >= 1) %>% mutate(soft = ifelse(sum_scores >= 3, as.character(soft), "_Others")) %>% group_by(soft) %>% 
+  dplyr::summarise(sum_scores = sum(sum_scores)) %>% 
     ggplot(data = ., aes(y = reorder(soft, sum_scores),  x= sum_scores, fill = soft)) +
     geom_bar(stat="identity") + ylab("Soft") +
     geom_text(aes(label = sum_scores), 
-    hjust = -0.2) + theme(legend.position="none")
+    hjust = -0.2) + theme_classic() + theme(legend.position="none")
+
 ```
 
 
@@ -237,7 +241,7 @@ d  %>% filter(sum_scores >= 1) %>%
 # how to add others
 software <- data[25:50]
 ch <- colnames(software)
-ch1 <- foreach(i = ch) %do% str_split_i(i, "\\[", 2) 
+ch1 <- foreach(i = ch) %do% str_split_i(i, "\\? \\[", 2) 
 ch1 <- foreach(i = ch1) %do% str_sub(i, 1, -2)
 d1 <- foreach(i = colnames(software)) %do% ifelse(software[i]=="Yes", 1, 0)
 c <- crossprod(matrix(unlist(d1), ncol = 26))
@@ -263,7 +267,7 @@ melt(mat_reordered) %>% ggplot(., aes(x=Var1, y=Var2)) +
 ```{r, warning=FALSE}
 features <- data[52:60]
 ch <- colnames(features)
-ch1 <- foreach(i = ch) %do% str_split_i(i, "\\[", 2) 
+ch1 <- foreach(i = ch) %do% str_split_i(i, "\\? \\[", 2) 
 colnames(features) <- foreach(i = ch1) %do% str_sub(i, 1, -2)
 
 features <- features %>%  mutate_at(c(colnames(features)), 
@@ -291,16 +295,16 @@ data.frame(rowSums(t(familiar))) %>%  tibble::rownames_to_column(., "plot") %>%
    rename_at(vars(colnames(.)), ~ c("plot", "sum_scores"))  %>% 
   arrange(., desc(sum_scores)) %>% 
   ggplot(data = ., aes(y = reorder(plot, sum_scores), x= sum_scores, fill=plot)) +
-  geom_bar(stat="identity") + ylab("plot") + 
+  geom_bar(stat="identity") + ylab("plot") + theme_classic() + 
   theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
-  ggtitle("Select ERP plot you are familiar with")
+  ggtitle("Select ERP plot you are familiar with") 
 
 ```
 
 #### Plotting
 
 ```{r}
-vec <- names(data[ , grepl( "Have you ever" , names(data))]) %>% str_split_i(., "\\.....", 2) %>% as.numeric()
+vec <- names(data[ , grepl( "Have you ever plotted" , names(data))])
 ```
 
 ```{r}
@@ -332,7 +336,7 @@ tab %>%
 #### Recognition and plotting
 
 ```{r, warning=FALSE}
-vec <- names(data[ , grepl( "Have you ever" , names(data))]) %>% str_split_i(., "\\.....", 2) %>% as.numeric()
+vec <- names(data[ , grepl( "Have you ever plotted " , names(data))]) #%>% str_split_i(., "\\.....", 2) 
 plot_names <- c("line", "butterfly", "topo", "topo_array", "topo_map", "erp_img", "parallel", "channel_img")
 
 do_vec <- function(vec, data, plot_names){
@@ -344,7 +348,7 @@ do_vec <- function(vec, data, plot_names){
   rownames(t1) <- plot_names #array(paste0("t_", 1:length(vec)))
   return(t1)
 }
-tab <- do_vec(vec[2:length(vec)], data, plot_names) %>%  data.frame() %>% tibble::rownames_to_column(., "plots") %>%  
+tab <- do_vec(vec, data, plot_names) %>%  data.frame() %>% tibble::rownames_to_column(., "plots") %>%  
   gather(., type, plotted, `N.A`:`Yes`, factor_key=TRUE) %>% 
   filter(type == "Yes") %>% dplyr::select(-type) 
 
@@ -487,5 +491,5 @@ terms(lda, 10)
 ## Time of finishing survey in minutes
 
 ```{r}
-median(as.numeric(data$`Total time`)) / 60
+median(as.numeric(as.matrix(data[121]))) / 60
 ```
