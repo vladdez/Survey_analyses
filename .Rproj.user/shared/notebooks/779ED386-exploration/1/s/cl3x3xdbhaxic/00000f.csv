@@ -18,4 +18,5 @@
 "0","library(text2vec)"
 "0","library(tidyr)"
 "0","library(kableExtra)"
+"0","library(stringr)"
 "0",""

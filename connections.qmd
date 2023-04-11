@@ -66,11 +66,12 @@ summary(log.model)
 
 
 ```{r, warning=FALSE}
-vec <- names(data[25:50]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
+vec <- names(data[25:51]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
 
-software <- data[25:50] %>%
-    rename_at(vars(colnames(.)), ~ vec) %>% 
-  mutate_at(vars(vec), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0))) %>% 
+software <- data[25:51] %>%
+    rename_at(vars(colnames(.)), ~ vec) %>% #mutate(`Custom scripts` = ifelse(Other == "Custom scripts", "Yes", `Custom scripts`)) %>% 
+  dplyr::select(-Other) %>% 
+  mutate_at(vars(vec[1:26]), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0))) %>% 
   cbind(data[20], .) %>% dplyr::rename(years = !!names(.)[1]) %>% filter(years < 50) %>% 
   select_if(colSums(.) != 0)
 
@@ -97,14 +98,14 @@ software  %>%
   geom_boxplot()
 ```
 
-#### Tools and year of experince
+#### Tools and year of experience
 
 ```{r}
 a <- software  %>% 
   select_if(colSums(.) > 10) 
 
 res <- a %>%  dplyr::select(years, BESA) %>% 
-  group_by(BESA) %>% dplyr::summarise(mean(years)) %>% dplyr::rename(., Usage = BESA,BESA = `mean(years)`)
+  group_by(BESA) %>% dplyr::summarise(mean(years)) %>% dplyr::rename(., Usage = BESA, BESA = `mean(years)`)
 
 cn <- colnames(a[3:length(a)])
 for (i in 1:length(cn)){
@@ -112,9 +113,7 @@ for (i in 1:length(cn)){
   group_by_at(2) %>% dplyr::summarise( mean(years)) %>%  dplyr::select(-1)
   colnames(tmp) <- cn[i] 
   res <- cbind(res, tmp) 
-  
-  
-  print(cn[i])
+  #print(cn[i])
 }
  res %>% t()  %>%
   row_to_names(row_number = 1) %>% data.frame() %>% dplyr::rename(., not_used = X0, used = X1) %>% 
@@ -142,7 +141,7 @@ for (i in 1:length(cn)){
 #### and years of experience
 
 ```{r}
-
+vec <- names(data[25:50]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
 
 software <- data[25:50] %>%
     rename_at(vars(colnames(.)), ~ vec) %>% 

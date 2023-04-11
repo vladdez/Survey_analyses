@@ -31,6 +31,7 @@ library(Matrix)
 library(text2vec)
 library(tidyr)
 library(kableExtra)
+library(stringr)
 
 ```
 
@@ -265,23 +266,55 @@ melt(mat_reordered) %>% ggplot(., aes(x=Var1, y=Var2)) +
 ## Important features
 
 ```{r, warning=FALSE}
-features <- data[52:60]
-ch <- colnames(features)
-ch1 <- foreach(i = ch) %do% str_split_i(i, "\\? \\[", 2) 
-colnames(features) <- foreach(i = ch1) %do% str_sub(i, 1, -2)
 
-features <- features %>%  mutate_at(c(colnames(features)), 
+data[52:60] %>% rename_with(., ~str_split_i(colnames(data[52:60]), "\\? \\[", 2) %>% 
+                                        str_sub(., 1, -2) ) %>%  
+  mutate_at(c(colnames(.)), 
         funs(recode(.,
         "Very important"= 2, "Important"= 1, "Neutral"= 0,
         "Low importance"= -1, "Not at all important" = -2 ))) %>% 
   colSums(., na.rm =T) %>% data.frame(.) %>%  tibble::rownames_to_column(., "Feature") %>% 
-  arrange(desc(.))
-colnames(features) <- c("Feature", "sum_scores")
-features %>%   kbl() 
-# divide by number of people 
-# individual plots
-# correlation with experience factor
+  filter(!is.na(Feature)) %>% 
+  arrange(desc(.)) %>% rename_at(vars(colnames(.)), ~ c("Feature", "sum_scores")) %>% group_by(Feature) %>% 
+  dplyr::mutate( mean = round(sum_scores / nrow(data), 2)) #%>%   kbl() 
+
 ```
+
+
+```{r, warning=FALSE}
+feature <- data[52:60] %>% rename_all(., ~str_split_i(colnames(data[52:60]), "\\? \\[", 2) %>% 
+                                        str_sub(., 1, -2) ) %>%  
+  mutate_at(c(colnames(.)), 
+        funs(recode(.,
+        "Very important"= 2, "Important"= 1, "Neutral"= 0,
+        "Low importance"= -1, "Not at all important" = -2 ))) %>% 
+  pivot_longer(cols = everything(), names_to = "name", values_to = "value") %>% 
+  mutate(index = as.integer(factor(name)))
+
+#feature  %>% distinct(., index, name) %>% arrange(., index)
+
+feature %>% #filter(index %in% c(2, 6, 7, 4)) %>% 
+  ggplot() + 
+  geom_density(aes(x = value, fill = str_wrap(name)), bw = 0.5) + 
+  labs(x = "score", fill="Features") +
+  theme(legend.position = "none", legend.key.height=unit(2, "cm")) + facet_wrap(~str_wrap(name, 20))
+
+```
+```{r}
+feature %>% filter(index %in% c(2, 6, 7, 4)) %>% 
+  ggplot() + 
+  geom_density(aes(x = value, fill = str_wrap(name, 20)), bw = 0.5) + 
+  labs(x = "score", fill="Features") +
+  theme(legend.position = "none", legend.key.height=unit(2, "cm")) + facet_wrap(~str_wrap(name, 20))
+```
+```{r}
+feature %>% filter(index %in% c(8, 9)) %>% 
+  ggplot() + 
+  geom_density(aes(x = value, fill = str_wrap(name, 20)), bw = 0.5) + 
+  labs(x = "score", fill="Features") +
+  theme(legend.position = "none", legend.key.height=unit(2, "cm")) + facet_wrap(~str_wrap(name, 20))
+```
+
 
 ## Familiarity with plots
 #### Recognition

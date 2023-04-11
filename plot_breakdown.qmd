@@ -104,6 +104,9 @@ slice(num_named, 1)  %>%
 n1 <- word_preproc(data, 69)  %>%
    mutate(type = case_when(
       grepl("\\b(idea|sure|confus|aware|do not|know|why|remember)\\b", words_prep) == TRUE ~ "bad", 
+      grepl("\\baverage(d)?\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\baverage(d)?\\b", words_prep) == TRUE ~ "averaged erp",
+      grepl("\\bwave(form|forms)?\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\bwave(form|forms)?\\b", words_prep) == TRUE ~ "erp wave(form)s",
+      grepl("\\btime(course|series|domain)?\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\btime(course|series|domain)?\\b", words_prep) == TRUE ~ "erp timecourse (timeseries)",
       grepl("\\b(erp(s)?|ep|related)\\b", words) == TRUE ~ "erp",
       grepl("\\b(time|timeseries)\\b", words) == TRUE ~ "time series",
       grepl("\\b(response(s)?)\\b", words) == TRUE ~ "response",
@@ -113,7 +116,8 @@ n1 <- word_preproc(data, 69)  %>%
        grepl("\\b(p300)\\b", words) == TRUE ~ "p300",
       grepl("\\b(average)\\b", words) == TRUE ~ "average",
       TRUE ~ '_other'
-      )) %>% filter(!is.na(type), type != "bad") %>% dplyr::select(type) %>%  table(.) %>% 
+      ))  %>% #filter(type == "erp") %>%  View()
+   filter(!is.na(type), type != "bad") %>% dplyr::select(type) %>%  table(.) %>% 
   data.frame(.) %>% arrange(desc(Freq))  %>% 
    rename_at(vars(colnames(.)), ~ c("Line plot", "n")) 
 n1 
@@ -126,13 +130,15 @@ n1
 n2 <- word_preproc(data, 80)  %>%
   mutate(type = case_when(
       grepl("\\b(idea|sure|confus|aware|do not|know|why|remember|unsure|confusing|mess)\\b", words_prep) == TRUE ~ "bad", 
-      grepl("\\b(butterfly|bitterfly|buterfly|buttefly)\\b", words_prep) == TRUE ~ "butterfly", 
-      grepl("\\b(erp(s)?|eprs|event-related)\\b", words_prep) == TRUE ~ "erp",
+      grepl("\\b(butterfly|bitterfly|buterfly|buttefly)\\b", words_prep) == TRUE ~ "butterfly",
       grepl("\\b(spaghetti)\\b", words_prep) == TRUE ~ "spaghetti",
-      grepl("\\b(time|timeseries|timecourse)\\b", words) == TRUE ~ "time series",
-      grepl("\\b(channel(s)?|multichannel)\\b", words) == TRUE ~ "multichannel",
+      grepl("\\b(time|timeseries|timecourse)\\b", words_prep) == TRUE ~ "time series",
+      grepl("\\b(channel|single|singleplot|individual)\\b", words_prep)  == TRUE ~ "single or individual channel erp",
+      grepl("\\b(channels|multichannel|multeple|multiple|multi|all|muti|electrodes)\\b", words_prep)  == TRUE ~ "multichannel/electrode erp",
+      grepl("\\b(evoked)\\b", words_prep)  == TRUE ~ "evoked responces",
+      grepl("\\b(erp(s)?|eprs|event-related)\\b", words_prep) == TRUE ~ "erp",
       TRUE ~ '_other'
-      )) %>% 
+      )) %>% filter(type == "single or individual channel erp") %>%  #View()
   filter(!is.na(type), type != "bad") %>%
   dplyr::select(type) %>%  table(.) %>% 
   data.frame(.) %>% arrange(desc(Freq))  %>% 
@@ -146,7 +152,7 @@ n2
 n3 <- word_preproc(data, 85)  %>%
   mutate(type = case_when(
       grepl("\\b(idea|sure|confus|aware|do not|know|why|remember|unsure|confusing|mess)\\b", words_prep) == TRUE ~ "bad", 
-      grepl("\\b(topo|topoplot(s)?)\\b", words_prep) == TRUE ~ "topo", 
+      grepl("\\b(topo|topoplot(s)?)\\b", words_prep) == TRUE ~ "topo(plot)", 
       grepl("\\b(topomap|topomape)\\b", words_prep) == TRUE ~ "topomap",
       grepl("\\b(topograph(y|ic|ical|ies)|topgraphy|topograbphy)\\b", words_prep) == TRUE ~ "topography",
       grepl("\\b(heat(map)?)\\b", words_prep) == TRUE ~ "heatmap",
@@ -178,7 +184,7 @@ n4 <- word_preproc(data, 90)  %>%
       grepl("\\b(time(series)?|serie(s)?)\\b", words_prep) == TRUE ~ "time series",
       grepl("\\b(distribution)\\b", words_prep) == TRUE ~ "scalp distribution",
       TRUE ~ '_other'
-      )) %>% #filter(is.na(type)) %>% View()
+      )) %>%  #View()
   dplyr::select(type) %>%  table(.) %>% 
   data.frame(.) %>% arrange(desc(Freq)) %>% filter(type != "bad")  %>% 
    rename_at(vars(colnames(.)), ~ c("Topo array", "n")) 
@@ -226,7 +232,7 @@ n6 <- word_preproc(data, 102)  %>%
       grepl("\\b(time(series)?|serie(s)?)\\b", words_prep) == TRUE ~ "time series or frequencies",
       grepl("\\b(trial(s|wise)?|trialplot)\\b", words_prep) == TRUE ~ "trial or trial variations",
       TRUE ~ '_other'
-      )) %>% #filter(is.na(type)) %>% View()
+      )) %>% #View()
   dplyr::select(type) %>%  table(.) %>%  
   data.frame(.) %>% arrange(desc(Freq)) %>% filter(type != "bad")  %>% 
    rename_at(vars(colnames(.)), ~ c("ERP image", "n")) 
@@ -241,7 +247,7 @@ n7 <- word_preproc(data, 107)  %>%
       grepl("\\b(idea|sure|confus|aware|do not|know|why|good|remember|unsure|confusing|mess|\\?|\\?\\?|unclear|-|ugly|don't|x|useless)\\b", words_prep) == TRUE ~ "bad", 
       grepl("\\b(amplitude(s)?)\\b", words_prep) == TRUE ~ "amplitudes",
       TRUE ~ '_other'
-      )) %>%# filter(is.na(type)) %>% View()
+      )) %>% #View()
   dplyr::select(type) %>%  table(.) %>% 
   data.frame(.) %>% arrange(desc(Freq)) %>% filter(type != "bad")  %>% 
    rename_at(vars(colnames(.)), ~ c("Parallel plot", "n")) 
@@ -260,11 +266,11 @@ n8 <- word_preproc(data, 112)  %>%
       grepl("\\b(image)\\b", words_prep) == TRUE ~ "image",
       grepl("\\b(raster(plot)?|custer)\\b", words_prep) == TRUE ~ "raster",
       grepl("\\b(matrix)\\b", words_prep) == TRUE ~ "matrix",
-      grepl("\\b(channel(s|wise)?)\\b", words_prep) == TRUE ~ "channel",
+      grepl("\\b(channel(s|wise)?)\\b", words_prep) == TRUE ~ "channels",
       grepl("\\b(erp(s)?|eprs|ersp|event-related)\\b", words_prep) == TRUE ~ "erp",
       grepl("\\b(voltage)\\b", words_prep) == TRUE ~ "voltage",
      # TRUE ~ '_other'
-      )) %>% #filter(is.na(type)) %>% View()
+      )) %>% #View()
   dplyr::select(type) %>%  table(.) %>% 
   data.frame(.) %>% arrange(desc(Freq)) %>% filter(type != "bad") %>% 
    rename_at(vars(colnames(.)), ~ c("Channel_image", "n")) 
@@ -322,7 +328,7 @@ word_preproc_tool_2 <- function(data, N, lim){
 
 #### 1
 
-```{r}
+```{r, warning=FALSE}
 struggle1 <- word_preproc_tool_2(data, 71, 10) 
 separated_row <- separate_rows(struggle1[98, ], parts, sep = ",|\\.") %>% dplyr::select(parts)
 
@@ -332,12 +338,12 @@ struggle1 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
   separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
   mutate(problems = case_when(
       grepl("\\b(ci|se|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", parts) == TRUE ~ "uncertainty", 
-      grepl("\\b(axes|lable(s)?|label(s)?|legend|ticks)\\b", parts) == TRUE ~ "plot components", 
+      grepl("\\b(axes|lable(s)?|label(s)?|legend|ticks)\\b", parts) == TRUE ~ "plot components (axes, lables, legend)", 
       grepl("\\b(color(s)?|colour(s)?|proportion(s)?|publication|scal(e|ing))\\b", parts) == TRUE ~ "styling", 
       grepl("\\b(preprocessing|extracting|datatype)\\b", parts) == TRUE ~ "preprocessing", 
       grepl("\\b(syncronisation|organizing|groups)\\b", parts) == TRUE ~ "subplotting", 
       grepl("\\b(mean|significan(t|ce)|permutations|combine)\\b", parts) == TRUE ~ "statistics", 
-      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems))  %>% group_by(problems) %>% dplyr::summarise(n = n()) %>% mutate(percent = round(n / sum(n), 2) * 100) %>% 
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems))  %>% group_by(problems) %>% dplyr::summarise(n = n()) %>% mutate(percent = round(n / sum(n), 2) * 100) %>% arrange(desc(n)) %>% 
   kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
   kable_classic(full_width = F, html_font = "Arial")
 
@@ -349,103 +355,103 @@ struggle1 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
 ## New features
 
 
-## Frequency of tool usage
+<!-- ## Frequency of tool usage -->
 
-```{r}
-vec <- names(data[ , grepl( ".*Which plotting" , names(data))]) %>% str_split_i(., "\\? \\]", 2) %>% 
-  str_split_i(., "\\...", 2) %>% as.numeric()
-```
+<!-- ```{r} -->
+<!-- vec <- names(data[ , grepl( ".*Which plotting" , names(data))]) %>% str_split_i(., "\\? \\]", 2) %>%  -->
+<!--   str_split_i(., "\\...", 2) %>% as.numeric() -->
+<!-- ``` -->
 
-```{r}
-word_preproc_tool <- function(data, N, lim){
-  N = 71
-  #lim = 10
-  tmp <- data %>% dplyr::select(N) %>% filter(!is.na(.)) %>% dplyr::rename(words = !!names(.)[1]) %>% 
-    mutate(words = ifelse(str_detect(words, 'own|costum'), "custom", as.character(words))) %>% 
-  mutate(n = lengths(gregexpr("\\W+", words)) + 1) %>% arrange(desc(n))
-  rest <- tmp %>% filter(n >= lim) %>% dplyr::select(words)
-  tmp <- tmp %>% filter(n < lim) %>% dplyr::select(words)
-  
-  t <- foreach(i = 1:nrow(tmp)) %do% strsplit(tmp[[1]][i], ",|/|\\|+| and |&| or |\\n|\\r|;")
-  tul <- foreach(i = 1:nrow(tmp)) %do% unlist(t[[i]])
-  tul1 <- unlist(tul)
-  tul2 <- tul1[tul1!=""]
-  tul2[tul2=="-"] <- NA
-  tul2 <- na.omit(tul2)
-  
-  #t <- foreach(i = 1:nrow(tmp)) %do% tokenize_words(as.character(tmp[i, N]), strip_punct = FALSE)
-  stop_list = c("a", "an", "the", "wise", "by", "over", "of", "per", "for", "like", "s", "at", "code", "script", "recently", "my", "in", "written", "using", "built", "function", "plot", "with",  "itself", "scripting", "scrip", "scripts", "basic")#, "custom")
-  t1 <- foreach(i = 1:length(tul2)) %do% tokenize_words(as.character(tul2[i]))
-  
-  
-  t2 <- foreach(i = 1:length(t1)) %do% map(t1[i][[1]], singularize)
-  t21 <- foreach(i = 1:length(t2)) %do% tokenize_words(as.character(t2[i][[1]]))
-  t22 <- foreach(i = 1:length(t21)) %do% t21[i][[1]][[1]][!(t21[i][[1]][[1]] %in% stop_list)]
-  t3 <- foreach(i = 1:length(t22)) %do% paste((unlist(t22[i])), collapse = ' ') 
-  t4 <- data.frame(matrix(t3)) #%>% dplyr::rename(words = !!names(.)[1])
-  return(c(t4, rest))
-}
-```
+<!-- ```{r} -->
+<!-- word_preproc_tool <- function(data, N, lim){ -->
+<!--   N = 71 -->
+<!--   #lim = 10 -->
+<!--   tmp <- data %>% dplyr::select(N) %>% filter(!is.na(.)) %>% dplyr::rename(words = !!names(.)[1]) %>%  -->
+<!--     mutate(words = ifelse(str_detect(words, 'own|costum'), "custom", as.character(words))) %>%  -->
+<!--   mutate(n = lengths(gregexpr("\\W+", words)) + 1) %>% arrange(desc(n)) -->
+<!--   rest <- tmp %>% filter(n >= lim) %>% dplyr::select(words) -->
+<!--   tmp <- tmp %>% filter(n < lim) %>% dplyr::select(words) -->
 
-#### 1
+<!--   t <- foreach(i = 1:nrow(tmp)) %do% strsplit(tmp[[1]][i], ",|/|\\|+| and |&| or |\\n|\\r|;") -->
+<!--   tul <- foreach(i = 1:nrow(tmp)) %do% unlist(t[[i]]) -->
+<!--   tul1 <- unlist(tul) -->
+<!--   tul2 <- tul1[tul1!=""] -->
+<!--   tul2[tul2=="-"] <- NA -->
+<!--   tul2 <- na.omit(tul2) -->
 
-```{r}
-test <- word_preproc_tool(data, 71, 10) 
-rest <- test[[2]]
-fromrest <- data.frame(words = c("fieldtrip","r", "matlab", "fieldtrip", "adobe illustrator", "custom matlab", "custom matlab", "mne" ))
-
-base <- data.frame(matrix(test[[1]]))%>% dplyr::rename(words = !!names(.)[1])%>% 
-  mutate(words = ifelse(nchar(words)==0, NA, words)) %>% 
-  mutate(words = ifelse(str_detect(words, 'brain vision'), "brain vision analyser", as.character(words))) %>% 
-  mutate(words = ifelse(str_detect(words, 'mne'), "mne", as.character(words))) %>%  rbind(., fromrest) %>% 
-  mutate(words = ifelse(str_detect(words, 'ggplot'), "ggplot", as.character(words))) 
-
-words <- base %>% 
-  table(.) %>% 
-  data.frame(.) %>%  arrange(desc(Freq)) 
-
-narrow1 <- base %>% 
-  mutate(words = ifelse(str_detect(words, 'matlab|bar.m|boundedline'), "custom matlab", as.character(words))) %>% 
-  mutate(words = ifelse(str_detect(words, 'fieldtrip'), "fieldtrip", as.character(words))) %>% 
-  mutate(words = ifelse(str_detect(words, 'eeglab'), "EEGLAB", as.character(words))) %>% 
-  mutate(words = ifelse(str_detect(words, 'erplab'), "ERPLAB", as.character(words))) %>% 
-  mutate(words = ifelse(str_detect(words, 'python|seaborn|matplotlib|plotly'), "custom python", as.character(words))) %>%
-  mutate(words = ifelse(str_detect(words, 'mne'), "MNE", as.character(words))) %>%
-  mutate(words = ifelse(str_detect(words, 'ggplot|\\br\\b'), "custom r", as.character(words))) %>% 
-  table(.) %>% 
-  data.frame(.) %>%  arrange(desc(Freq))
-narrow1 %>% head()
-```
-
-#### 2
+<!--   #t <- foreach(i = 1:nrow(tmp)) %do% tokenize_words(as.character(tmp[i, N]), strip_punct = FALSE) -->
+<!--   stop_list = c("a", "an", "the", "wise", "by", "over", "of", "per", "for", "like", "s", "at", "code", "script", "recently", "my", "in", "written", "using", "built", "function", "plot", "with",  "itself", "scripting", "scrip", "scripts", "basic")#, "custom") -->
+<!--   t1 <- foreach(i = 1:length(tul2)) %do% tokenize_words(as.character(tul2[i])) -->
 
 
-```{r}
-test <- word_preproc_tool(data, 82, 10) 
-rest <- test[[2]]
-fromrest <- data.frame(words = c("fieldtrip","r", "matlab", "fieldtrip", "adobe illustrator", "custom matlab", "custom matlab", "mne" ))
+<!--   t2 <- foreach(i = 1:length(t1)) %do% map(t1[i][[1]], singularize) -->
+<!--   t21 <- foreach(i = 1:length(t2)) %do% tokenize_words(as.character(t2[i][[1]])) -->
+<!--   t22 <- foreach(i = 1:length(t21)) %do% t21[i][[1]][[1]][!(t21[i][[1]][[1]] %in% stop_list)] -->
+<!--   t3 <- foreach(i = 1:length(t22)) %do% paste((unlist(t22[i])), collapse = ' ')  -->
+<!--   t4 <- data.frame(matrix(t3)) #%>% dplyr::rename(words = !!names(.)[1]) -->
+<!--   return(c(t4, rest)) -->
+<!-- } -->
+<!-- ``` -->
 
-base <- data.frame(matrix(test[[1]]))%>% dplyr::rename(words = !!names(.)[1])%>% 
-  mutate(words = ifelse(nchar(words)==0, NA, words)) %>% 
-  mutate(words = ifelse(str_detect(words, 'brain vision'), "brain vision analyser", as.character(words))) %>% 
-  mutate(words = ifelse(str_detect(words, 'mne'), "MNE", as.character(words))) %>%  rbind(., fromrest) %>% 
-  mutate(words = ifelse(str_detect(words, 'ggplot'), "ggplot", as.character(words))) %>% 
-  mutate(words = ifelse(str_detect(words, 'own|cusom'), "custom", as.character(words))) 
+<!-- #### 1 -->
 
-words <- base %>% 
-  table(.) %>% 
-  data.frame(.) %>%  arrange(desc(Freq)) 
+<!-- ```{r} -->
+<!-- test <- word_preproc_tool(data, 71, 10)  -->
+<!-- rest <- test[[2]] -->
+<!-- fromrest <- data.frame(words = c("fieldtrip","r", "matlab", "fieldtrip", "adobe illustrator", "custom matlab", "custom matlab", "mne" )) -->
 
-narrow2 <- base %>% 
-  mutate(words = ifelse(str_detect(words, 'matlab|bar.m|boundedline'), "custom matlab", as.character(words))) %>% 
-  mutate(words = ifelse(str_detect(words, 'fieldtrip|fieldteip|field trip'), "fieldtrip", as.character(words))) %>% 
-  mutate(words = ifelse(str_detect(words, 'eeglab'), "EEGLAB", as.character(words))) %>% 
-  mutate(words = ifelse(str_detect(words, 'erplab'), "ERPLAB", as.character(words))) %>% 
-  mutate(words = ifelse(str_detect(words, 'python|seaborn|matplotlib|plotly'), "custom python", as.character(words))) %>%
-  mutate(words = ifelse(str_detect(words, 'ggplot|\\br\\b'), "custom r", as.character(words))) %>% 
-   mutate(words = ifelse(str_detect(words, 'cartool'), "cartool", as.character(words))) %>% 
-  table(.) %>% 
-  data.frame(.) %>%  arrange(desc(Freq))
-narrow2 %>% head()
+<!-- base <- data.frame(matrix(test[[1]]))%>% dplyr::rename(words = !!names(.)[1])%>%  -->
+<!--   mutate(words = ifelse(nchar(words)==0, NA, words)) %>%  -->
+<!--   mutate(words = ifelse(str_detect(words, 'brain vision'), "brain vision analyser", as.character(words))) %>%  -->
+<!--   mutate(words = ifelse(str_detect(words, 'mne'), "mne", as.character(words))) %>%  rbind(., fromrest) %>%  -->
+<!--   mutate(words = ifelse(str_detect(words, 'ggplot'), "ggplot", as.character(words)))  -->
 
-```
+<!-- words <- base %>%  -->
+<!--   table(.) %>%  -->
+<!--   data.frame(.) %>%  arrange(desc(Freq))  -->
+
+<!-- narrow1 <- base %>%  -->
+<!--   mutate(words = ifelse(str_detect(words, 'matlab|bar.m|boundedline'), "custom matlab", as.character(words))) %>%  -->
+<!--   mutate(words = ifelse(str_detect(words, 'fieldtrip'), "fieldtrip", as.character(words))) %>%  -->
+<!--   mutate(words = ifelse(str_detect(words, 'eeglab'), "EEGLAB", as.character(words))) %>%  -->
+<!--   mutate(words = ifelse(str_detect(words, 'erplab'), "ERPLAB", as.character(words))) %>%  -->
+<!--   mutate(words = ifelse(str_detect(words, 'python|seaborn|matplotlib|plotly'), "custom python", as.character(words))) %>% -->
+<!--   mutate(words = ifelse(str_detect(words, 'mne'), "MNE", as.character(words))) %>% -->
+<!--   mutate(words = ifelse(str_detect(words, 'ggplot|\\br\\b'), "custom r", as.character(words))) %>%  -->
+<!--   table(.) %>%  -->
+<!--   data.frame(.) %>%  arrange(desc(Freq)) -->
+<!-- narrow1 %>% head() -->
+<!-- ``` -->
+
+<!-- #### 2 -->
+
+
+<!-- ```{r} -->
+<!-- test <- word_preproc_tool(data, 82, 10)  -->
+<!-- rest <- test[[2]] -->
+<!-- fromrest <- data.frame(words = c("fieldtrip","r", "matlab", "fieldtrip", "adobe illustrator", "custom matlab", "custom matlab", "mne" )) -->
+
+<!-- base <- data.frame(matrix(test[[1]]))%>% dplyr::rename(words = !!names(.)[1])%>%  -->
+<!--   mutate(words = ifelse(nchar(words)==0, NA, words)) %>%  -->
+<!--   mutate(words = ifelse(str_detect(words, 'brain vision'), "brain vision analyser", as.character(words))) %>%  -->
+<!--   mutate(words = ifelse(str_detect(words, 'mne'), "MNE", as.character(words))) %>%  rbind(., fromrest) %>%  -->
+<!--   mutate(words = ifelse(str_detect(words, 'ggplot'), "ggplot", as.character(words))) %>%  -->
+<!--   mutate(words = ifelse(str_detect(words, 'own|cusom'), "custom", as.character(words)))  -->
+
+<!-- words <- base %>%  -->
+<!--   table(.) %>%  -->
+<!--   data.frame(.) %>%  arrange(desc(Freq))  -->
+
+<!-- narrow2 <- base %>%  -->
+<!--   mutate(words = ifelse(str_detect(words, 'matlab|bar.m|boundedline'), "custom matlab", as.character(words))) %>%  -->
+<!--   mutate(words = ifelse(str_detect(words, 'fieldtrip|fieldteip|field trip'), "fieldtrip", as.character(words))) %>%  -->
+<!--   mutate(words = ifelse(str_detect(words, 'eeglab'), "EEGLAB", as.character(words))) %>%  -->
+<!--   mutate(words = ifelse(str_detect(words, 'erplab'), "ERPLAB", as.character(words))) %>%  -->
+<!--   mutate(words = ifelse(str_detect(words, 'python|seaborn|matplotlib|plotly'), "custom python", as.character(words))) %>% -->
+<!--   mutate(words = ifelse(str_detect(words, 'ggplot|\\br\\b'), "custom r", as.character(words))) %>%  -->
+<!--    mutate(words = ifelse(str_detect(words, 'cartool'), "cartool", as.character(words))) %>%  -->
+<!--   table(.) %>%  -->
+<!--   data.frame(.) %>%  arrange(desc(Freq)) -->
+<!-- narrow2 %>% head() -->
+
+<!-- ``` -->
