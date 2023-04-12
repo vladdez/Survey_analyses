@@ -12,11 +12,13 @@ website:
           - about.qmd
       - section: "Analyses"
         contents:
-          - text: "1. exploration"
+          - text: "1. sample bio"
+            file: sample_bio.qmd
+          - text: "2. visualisation customs"
             file: exploration.qmd
-          - text: "2. linear models"
+          - text: "3. linear models"
             file: connections.qmd
-          - text: "3. plot breakdown"
+          - text: "4. plot breakdown"
             file: plot_breakdown.qmd
 
 

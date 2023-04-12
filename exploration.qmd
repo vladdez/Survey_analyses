@@ -41,167 +41,23 @@ data <- data[1:121] %>%
   filter(.[[18]] !='Yes') # not analysed any EEG method
 ```
 
-## Bio stats
 
-#### Country
-
-```{r}
-data.frame(table(data[8]))  %>% dplyr::rename(country_work = !!names(.)[1]) %>%
-  mutate(country_work = ifelse(Freq >= 3, as.character(country_work), "_Others")) %>% group_by(country_work) %>% 
-  dplyr::summarise(Freq = sum(Freq)) %>% 
-    ggplot(data = ., aes(y = reorder(country_work, Freq),  x= Freq, fill = country_work)) +
-    geom_bar(stat="identity") + labs(x="Count", y="Country of work of survey participant") +
-    geom_text(aes(label = Freq), 
-    hjust = -0.2) + theme_classic() + 
-  theme(legend.position="none", axis.text.y = element_text(size = 14))
-
-```
-
-#### Field
-
-```{r}
-field <- as.data.frame(table(data[9])) %>% arrange(desc(Freq)) %>% head(3)
-field$Freq[1] <- field$Freq[1] + 1 # from Others
-field$Freq[2] <- field$Freq[2] + 1
-field$Freq[3] <- field$Freq[3] + 1
-field %>% dplyr::rename(area = !!names(.)[1]) %>%
-    ggplot(data = ., aes(x = reorder(area, Freq),  y= Freq, fill = area)) +
-    geom_bar(stat="identity") + labs(x="Field of research", y="Count") +
-    geom_text(aes(label = Freq), 
-    vjust = -0.2) + theme_classic() + 
-  theme(legend.position="none", axis.text.x = element_text(size = 12))
-```
-
-```{r, include=FALSE}
-as.data.frame(na.omit(data[10])) 
-# recode!!! 
-```
-
-### Topic
-
-```{r}
-t <- foreach(i = 1:nrow(data)) %do% tokenize_words(as.character(data[i, 11]))
-tt <- foreach(i = 1:length(t)) %do% paste(unlist(t[i]), collapse = ' ') 
-
-
-area <- data.frame(matrix(tt)) %>% dplyr::rename(words = !!names(.)[1]) %>%
-  mutate(words = ifelse(str_detect(.[[1]], 'emot|empathy'), "affective neuroscience", words)) %>%  
-  #mutate(words =ifelse(str_detect(.[[1]], 'spatial'), "spatial", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'memory'), "memory", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'hearing|audit'), "auditory", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'cognition|consciousness|meditation|cognitive control|self|executive functions'), "cognitive control", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'dbs'), "deep brain stimulation", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'decision making|reward'), "decision making", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'ageing'), "ageing", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'social'), "social cognition", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'olfac'), "olfaction", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'communication|language|speech|biling|english|language processing'), "language and speech", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'bci'), "bci", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'sleep'), "sleep", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'timing|time|temporal'), "time", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'cognitive load|selective attention|attention|perception'), "attention and perception", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'vis'), "vision", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'developmental|development'), "development", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'spatial|brain body|motor|motion'), "motor control", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'diagnostics|disorder|psychiatry|epilepsy|autism|patients|therapy|psychopharmacology'), "mental disorders", words)) %>%   
-  mutate(words =ifelse(str_detect(.[[1]], 'signal processing|event related potentials|method|sdf|ieeg'), "dsp", words))
-
-   
-area %>% group_by(words) %>% dplyr::summarise(Freq = n()) %>% 
-  data.frame(.)  %>% mutate(words = as.character(words)) %>%  #arrange(desc(Freq)) %>% 
-    ggplot(data = ., aes(y = reorder(words, Freq),  x= Freq, fill = words)) +
-    geom_bar(stat="identity") + labs(x="Topic of research", y="Frequency") +
-    geom_text(aes(label = Freq), 
-    hjust = -0.2) + theme_classic() + theme(legend.position="none")
-
-```
-
-### Method
-
-```{r}
-method <- data[14:17]
-ch <- colnames(method)
-ch1 <- foreach(i = ch) %do% str_split_i(i, "\\? \\[", 2) 
-colnames(method) <- foreach(i = ch1) %do% str_sub(i, 1, -2)
-d <- data.frame(rowSums(t(data.frame(foreach(i = colnames(method)) %do% ifelse(method[i]=="Yes", 1, 0))))) 
-d <- tibble::rownames_to_column(d, "plots") 
-colnames(d) <- c("method", "sum_scores")
-d %>% arrange(desc(sum_scores)) %>% 
-    ggplot(., aes(x = reorder(method, sum_scores), y = sum_scores, fill = method)) +
-    geom_col(stat = "identity") + labs(x = "Method", y = "Value", fill = "Method") +
-    theme_classic() + theme(legend.position="none")
-```
-
-### Experience
-
-Papers
-
-```{r}
-data[19] %>% dplyr::rename(papers = !!names(.)[1]) %>% filter(papers < 100) %>%  ggplot(data = ., aes(papers)) +
-  geom_histogram() +
-  labs(x ="How many published papers/preprints do you have, where you used EEG, MEG or iEEG analysis?") + theme_classic()
-# PCA for clustering it 
-```
-
-Position
-
-```{r}
-#na.omit(data[13]) # recode Others
-as.data.frame(table(na.omit(data[12]))) %>% dplyr::rename(position = !!names(.)[1]) %>%
-  arrange(desc(Freq)) %>% 
-    ggplot(data = ., aes(y = reorder(position, Freq),  x= Freq, fill = position)) +
-    geom_bar(stat="identity") + ylab("Position") +
-    geom_text(aes(label = Freq), 
-    hjust = -0.2) + theme_classic() + theme(legend.position="none")
-```
-
-Years
-
-```{r}
-data %>% filter(.[[20]] < 50) %>% ggplot(data = ., aes_(as.name(names(data)[20]))) +
-  geom_histogram(bins = 45) +  scale_x_continuous(breaks=seq(0, 30, 5)) +
-  labs(x ="Years of experience with EEG, MEG, or iEEG analysis", y="Count") +
-  theme_classic() + theme(legend.position="none", axis.text.x = element_text(size = 12)) 
-```
-
-Self-assessed level
-
-```{r}
-table(data[21]) %>% data.frame()%>% dplyr::rename(level = !!names(.)[1]) %>%
-    ggplot(data = ., aes(x = level, y= Freq, fill = level)) +
-    geom_bar(stat="identity") + xlab("Self-assessed level") +
-    geom_text(aes(label = Freq), vjust = -0.2) + theme_classic() +
-  theme(legend.position="none", axis.text.x = element_text(size = 12)) +
-    scale_x_discrete(limits = c("Beginner", "Intermediate", "Expert")) +
-  labs(y="Count") 
-
-```
-
-Code contribution
-
-```{r}
-table(data[22])  %>% data.frame()%>% dplyr::rename(level = !!names(.)[1]) %>%
-    ggplot(data = ., aes(x = reorder(level, Freq),  y= Freq, fill = level)) +
-    geom_bar(stat="identity") + xlab("Code contribution") +
-    geom_text(aes(label = Freq), vjust = -0.2)  + theme_classic() + theme(legend.position="none")
-```
-
-### Channels
+## Channels
 
 How many channels do you typically measure?
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 data %>% ggplot(data = ., aes_(as.name(names(data)[23]))) +
   geom_histogram() +  scale_x_continuous(breaks=seq(0, 300, 30)) +
-    labs(x ="How many channels do you typically measure?")
+    labs(x ="How many channels do you typically measure?") + theme_classic()
 ```
 
 How many channels do you typically measure?
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 data %>% filter(.[[24]] < 500) %>% ggplot(data = ., aes_(as.name(names(data)[24]))) +
   geom_histogram() +  scale_x_continuous(breaks=seq(0, 300, 30))+
-    labs(x ="How many channels of those you measured do you typically analyse?")
+    labs(x ="How many channels of those you measured do you typically analyse?") + theme_classic()
 
 # plots should be combined
 ```
@@ -281,7 +137,7 @@ data[52:60] %>% rename_with(., ~str_split_i(colnames(data[52:60]), "\\? \\[", 2)
   colSums(., na.rm =T) %>% data.frame(.) %>%  tibble::rownames_to_column(., "Feature") %>% 
   filter(!is.na(Feature)) %>% 
   arrange(desc(.)) %>% rename_at(vars(colnames(.)), ~ c("Feature", "sum_scores")) %>% group_by(Feature) %>% 
-  dplyr::mutate( mean = round(sum_scores / nrow(data), 2)) #%>%   kbl() 
+  dplyr::mutate( mean = round(sum_scores / nrow(data), 2)) %>%   kbl() 
 
 ```
 
@@ -598,8 +454,3 @@ terms(lda, 10)
 
 ```
 
-## Time of finishing survey in minutes
-
-```{r}
-median(as.numeric(as.matrix(data[121]))) / 60
-```

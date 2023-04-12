@@ -366,23 +366,6 @@ struggle1 %>%
   theme_classic() +
   theme(axis.text = element_text(size = 12), legend.position = "none")
 ```
-```{r}
-# create the data frame
-df <- data.frame(
-  problems = c("uncertainty", "plot components (axes, lables, legend)", "styling", "statistics", "preprocessing", "subplotting"),
-  percent = c(63, 14, 10, 6, 3, 3)
-)
-
-# create a categorical variable for the problem category
-df$problem_category <- factor(
-  ifelse(grepl("plot|subplot", df$problems), "plotting", "other")
-)
-
-# create the plot
-
-```
-
-
 
 ## New features
 
