@@ -50,9 +50,10 @@ data.frame(table(data[8]))  %>% dplyr::rename(country_work = !!names(.)[1]) %>%
   mutate(country_work = ifelse(Freq >= 3, as.character(country_work), "_Others")) %>% group_by(country_work) %>% 
   dplyr::summarise(Freq = sum(Freq)) %>% 
     ggplot(data = ., aes(y = reorder(country_work, Freq),  x= Freq, fill = country_work)) +
-    geom_bar(stat="identity") + ylab("Country of work for participant") +
+    geom_bar(stat="identity") + labs(x="Count", y="Country of work of survey participant") +
     geom_text(aes(label = Freq), 
-    hjust = -0.2) + theme_classic() + theme(legend.position="none")
+    hjust = -0.2) + theme_classic() + 
+  theme(legend.position="none", axis.text.y = element_text(size = 14))
 
 ```
 
@@ -65,9 +66,10 @@ field$Freq[2] <- field$Freq[2] + 1
 field$Freq[3] <- field$Freq[3] + 1
 field %>% dplyr::rename(area = !!names(.)[1]) %>%
     ggplot(data = ., aes(x = reorder(area, Freq),  y= Freq, fill = area)) +
-    geom_bar(stat="identity") + xlab("Area of research") +
+    geom_bar(stat="identity") + labs(x="Field of research", y="Count") +
     geom_text(aes(label = Freq), 
-    vjust = -0.2) + theme_classic() + theme(legend.position="none")
+    vjust = -0.2) + theme_classic() + 
+  theme(legend.position="none", axis.text.x = element_text(size = 12))
 ```
 
 ```{r, include=FALSE}
@@ -75,7 +77,7 @@ as.data.frame(na.omit(data[10]))
 # recode!!! 
 ```
 
-### Area
+### Topic
 
 ```{r}
 t <- foreach(i = 1:nrow(data)) %do% tokenize_words(as.character(data[i, 11]))
@@ -108,7 +110,7 @@ area <- data.frame(matrix(tt)) %>% dplyr::rename(words = !!names(.)[1]) %>%
 area %>% group_by(words) %>% dplyr::summarise(Freq = n()) %>% 
   data.frame(.)  %>% mutate(words = as.character(words)) %>%  #arrange(desc(Freq)) %>% 
     ggplot(data = ., aes(y = reorder(words, Freq),  x= Freq, fill = words)) +
-    geom_bar(stat="identity") + ylab("Words") +
+    geom_bar(stat="identity") + labs(x="Topic of research", y="Frequency") +
     geom_text(aes(label = Freq), 
     hjust = -0.2) + theme_classic() + theme(legend.position="none")
 
@@ -157,8 +159,9 @@ Years
 
 ```{r}
 data %>% filter(.[[20]] < 50) %>% ggplot(data = ., aes_(as.name(names(data)[20]))) +
-  geom_histogram() +  scale_x_continuous(breaks=seq(0, 30, 5)) +
-    labs(x ="Years of experience with EEG, MEG, or iEEG analysis") + theme_classic()
+  geom_histogram(bins = 45) +  scale_x_continuous(breaks=seq(0, 30, 5)) +
+  labs(x ="Years of experience with EEG, MEG, or iEEG analysis", y="Count") +
+  theme_classic() + theme(legend.position="none", axis.text.x = element_text(size = 12)) 
 ```
 
 Self-assessed level
@@ -167,8 +170,10 @@ Self-assessed level
 table(data[21]) %>% data.frame()%>% dplyr::rename(level = !!names(.)[1]) %>%
     ggplot(data = ., aes(x = level, y= Freq, fill = level)) +
     geom_bar(stat="identity") + xlab("Self-assessed level") +
-    geom_text(aes(label = Freq), vjust = -0.2) + theme_classic() + theme(legend.position="none") +
-    scale_x_discrete(limits = c("Beginner", "Intermediate", "Expert")) 
+    geom_text(aes(label = Freq), vjust = -0.2) + theme_classic() +
+  theme(legend.position="none", axis.text.x = element_text(size = 12)) +
+    scale_x_discrete(limits = c("Beginner", "Intermediate", "Expert")) +
+  labs(y="Count") 
 
 ```
 
@@ -235,7 +240,7 @@ d  %>% filter(sum_scores >= 1) %>% mutate(soft = ifelse(sum_scores >= 3, as.char
 ```
 
 
-#### cooccurence
+#### cooccurrence
 
 ```{r, warning=FALSE}
 # how to order by diagonal matrix 
@@ -296,23 +301,55 @@ feature <- data[52:60] %>% rename_all(., ~str_split_i(colnames(data[52:60]), "\\
 feature %>% #filter(index %in% c(2, 6, 7, 4)) %>% 
   ggplot() + 
   geom_density(aes(x = value, fill = str_wrap(name)), bw = 0.5) + 
-  labs(x = "score", fill="Features") +
+  labs(x = "score", fill="Features")  + theme_classic()  +
   theme(legend.position = "none", legend.key.height=unit(2, "cm")) + facet_wrap(~str_wrap(name, 20))
 
 ```
 ```{r}
 feature %>% filter(index %in% c(2, 6, 7, 4)) %>% 
   ggplot() + 
-  geom_density(aes(x = value, fill = str_wrap(name, 20)), bw = 0.5) + 
-  labs(x = "score", fill="Features") +
-  theme(legend.position = "none", legend.key.height=unit(2, "cm")) + facet_wrap(~str_wrap(name, 20))
+  geom_density(aes(x = value, color = str_wrap(name, 20)), bw = 0.5) + 
+  labs(x = "score", color = "Features")  + theme_classic() +
+  theme(legend.position = "none", 
+        legend.key.height=unit(2, "cm"), 
+        axis.text.x = element_text(size = 12),
+        strip.text = element_text(size = 14)) + 
+  facet_wrap(~str_wrap(name, 20)) + labs(x="Scores on Likert scale", y="Density") 
 ```
+```{r}
+feature %>% filter(index %in% c(2, 6, 7, 4)) %>% 
+  ggplot() + 
+  geom_density(aes(x = value, color = str_wrap(name, 20)), bw = 0.5) + 
+  labs(x = "score", color = "Features")  + theme_classic() +
+  theme(
+        legend.key.height=unit(2, "cm"), 
+        axis.text.x = element_text(size = 12),
+        strip.text = element_text(size = 14))  + 
+  labs(x="Scores on Likert scale", y="Density") 
+```
+
 ```{r}
 feature %>% filter(index %in% c(8, 9)) %>% 
   ggplot() + 
-  geom_density(aes(x = value, fill = str_wrap(name, 20)), bw = 0.5) + 
-  labs(x = "score", fill="Features") +
-  theme(legend.position = "none", legend.key.height=unit(2, "cm")) + facet_wrap(~str_wrap(name, 20))
+  geom_density(aes(x = value, color = str_wrap(name, 20)), bw = 0.5) + 
+  labs(x = "score", color ="Features")  + theme_classic() +
+  theme(
+        legend.key.height=unit(2, "cm"), 
+        axis.text.x = element_text(size = 12),
+        strip.text = element_text(size = 14))  + 
+    labs(x="Scores on Likert scale", y="Density") 
+```
+
+```{r}
+feature %>% filter(index %in% c(1, 3, 5)) %>% 
+  ggplot() + 
+  geom_density(aes(x = value, color = str_wrap(name, 20)), bw = 0.5) + 
+  labs(x = "score", color ="Features") + theme_classic() +
+  theme(
+        legend.key.height=unit(2, "cm"), 
+        axis.text.x = element_text(size = 12),
+        strip.text = element_text(size = 14))  + 
+    labs(x="Scores on Likert scale", y="Density") 
 ```
 
 
@@ -412,11 +449,15 @@ table(data[79]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position"
 ## Error bars
 
 ```{r}
-table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>% 
-    ggplot(., aes(x = position, y = scores, fill = as.factor(scores))) +
+table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "Scores")) %>% 
+    ggplot(., aes(x = position, y = Scores, fill = as.factor(Scores))) +
     geom_bar(position = "dodge", stat = "identity", width=0.5) + theme_classic() +
-  theme(axis.title.x=element_blank(), legend.position="none", plot.title = element_text(hjust = 0.5)) +
-  geom_text(aes(label = scores, group = position), position = position_dodge(width = .9), vjust = -0.2) +
+  theme(axis.title.x=element_blank(), 
+        legend.position="none", 
+        axis.text = element_text(size = 12),
+        plot.title = element_text(hjust = 0.5)) +
+      
+  geom_text(aes(label = Scores, group = position), position = position_dodge(width = .9), vjust = -0.2) +
   ggtitle("In your paper, did you published ERP plot with error bars?")
 ```
 
@@ -424,7 +465,10 @@ table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position"
 data[75] %>%  filter(!is.na(.)) %>% table()  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>% 
     ggplot(., aes(x = position, y = scores, fill = as.factor(scores))) +
     geom_bar(position = "dodge", stat = "identity", width=0.5) + theme_classic() +
-  theme(axis.title.x=element_blank(), legend.position="none", plot.title = element_text(hjust = 0.5)) +
+   theme(axis.title.x=element_blank(), 
+        legend.position="none", 
+        axis.text = element_text(size = 12),
+        plot.title = element_text(hjust = 0.5)) + ylab("Scores") +
   geom_text(aes(label = scores, group = position), position = position_dodge(width = .9), vjust = -0.2) +
   ggtitle("In your figure, what did error bars depicted?")
 ```
@@ -485,10 +529,43 @@ table(data[118]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position
 ```
 
 ```{r}
+rbind(table(data[117]) %>% data.frame() %>% 
+  rename_at(vars(colnames(.)), ~ c("answer", "scores")) %>% 
+  mutate(questions = "Awareness about\ncontrovercies of\ncolorbars")%>%
+  mutate(percent_score = round(scores / sum(scores) * 100)),
+
+table(data[118]) %>% data.frame() %>% 
+  rename_at(vars(colnames(.)), ~ c("answer", "scores")) %>% 
+  mutate(questions = "Awareness about\n2d colorbars") %>%
+  mutate(percent_score = round(scores / sum(scores) * 100))
+) %>% 
+  
+  ggplot(., aes(x = percent_score, y = questions, fill = answer)) +
+  geom_col(stat = "identity", width = 0.5) +
+   geom_text(aes(label = paste0(percent_score, "%", "\n(", answer, ")")), 
+            position = position_stack(vjust = 0.5), size = 4) + 
+    theme_classic()+ 
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        legend.position = "none",
+        legend.title = element_blank(),
+        axis.title.y=element_blank()
+        ) +
+  scale_color_manual(values = c("#FF6666", "#66CC66")) +
+  scale_fill_manual(values = c("#FF6666", "#66CC66"))  +
+  labs(x="Percent score")
+```  
+
+
+```{r}
 table(data[119])  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>% 
   ggplot(., aes(x = position, y = scores, fill = as.factor(scores))) +
     geom_bar(stat = "identity", width=0.5)  + theme_classic() +
-  theme(axis.title.x=element_blank(), legend.position="none", plot.title = element_text(hjust = 0.5)) +
+     theme(axis.title.x=element_blank(), 
+        legend.position="none", 
+        axis.text = element_text(size = 12),
+        plot.title = element_text(hjust = 0.5)) + ylab("Scores") +
   geom_text(aes(label = scores, group = position), position = position_dodge(width = .9), vjust = -0.2) +
   ggtitle("Would you like to use a two-dimensional colorbar\nin your publications, if it was easily available?")
 ```

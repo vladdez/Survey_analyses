@@ -332,18 +332,21 @@ word_preproc_tool_2 <- function(data, N, lim){
 struggle1 <- word_preproc_tool_2(data, 71, 10) 
 separated_row <- separate_rows(struggle1[98, ], parts, sep = ",|\\.") %>% dplyr::select(parts)
 
-struggle1 %>% filter( parts != "-") %>% dplyr::select(parts) %>% 
+struggle1 <- struggle1 %>% filter( parts != "-") %>% dplyr::select(parts) %>% 
   filter(!row_number() %in% c(2, 11, 40, 41, 69, 78, 83, 87, 89, 91))  %>% 
   separate_rows(parts, sep = "2\\)", convert = FALSE) %>% 
   separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
   mutate(problems = case_when(
       grepl("\\b(ci|se|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", parts) == TRUE ~ "uncertainty", 
-      grepl("\\b(axes|lable(s)?|label(s)?|legend|ticks)\\b", parts) == TRUE ~ "plot components (axes, lables, legend)", 
+      grepl("\\b(axes|lable(s)?|label(s)?|legend|ticks)\\b", parts) == TRUE ~ "plot components\n(axes, lables, legend)", 
       grepl("\\b(color(s)?|colour(s)?|proportion(s)?|publication|scal(e|ing))\\b", parts) == TRUE ~ "styling", 
       grepl("\\b(preprocessing|extracting|datatype)\\b", parts) == TRUE ~ "preprocessing", 
       grepl("\\b(syncronisation|organizing|groups)\\b", parts) == TRUE ~ "subplotting", 
       grepl("\\b(mean|significan(t|ce)|permutations|combine)\\b", parts) == TRUE ~ "statistics", 
-      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems))  %>% group_by(problems) %>% dplyr::summarise(n = n()) %>% mutate(percent = round(n / sum(n), 2) * 100) %>% arrange(desc(n)) %>% 
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems))  %>% group_by(problems) %>% dplyr::summarise(n = n()) %>% mutate(percent = round(n / sum(n), 2) * 100) 
+
+struggle1 %>% 
+  arrange(desc(n)) %>% 
   kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
   kable_classic(full_width = F, html_font = "Arial")
 
@@ -351,6 +354,35 @@ struggle1 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
  #  write.xlsx(., "data/struggles.xlsx", sheetName = "line plot", col.names = TRUE, row.names = TRUE, append = FALSE)
 
 ```
+
+```{r}
+struggle1 %>% 
+  arrange(desc(n)) %>% 
+  ggplot(., aes(y = reorder(problems, percent), x = percent, fill = problems)) +
+  geom_col() +
+  geom_text(aes(label = paste0(percent, "%"), y = problems, x = percent),
+            position = position_stack(vjust = 0.5), color = "black") +
+  labs(x = "Percent", y  = "Problem category") +
+  theme_classic() +
+  theme(axis.text = element_text(size = 12), legend.position = "none")
+```
+```{r}
+# create the data frame
+df <- data.frame(
+  problems = c("uncertainty", "plot components (axes, lables, legend)", "styling", "statistics", "preprocessing", "subplotting"),
+  percent = c(63, 14, 10, 6, 3, 3)
+)
+
+# create a categorical variable for the problem category
+df$problem_category <- factor(
+  ifelse(grepl("plot|subplot", df$problems), "plotting", "other")
+)
+
+# create the plot
+
+```
+
+
 
 ## New features
 
