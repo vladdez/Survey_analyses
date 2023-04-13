@@ -50,17 +50,6 @@ log.model <- glm(ud ~ area, data = ud, family = 'binomial')
 summary(log.model)
 ```
 
-```{r, eval = FALSE, echo = FALSE}
-  cbind(unlist(area$words), unlist(data[[79]])) %>% data.frame() %>% 
-  filter(.[[2]] != "NANA") %>% dplyr::rename(area=X1, ud=X2) %>%
-  group_by(area) %>%
-  filter(n() > 2) %>% 
-  ggplot(., aes(y = area)) +
- geom_bar(aes(fill = factor(ud)), position = position_stack(reverse = TRUE)) +
-  labs(x = "count",  fill ="Positive:") +
- theme(legend.position = "top")
-```
-
 
 ## Experience ~ tools 
 

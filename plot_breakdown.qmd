@@ -40,6 +40,7 @@ vec <- names(data[ , grepl( "How would you " , names(data))])
 ```
 
 ## word_preproc
+
 ```{r}
 word_preproc <- function(data, N){
  # N = 69
@@ -66,6 +67,8 @@ word_preproc <- function(data, N){
 Those who named a plot somehow and those who failed to do that
 
 ```{r, warning=FALSE}
+plot_names <- c("line", "butterfly", "topo", "topo_array", "topo_map", "erp_img", "parallel", "channel_img")
+
 na_table <- function(data, vec){
     temp <- data.frame(1:10)
     for (i in vec){
@@ -78,13 +81,13 @@ na_table <- function(data, vec){
       temp <- cbind(temp, temp1)
     }
     temp <- temp[2:length(temp)]
-    colnames(temp) <- c("line plot","butterfly","topoplot","topoarray","topomap","ERP image","parallel", "channel image")
+    colnames(temp) <- plot_names
     return(temp)
 }
 
 num_named <- na_table(data, vec)
 slice(num_named, 1)  %>% 
-  gather(., plots, succeeded, `line plot`:`channel image`, factor_key=TRUE) %>% 
+  gather(., plots, succeeded, `line`:`channel_img`, factor_key=TRUE) %>% 
   mutate(failed = nrow(data) - succeeded) %>% 
   gather(., res, score, succeeded:failed, factor_key=TRUE) %>% 
 
@@ -97,6 +100,46 @@ slice(num_named, 1)  %>%
 
 
 ```
+
+
+```{r, warning=FALSE}
+vec <- names(data[ , grepl( "Have you ever plotted " , names(data))]) 
+
+
+do_vec <- function(vec, data, plot_names){
+  t1 <- table(data[vec[1]])
+  for (i in 2:length(vec)) {
+    t <- table(data[vec[i]])
+    t1 <- rbind(t1, t)
+  }
+  rownames(t1) <- plot_names #array(paste0("t_", 1:length(vec)))
+  return(t1)
+}
+tab <- do_vec(vec, data, plot_names) %>%  data.frame() %>% tibble::rownames_to_column(., "plots") %>%  
+  gather(., type, plotted, `N.A`:`Yes`, factor_key=TRUE) %>% 
+  filter(type == "Yes") %>% dplyr::select(-type) 
+
+memoried <- slice(num_named, 1)  %>% 
+  gather(., plots, succeeded, `line`:`channel_img`, factor_key=TRUE)%>% 
+  mutate(failed = nrow(data) - succeeded) %>% 
+  dplyr::rename(named = succeeded) %>% 
+  dplyr::select(-failed)
+
+familiar <-  data[61:68] %>% rename_at(vars(colnames(.)), ~ plot_names) %>% 
+  mutate_at(vars(plot_names), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0)))
+
+data.frame(rowSums(t(familiar))) %>%  tibble::rownames_to_column(., "plot") %>% 
+   rename_at(vars(colnames(.)), ~ c("plots", "recognized")) %>%
+  merge(., memoried)  %>% left_join(., tab)  %>% #filter(plots != "parallel") %>% 
+  gather(., type, score,  recognized:plotted, factor_key=TRUE) %>% 
+  ggplot(., aes(x = reorder(plots, -score), y = score, fill = type)) +
+    geom_bar(position = "dodge", stat = "identity") +
+    labs(x = "Plot type", y = "Number of users", fill = "Level of\nfamiliarity\nwith plot") +
+    theme_classic() + geom_text(aes(label = score, group = type), position = position_dodge(width = .9), vjust = -0.2) +  theme(plot.title = element_text(hjust = 0.5)) +
+  ggtitle("Familiarity with plots")
+```
+
+
 ## The most common names for each plot
 #### 1
 

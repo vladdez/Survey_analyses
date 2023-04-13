@@ -82,14 +82,13 @@ t <- foreach(i = 1:nrow(data)) %do% tokenize_words(as.character(data[i, 11]))
 tt <- foreach(i = 1:length(t)) %do% paste(unlist(t[i]), collapse = ' ') 
 
 
-area <- data.frame(matrix(tt)) %>% dplyr::rename(words = !!names(.)[1]) %>%
+area1 <- data.frame(matrix(tt)) %>% dplyr::rename(words = !!names(.)[1]) %>%
   mutate(words = ifelse(str_detect(.[[1]], 'emot|empathy'), "affective neuroscience", words)) %>%  
-  #mutate(words =ifelse(str_detect(.[[1]], 'spatial'), "spatial", words)) %>% 
   mutate(words =ifelse(str_detect(.[[1]], 'memory'), "memory", words)) %>% 
   mutate(words =ifelse(str_detect(.[[1]], 'hearing|audit'), "auditory", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'cognition|consciousness|meditation|cognitive control|self|executive functions'), "cognitive control", words)) %>% 
+  mutate(words =ifelse(str_detect(.[[1]], 'cognitive load|selective attention|attention|cognition|consciousness|meditation|cognitive control|self|executive functions'), "cognitive control and attention", words)) %>% 
   mutate(words =ifelse(str_detect(.[[1]], 'dbs'), "deep brain stimulation", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'decision making|reward'), "decision making", words)) %>% 
+  mutate(words =ifelse(str_detect(.[[1]], 'decision making|reward'), "decision making", words)) %>%
   mutate(words =ifelse(str_detect(.[[1]], 'ageing'), "ageing", words)) %>% 
   mutate(words =ifelse(str_detect(.[[1]], 'social'), "social cognition", words)) %>% 
   mutate(words =ifelse(str_detect(.[[1]], 'olfac'), "olfaction", words)) %>% 
@@ -97,13 +96,19 @@ area <- data.frame(matrix(tt)) %>% dplyr::rename(words = !!names(.)[1]) %>%
   mutate(words =ifelse(str_detect(.[[1]], 'bci'), "bci", words)) %>% 
   mutate(words =ifelse(str_detect(.[[1]], 'sleep'), "sleep", words)) %>% 
   mutate(words =ifelse(str_detect(.[[1]], 'timing|time|temporal'), "time", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'cognitive load|selective attention|attention|perception'), "attention and perception", words)) %>% 
+  mutate(words =ifelse(str_detect(.[[1]], 'perception'), "perception", words)) %>% 
   mutate(words =ifelse(str_detect(.[[1]], 'vis'), "vision", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'developmental|development'), "development", words)) %>% 
+  mutate(words =ifelse(str_detect(.[[1]], 'developmental|development|ageing'), "development", words)) %>% 
   mutate(words =ifelse(str_detect(.[[1]], 'spatial|brain body|motor|motion'), "motor control", words)) %>% 
   mutate(words =ifelse(str_detect(.[[1]], 'diagnostics|disorder|psychiatry|epilepsy|autism|patients|therapy|psychopharmacology'), "mental disorders", words)) %>%   
   mutate(words =ifelse(str_detect(.[[1]], 'signal processing|event related potentials|method|sdf|ieeg'), "dsp", words))
 
+area <- area1 %>%
+  mutate(words = ifelse(str_detect(.[[1]], 'olfaction|vision|auditory|pain'), "perception", words))%>%
+  mutate(words = ifelse(str_detect(.[[1]], 'dsp|computational neuroscience'), "methodology", words)) %>% 
+  mutate(words = ifelse(str_detect(.[[1]], 'mental disorders|deep brain stimulation'), "clinical", words))%>% 
+  mutate(words = ifelse(str_detect(.[[1]], 'social cognition'), "affective neuroscience", words))
+   
    
 area %>% group_by(words) %>% dplyr::summarise(Freq = n()) %>% 
   data.frame(.)  %>% mutate(words = as.character(words)) %>%  #arrange(desc(Freq)) %>% 
