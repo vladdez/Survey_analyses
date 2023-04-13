@@ -89,9 +89,10 @@ d <- data.frame(rowSums(t(software))) %>%  tibble::rownames_to_column(., "soft")
 d  %>% filter(sum_scores >= 1) %>% mutate(soft = ifelse(sum_scores >= 3, as.character(soft), "_Others")) %>% group_by(soft) %>% 
   dplyr::summarise(sum_scores = sum(sum_scores)) %>% 
     ggplot(data = ., aes(y = reorder(soft, sum_scores),  x= sum_scores, fill = soft)) +
-    geom_bar(stat="identity") + ylab("Soft") +
+    geom_bar(stat="identity") + labs(x= "Scores", y="Soft") +
     geom_text(aes(label = sum_scores), 
-    hjust = -0.2) + theme_classic() + theme(legend.position="none")
+    hjust = -0.2) + theme_classic() + theme(legend.position="none",
+                                            axis.text.y = element_text(size = 14))
 
 ```
 
@@ -123,6 +124,21 @@ melt(mat_reordered) %>% ggplot(., aes(x=Var1, y=Var2)) +
 
 ```
 
+```{r}
+
+zero_rows <- rowSums(mat_reordered) == 0
+zero_cols <- colSums(mat_reordered) == 0
+
+# Create a new matrix array without the rows and columns consisting only of zeroes
+new_matrix <- mat_reordered[!zero_rows, !zero_cols]
+melt(new_matrix) %>% ggplot(., aes(x=Var1, y=Var2)) + 
+  geom_tile(aes(fill = value)) + 
+  geom_text(aes(label = value)) +
+  scale_fill_gradient(low = "white", high = "red") +
+  theme(legend.title = element_blank(),
+        axis.title=element_blank(),
+        axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) 
+```
 
 ## Important features
 
@@ -137,7 +153,8 @@ data[52:60] %>% rename_with(., ~str_split_i(colnames(data[52:60]), "\\? \\[", 2)
   colSums(., na.rm =T) %>% data.frame(.) %>%  tibble::rownames_to_column(., "Feature") %>% 
   filter(!is.na(Feature)) %>% 
   arrange(desc(.)) %>% rename_at(vars(colnames(.)), ~ c("Feature", "sum_scores")) %>% group_by(Feature) %>% 
-  dplyr::mutate( mean = round(sum_scores / nrow(data), 2)) %>%   kbl() 
+  dplyr::mutate( mean = round(sum_scores / nrow(data), 2)) %>%   kbl(escape = F, booktabs = T) %>%
+  kable_styling("striped", position = "center",) %>% kable_classic(full_width = F, html_font = "Arial")
 
 ```
 
