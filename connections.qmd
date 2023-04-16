@@ -16,11 +16,9 @@ library(data.table)
 library(ggplot2)
 library(plyr)
 library(quanteda)
-library(SemNetCleaner)
 library(purrr)
 library(tidytext)
 library(tm)
-library(topicmodels)
 library(SnowballC)
 library(Matrix)
 library(text2vec)
@@ -29,6 +27,9 @@ library(janitor)
 library(GGally)
 library(formattable)
 library(kableExtra)
+library(FactoMineR)
+library(psych)
+library(factoextra)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
@@ -37,22 +38,77 @@ data <- data[1:121] %>%
   filter(.[[18]] !='Yes') # not analysed any EEG method
 ```
 
+
+## In search of single variable representing experience
+
+```{r, include=FALSE}
+exp_data <- data[c( 19, 20, 12, 21, 22)]
+colnames(exp_data) <- c("n_papers", "years", "position","self_level", "code_contribution")
+exp_data
+
+
+short <- exp_data[c(1:2, 5)] %>% mutate(code_contribution = ifelse(code_contribution=="Yes", 1, 0))
+
+# standardiye
+#remove outliers 
+```
+
+```{r}
+m = FAMD(exp_data[1:5], ncp=2, axes=c(1,2))
+
+fviz_famd_ind(m, col.ind = "cos2", 
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE)
+```
+
+```{r}
+factor_scores <- as.data.frame(m$ind$coord)
+head(factor_scores)
+
+cbind(data[20], factor_scores[1])  %>% 
+   rename_at(vars(colnames(.)), ~ c("years", "proxy")) %>% 
+  with(cor.test( proxy, years)) %>% 
+  broom::tidy()
+  #lm(data=.,years ~ proxy) %>% summary(.)
+```
+
 ## Up or down
 
 ```{r, eval = FALSE, echo = FALSE}
-ud <- cbind(unlist(area$words), unlist(data[[79]])) %>% data.frame() %>% 
-  filter(.[[2]] != "NANA") %>% dplyr::rename(area=X1, ud=X2) %>% 
-  mutate(ud = ifelse(ud=="Up", 1, 0)) %>% 
-  group_by(area) %>%
-  filter(n() > 2)
 
-log.model <- glm(ud ~ area, data = ud, family = 'binomial')
-summary(log.model)
+cbind(data[79], factor_scores[1])  %>% 
+   rename_at(vars(colnames(.)), ~ c("ud", "proxy")) %>% filter(!is.na(ud)) %>% 
+  mutate(ud = ifelse(ud=="Up", 1, 0)) %>% 
+  t.test( proxy ~ ud , data=.) %>% 
+  broom::tidy()
+  #glm(data=., ud ~ proxy) %>% summary(.)
+
+
+
+cbind(data[79], factor_scores[1])  %>% 
+   rename_at(vars(colnames(.)), ~ c("ud", "proxy")) %>% filter(!is.na(ud)) %>% 
+  ggplot(., aes(x=as.factor(ud), y = proxy)) + 
+  geom_boxplot() + labs(x = "Aware or not abour colorbar controvercies", y = "Experience") +  theme_classic()
+```
+## colorbars
+
+```{r, eval = FALSE, echo = FALSE}
+
+cbind(data[117], factor_scores[1])  %>% 
+   rename_at(vars(colnames(.)), ~ c("cb_aware", "proxy")) %>% filter(!is.na(cb_aware)) %>% 
+  mutate(cb_aware = ifelse(cb_aware=="Yes", 1, 0)) %>% 
+  #glm(data=., cb_aware ~ proxy) %>% summary(.)
+   t.test( proxy ~ cb_aware , data=.) %>% 
+  broom::tidy()
+
+cbind(data[117], factor_scores[1])  %>% 
+   rename_at(vars(colnames(.)), ~ c("cb_aware", "proxy")) %>% filter(!is.na(cb_aware)) %>% 
+  ggplot(., aes(x=as.factor(cb_aware), y = proxy)) + 
+  geom_boxplot() + labs(x = "Aware or not abour colorbar controvercies", y = "Experience") +  theme_classic()
 ```
 
 
-## Experience ~ tools 
-
+## Experience \ tools
 
 ```{r, warning=FALSE}
 vec <- names(data[25:51]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
@@ -127,6 +183,7 @@ for (i in 1:length(cn)){
 ```
 
 ## Number of used software
+
 #### and years of experience
 
 ```{r}
@@ -146,6 +203,7 @@ ny %>%
 
 ny %>% ggplot(., aes(x=n_soft, y=years)) + geom_jitter() + geom_smooth()
 ```
+
 #### and self assessment
 
 ```{r}
@@ -156,67 +214,20 @@ merge(data.frame(rowSums(software)), data[21]) %>%
 ```
 
 
-## In search of single variable representing experience 
-
-```{r, include=FALSE}
-exp_data <- data[c( 19, 20, 12, 21, 22)]
-colnames(exp_data) <- c("n_papers", "years", "position","self_level", "code_contribution")
-exp_data
-
-
-short <- exp_data[c(1:2, 5)] %>% mutate(code_contribution = ifelse(code_contribution=="Yes", 1, 0))
-
-# standardiye
-#remove outliers 
-```
 
 
 <!-- ```{r} -->
-<!-- cov(short) -->
-<!-- fit <- factanal(~ ., data = short, factors = 1,  rotation = "varimax", na.action = na.exclude) -->
-<!-- fa.diagram(fit$loadings) -->
-<!-- ``` -->
-
-
-
-<!-- ```{r} -->
-<!-- library(FactoMineR) -->
-<!-- library(psych) -->
-
-
-<!-- res.mfa <-MFA(exp_data, group = c(2, 3), type = c("s", "n"),  -->
-<!--      ind.sup = NULL, name.group = c("cont", "cat"), num.group.sup = NULL,  -->
-<!--      graph = TRUE) -->
-<!-- group <- get_mfa_var(res.mfa, "group") -->
-<!-- group -->
-<!-- fviz_mfa_var(res.mfa, "group") -->
-<!-- ``` -->
-
-
-<!-- ```{r} -->
-<!-- cortest.bartlett(exp_data[1:2]) -->
+<!-- ggpairs(exp_data[1:2])  -->
 <!-- ``` -->
 
 <!-- ```{r} -->
-<!-- library("factoextra") -->
-<!-- m = FAMD(exp_data[1:4],ncp=2,axes=c(1,2)) -->
-<!-- m$ind -->
-
+<!-- ggpairs(exp_data[4:5])  -->
 <!-- ``` -->
 
+<!-- ```{r} -->
+<!-- ggpairs(exp_data[3:5])  -->
+<!-- ``` -->
 
-```{r}
-ggpairs(exp_data[1:2]) 
-```
-
-```{r}
-ggpairs(exp_data[4:5]) 
-```
-
-```{r}
-ggpairs(exp_data[3:5]) 
-```
-
-```{r}
-ggpairs(exp_data) 
-```
+<!-- ```{r} -->
+<!-- ggpairs(exp_data)  -->
+<!-- ``` -->

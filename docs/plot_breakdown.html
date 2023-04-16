@@ -296,7 +296,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 class="anchored" data-anchor-id="plot-naming">Plot naming</h2>
 <p>Those who named a plot somehow and those who failed to do that</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plot_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"line"</span>, <span class="st">"butterfly"</span>, <span class="st">"topo"</span>, <span class="st">"topo_array"</span>, <span class="st">"topo_map"</span>, <span class="st">"erp_img"</span>, <span class="st">"parallel"</span>, <span class="st">"channel_img"</span>)</span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plot_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"line"</span>, <span class="st">"butterfly"</span>, <span class="st">"topo"</span>, <span class="st">"topo_map"</span>, <span class="st">"topo_array"</span>, <span class="st">"erp_img"</span>, <span class="st">"parallel"</span>, <span class="st">"channel_img"</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>na_table <span class="ot">&lt;-</span> <span class="cf">function</span>(data, vec){</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    temp <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
@@ -393,7 +393,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>       <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(p300)</span><span class="sc">\\</span><span class="st">b"</span>, words) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"p300"</span>,</span>
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(average)</span><span class="sc">\\</span><span class="st">b"</span>, words) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"average"</span>,</span>
 <span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">'_other'</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>      ))  <span class="sc">%&gt;%</span> <span class="co">#filter(type == "erp") %&gt;%  View()</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>      ))  <span class="sc">%&gt;%</span><span class="co"># filter(type == "erp") %&gt;%  #View()</span></span>
 <span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>   <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(type), type <span class="sc">!=</span> <span class="st">"bad"</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(type) <span class="sc">%&gt;%</span>  <span class="fu">table</span>(.) <span class="sc">%&gt;%</span> </span>
 <span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq))  <span class="sc">%&gt;%</span> </span>
 <span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> <span class="fu">c</span>(<span class="st">"Line plot"</span>, <span class="st">"n"</span>)) </span>
@@ -429,7 +429,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(evoked)</span><span class="sc">\\</span><span class="st">b"</span>, words_prep)  <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"evoked responces"</span>,</span>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(erp(s)?|eprs|event-related)</span><span class="sc">\\</span><span class="st">b"</span>, words_prep) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"erp"</span>,</span>
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">'_other'</span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">"single or individual channel erp"</span>) <span class="sc">%&gt;%</span>  <span class="co">#View()</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">%&gt;%</span> <span class="co">#filter(type == "single or individual channel erp") %&gt;%  #View()</span></span>
 <span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(type), type <span class="sc">!=</span> <span class="st">"bad"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(type) <span class="sc">%&gt;%</span>  <span class="fu">table</span>(.) <span class="sc">%&gt;%</span> </span>
 <span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq))  <span class="sc">%&gt;%</span> </span>
@@ -437,7 +437,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>n2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                    Butterfly_plot  n
-1 single or individual channel erp 19</code></pre>
+1                        butterfly 69
+2 single or individual channel erp 19
+3                              erp 15
+4       multichannel/electrode erp 15
+5                      time series 10
+6                           _other  7
+7                 evoked responces  3
+8                        spaghetti  2</code></pre>
 </div>
 </div>
 </section>
@@ -492,10 +499,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">%&gt;%</span>  <span class="co">#View()</span></span>
 <span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(type) <span class="sc">%&gt;%</span>  <span class="fu">table</span>(.) <span class="sc">%&gt;%</span> </span>
 <span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq)) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">!=</span> <span class="st">"bad"</span>)  <span class="sc">%&gt;%</span> </span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> <span class="fu">c</span>(<span class="st">"Topo array"</span>, <span class="st">"n"</span>)) </span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> <span class="fu">c</span>(<span class="st">"Topo map"</span>, <span class="st">"n"</span>)) </span>
 <span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>n4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>           Topo array  n
+<pre><code>             Topo map  n
 1                topo 39
 2          topography 36
 3           time topo 24
@@ -530,10 +537,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">%&gt;%</span> <span class="co">#filter(type=="erp") %&gt;% View()</span></span>
 <span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(type) <span class="sc">%&gt;%</span>  <span class="fu">table</span>(.) <span class="sc">%&gt;%</span> </span>
 <span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(.) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(Freq)) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">!=</span> <span class="st">"bad"</span>)  <span class="sc">%&gt;%</span> </span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> <span class="fu">c</span>(<span class="st">"Topomap"</span>, <span class="st">"n"</span>)) </span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> <span class="fu">c</span>(<span class="st">"Topo array"</span>, <span class="st">"n"</span>)) </span>
 <span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>n5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                     Topomap  n
+<pre><code>                  Topo array  n
 1                        erp 54
 2            topographic erp 29
 3 multi or multichannel plot 17
@@ -727,8 +734,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  </thead>
 <tbody>
   <tr>
+   <td style="text-align:left;"> butterfly </td>
+   <td style="text-align:right;"> 69 </td>
+  </tr>
+  <tr>
    <td style="text-align:left;"> single or individual channel erp </td>
    <td style="text-align:right;"> 19 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> erp </td>
+   <td style="text-align:right;"> 15 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> multichannel/electrode erp </td>
+   <td style="text-align:right;"> 15 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> time series </td>
+   <td style="text-align:right;"> 10 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> _other </td>
+   <td style="text-align:right;"> 7 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> evoked responces </td>
+   <td style="text-align:right;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> spaghetti </td>
+   <td style="text-align:right;"> 2 </td>
   </tr>
 </tbody>
 </table>
@@ -781,7 +816,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <table>
  <thead>
   <tr>
-   <th style="text-align:left;"> Topo array </th>
+   <th style="text-align:left;"> Topo map </th>
    <th style="text-align:right;"> n </th>
   </tr>
  </thead>
@@ -843,7 +878,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <table>
  <thead>
   <tr>
-   <th style="text-align:left;"> Topomap </th>
+   <th style="text-align:left;"> Topo array </th>
    <th style="text-align:right;"> n </th>
   </tr>
  </thead>
@@ -1039,7 +1074,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>struggle1 <span class="ot">&lt;-</span> <span class="fu">word_preproc_tool_2</span>(data, <span class="dv">71</span>, <span class="dv">10</span>) </span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>separated_row <span class="ot">&lt;-</span> <span class="fu">separate_rows</span>(struggle1[<span class="dv">98</span>, ], parts, <span class="at">sep =</span> <span class="st">",|</span><span class="sc">\\</span><span class="st">."</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(parts)</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>struggle1 <span class="ot">&lt;-</span> struggle1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>( parts <span class="sc">!=</span> <span class="st">"-"</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(parts) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>struggle2 <span class="ot">&lt;-</span> struggle1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>( parts <span class="sc">!=</span> <span class="st">"-"</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(parts) <span class="sc">%&gt;%</span> </span>
 <span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">row_number</span>() <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">11</span>, <span class="dv">40</span>, <span class="dv">41</span>, <span class="dv">69</span>, <span class="dv">78</span>, <span class="dv">83</span>, <span class="dv">87</span>, <span class="dv">89</span>, <span class="dv">91</span>))  <span class="sc">%&gt;%</span> </span>
 <span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(parts, <span class="at">sep =</span> <span class="st">"2</span><span class="sc">\\</span><span class="st">)"</span>, <span class="at">convert =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(parts, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\\\r\\\n</span><span class="st">"</span>, <span class="at">convert =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span>  <span class="fu">rbind</span>(., separated_row) <span class="sc">%&gt;%</span></span>
@@ -1050,12 +1085,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(preprocessing|extracting|datatype)</span><span class="sc">\\</span><span class="st">b"</span>, parts) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"preprocessing"</span>, </span>
 <span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(syncronisation|organizing|groups)</span><span class="sc">\\</span><span class="st">b"</span>, parts) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"subplotting"</span>, </span>
 <span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(mean|significan(t|ce)|permutations|combine)</span><span class="sc">\\</span><span class="st">b"</span>, parts) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"statistics"</span>, </span>
-<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">nchar</span>(parts) <span class="sc">!=</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(problems))  <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(problems) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">percent =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span>) </span>
-<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>struggle1 <span class="sc">%&gt;%</span> </span>
-<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> </span>
-<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="st">"striped"</span>, <span class="at">position =</span> <span class="st">"center"</span>,) <span class="sc">%&gt;%</span> </span>
-<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_classic</span>(<span class="at">full_width =</span> F, <span class="at">html_font =</span> <span class="st">"Arial"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">nchar</span>(parts) <span class="sc">!=</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(problems)) </span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>n_rest <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data) <span class="sc">-</span> <span class="fu">nrow</span>(struggle2)</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>struggle3 <span class="ot">&lt;-</span> struggle2 <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(problems) <span class="sc">%&gt;%</span></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rbind</span>(<span class="fu">c</span>(<span class="st">"no complains"</span>, <span class="fu">as.numeric</span>(n_rest))) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">as.numeric</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">percent =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">3</span>) <span class="sc">*</span> <span class="dv">100</span> ,<span class="at">percent1 =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span>) </span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>struggle3 <span class="sc">%&gt;%</span> </span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="st">"striped"</span>, <span class="at">position =</span> <span class="st">"center"</span>,) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_classic</span>(<span class="at">full_width =</span> F, <span class="at">html_font =</span> <span class="st">"Arial"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <table class="table table-striped lightable-classic" style="margin-left: auto; margin-right: auto; font-family: Arial; width: auto !important; margin-left: auto; margin-right: auto;">
@@ -1064,49 +1106,64 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    <th style="text-align:left;"> problems </th>
    <th style="text-align:right;"> n </th>
    <th style="text-align:right;"> percent </th>
+   <th style="text-align:right;"> percent1 </th>
   </tr>
  </thead>
 <tbody>
   <tr>
+   <td style="text-align:left;"> no complains </td>
+   <td style="text-align:right;"> 97 </td>
+   <td style="text-align:right;"> 51.9 </td>
+   <td style="text-align:right;"> 52 </td>
+  </tr>
+  <tr>
    <td style="text-align:left;"> uncertainty </td>
    <td style="text-align:right;"> 57 </td>
-   <td style="text-align:right;"> 63 </td>
+   <td style="text-align:right;"> 30.5 </td>
+   <td style="text-align:right;"> 30 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> plot components
 (axes, lables, legend) </td>
    <td style="text-align:right;"> 13 </td>
-   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 7.0 </td>
+   <td style="text-align:right;"> 7 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> styling </td>
    <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 4.8 </td>
+   <td style="text-align:right;"> 5 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> statistics </td>
    <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 2.7 </td>
+   <td style="text-align:right;"> 3 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> preprocessing </td>
    <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 1.6 </td>
+   <td style="text-align:right;"> 2 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> subplotting </td>
    <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 1.6 </td>
+   <td style="text-align:right;"> 2 </td>
   </tr>
 </tbody>
 </table>
 
 </div>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a> <span class="co"># words = ifelse(nchar(words)==0, NA, words),</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#  write.xlsx(., "data/struggles.xlsx", sheetName = "line plot", col.names = TRUE, row.names = TRUE, append = FALSE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#  write.xlsx(., "data/struggles.xlsx", sheetName = "line plot", col.names = TRUE, row.names = TRUE, append = FALSE)</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># problems: n of problems is higher than number of rows, </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>struggle1 <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>struggle3 <span class="sc">%&gt;%</span> </span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> </span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">reorder</span>(problems, percent), <span class="at">x =</span> percent, <span class="at">fill =</span> problems)) <span class="sc">+</span></span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>

@@ -41,7 +41,6 @@ data <- data[1:121] %>%
   filter(.[[18]] !='Yes') # not analysed any EEG method
 ```
 
-
 ## Channels
 
 How many channels do you typically measure?
@@ -78,22 +77,62 @@ vec <- names(data[25:50]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2
 
 software <- data[25:50] %>%
     rename_at(vars(colnames(.)), ~ vec) %>% 
-  mutate_at(vars(vec), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0)))
+  mutate_at(vars(vec), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0))) %>% 
+  cbind(., data[51] %>% rename_at(vars(colnames(.)), ~ c("other"))) %>% mutate(other = case_when(
+      grepl("\\b(letswave)\\b", other, ignore.case = TRUE) == TRUE ~ "Letswave",
+      grepl("\\b(r|matlab|python|ggplot(2)?|own)\\b", other, ignore.case = TRUE) == TRUE ~ "Custom scripts",
+      grepl("\\bnever\\b", other, ignore.case = TRUE) == TRUE ~ NA_character_,
+      TRUE ~ as.character(other)
+      ))  %>%
+  mutate(cs = ifelse(other == "Custom scripts", other, NA_character_),
+         other2 = ifelse(other != "Custom scripts", other, NA_character_)) %>% 
+  mutate(`Custom scripts` = case_when(
+    cs == "Custom scripts" ~ as.numeric(1),
+    TRUE ~ as.numeric(`Custom scripts`)
+  )) %>% 
+  mutate(Letswave = case_when( #gross
+    other2 == "Letswave" ~ as.numeric(1),
+    TRUE ~ as.numeric(0)
+  )) %>% dplyr::select(-cs, -other, -other2) # next time I also will extend other 2 too
 
 
 d <- data.frame(rowSums(t(software))) %>%  tibble::rownames_to_column(., "soft") %>% 
-   rename_at(vars(colnames(.)), ~ c("soft", "sum_scores"))   %>% 
-  rbind(., other) %>% dplyr::group_by(soft) %>% dplyr::summarise(sum_scores = sum(sum_scores)) %>% 
-  arrange(., desc(sum_scores))
+    rename_at(vars(colnames(.)), ~ c("soft", "sum_scores"))   #%>% 
+  # rbind(., other) %>% # not sure is it correct
+  # dplyr::group_by(soft) %>% dplyr::summarise(sum_scores = sum(sum_scores)) %>% 
+  # arrange(., desc(sum_scores))
 
-d  %>% filter(sum_scores >= 1) %>% mutate(soft = ifelse(sum_scores >= 3, as.character(soft), "_Others")) %>% group_by(soft) %>% 
-  dplyr::summarise(sum_scores = sum(sum_scores)) %>% 
-    ggplot(data = ., aes(y = reorder(soft, sum_scores),  x= sum_scores, fill = soft)) +
-    geom_bar(stat="identity") + labs(x= "Scores", y="Soft") +
-    geom_text(aes(label = sum_scores), 
-    hjust = -0.2) + theme_classic() + theme(legend.position="none",
-                                            axis.text.y = element_text(size = 14))
 
+```
+
+```{r}
+d  %>% filter(sum_scores != 0) %>% 
+  mutate(soft = ifelse(sum_scores >= 3, as.character(soft), "_Others")) %>% group_by(soft) %>% 
+  dplyr::summarise(sum_scores = sum(sum_scores)) %>% ungroup() %>% 
+  mutate(percent_score = round(sum_scores / sum(sum_scores) * 100)) %>% 
+    ggplot(data = ., aes(y = reorder(soft, percent_score),  x= percent_score, fill = soft)) +
+    geom_bar(stat="identity") + labs(x= "Scores", y="Analytical tools") +
+    geom_text(aes(label = paste0(percent_score, "%")), 
+            position = position_stack(vjust = 0.5), size = 4)  + theme_classic() + theme(legend.position="none", axis.text.y = element_text(size = 14))
+```
+
+#### Number of used tools
+
+```{r}
+data.frame(rowSums(software)) %>%  dplyr::rename(n_soft = rowSums.software.) %>% 
+ ggplot(data = ., aes(n_soft)) +
+  geom_histogram(bins = 45) +  scale_x_continuous(breaks=seq(0, 30, 1)) +
+  labs(x ="Number of software used", y="Count") +
+  theme_classic() + theme(legend.position="none", axis.text.x = element_text(size = 12)) 
+
+ns <- cbind(data.frame(rowSums(software), software)) %>% 
+  filter(rowSums.software. == 1) %>% dplyr::select(-rowSums.software.)
+
+data.frame(rowSums(t(ns))) %>%  
+  tibble::rownames_to_column(., "soft") %>% 
+   rename_at(vars(colnames(.)), ~ c("soft", "sum_scores")) %>% 
+  arrange(., desc(sum_scores)) %>% filter(sum_scores != 0)
+  
 ```
 
 
@@ -158,7 +197,6 @@ data[52:60] %>% rename_with(., ~str_split_i(colnames(data[52:60]), "\\? \\[", 2)
 
 ```
 
-
 ```{r, warning=FALSE}
 feature <- data[52:60] %>% rename_all(., ~str_split_i(colnames(data[52:60]), "\\? \\[", 2) %>% 
                                         str_sub(., 1, -2) ) %>%  
@@ -178,6 +216,7 @@ feature %>% #filter(index %in% c(2, 6, 7, 4)) %>%
   theme(legend.position = "none", legend.key.height=unit(2, "cm")) + facet_wrap(~str_wrap(name, 20))
 
 ```
+
 ```{r}
 feature %>% filter(index %in% c(2, 6, 7, 4)) %>% 
   ggplot() + 
@@ -189,14 +228,18 @@ feature %>% filter(index %in% c(2, 6, 7, 4)) %>%
         strip.text = element_text(size = 14)) + 
   facet_wrap(~str_wrap(name, 20)) + labs(x="Scores on Likert scale", y="Density") 
 ```
+
 ```{r}
+#library(RColorBrewer) 
 feature %>% filter(index %in% c(2, 6, 7, 4)) %>% 
   ggplot() + 
-  geom_density(aes(x = value, color = str_wrap(name, 20)), bw = 0.5) + 
+  stat_density(aes(x = value, color = str_wrap(name, 20)),
+                  geom="line", position="identity", bw = 0.5, size = 1) +
   labs(x = "score", color = "Features")  + theme_classic() +
   theme(
-        legend.key.height=unit(2, "cm"), 
-        axis.text.x = element_text(size = 12),
+        legend.key.height=unit(1, "cm"),
+        legend.text = element_text(color = "black"),
+        axis.text = element_text(size = 14),
         strip.text = element_text(size = 14))  + 
   labs(x="Scores on Likert scale", y="Density") 
 ```
@@ -204,33 +247,37 @@ feature %>% filter(index %in% c(2, 6, 7, 4)) %>%
 ```{r}
 feature %>% filter(index %in% c(8, 9)) %>% 
   ggplot() + 
-  geom_density(aes(x = value, color = str_wrap(name, 20)), bw = 0.5) + 
+   stat_density(aes(x = value, color = str_wrap(name, 20)),
+                  geom="line", position="identity", bw = 0.5, size = 1) +
   labs(x = "score", color ="Features")  + theme_classic() +
   theme(
-        legend.key.height=unit(2, "cm"), 
-        axis.text.x = element_text(size = 12),
+        legend.key.height=unit(1, "cm"),
+        legend.text = element_text(color = "black"),
+        axis.text = element_text(size = 14),
         strip.text = element_text(size = 14))  + 
-    labs(x="Scores on Likert scale", y="Density") 
+  labs(x="Scores on Likert scale", y="Density") 
 ```
 
 ```{r}
 feature %>% filter(index %in% c(1, 3, 5)) %>% 
   ggplot() + 
-  geom_density(aes(x = value, color = str_wrap(name, 20)), bw = 0.5) + 
-  labs(x = "score", color ="Features") + theme_classic() +
+   stat_density(aes(x = value, color = str_wrap(name, 20)),
+                  geom="line", position="identity", bw = 0.5, size = 1) +
+  labs(x = "score", color ="Features")  + theme_classic() +
   theme(
-        legend.key.height=unit(2, "cm"), 
-        axis.text.x = element_text(size = 12),
+        legend.key.height=unit(1, "cm"),
+        legend.text = element_text(color = "black"),
+        axis.text = element_text(size = 14),
         strip.text = element_text(size = 14))  + 
-    labs(x="Scores on Likert scale", y="Density") 
+  labs(x="Scores on Likert scale", y="Density") 
 ```
 
-
 ## Familiarity with plots
+
 #### Recognition
 
 ```{r, warning=FALSE}
-vec <- c("line", "butterfly", "topo", "topo_array", "topo_map", "erp_image", "parallel", "channel_image")
+vec <- c("line", "butterfly", "topo",  "topo_map", "topo_array", "erp_image", "parallel", "channel_image")
 familiar <-  data[61:68] %>% rename_at(vars(colnames(.)), ~ vec) %>% 
   mutate_at(vars(vec), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0)))
 
@@ -280,7 +327,7 @@ tab %>%
 
 ```{r, warning=FALSE}
 vec <- names(data[ , grepl( "Have you ever plotted " , names(data))]) #%>% str_split_i(., "\\.....", 2) 
-plot_names <- c("line", "butterfly", "topo", "topo_array", "topo_map", "erp_img", "parallel", "channel_img")
+plot_names <- c("line", "butterfly", "topo", "topo_map", "topo_array",  "erp_img", "parallel", "channel_img")
 
 do_vec <- function(vec, data, plot_names){
   t1 <- table(data[vec[1]])
@@ -342,7 +389,6 @@ area <- area1 %>%
   mutate(words = ifelse(str_detect(.[[1]], 'social cognition'), "affective neuroscience", words))
 ```
 
-
 ```{r}
 table(data[79]) %>% data.frame() %>% 
   rename_at(vars(colnames(.)), ~ c("position", "scores")) %>%
@@ -358,6 +404,7 @@ table(data[79]) %>% data.frame() %>%
             position = position_stack(vjust = 0.5)) +
   ggtitle("In ERP plot, should positive voltages be plotted upwards, or downwards?")
 ```
+
 ```{r, eval = FALSE, echo = FALSE}
 
 
@@ -388,7 +435,7 @@ filter(n() > 2) %>% group_by(area, ud) %>% dplyr::summarise(n = n()) %>%
   group_by(area) %>% dplyr::mutate(nn = sum(n)) %>% 
   ggplot(., aes(x = n, y = reorder(area, nn), fill = ud)) +
    geom_col(stat = "identity", width = 0.5) +
-  labs(x = "Count",  fill ="Positive:") +
+  labs(x = "Count", y = "area of study", fill ="Positive:") +
   geom_text(aes(label = n, #paste0(n, "%"), 
                 group = ud), 
             position = position_stack(vjust = 0.5)) +
@@ -402,32 +449,33 @@ filter(n() > 2) %>% group_by(area, ud) %>% dplyr::summarise(n = n()) %>%
 
 ```
 
-
-
 ## Error bars
 
 ```{r}
-table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "Scores")) %>% 
-    ggplot(., aes(x = position, y = Scores, fill = as.factor(Scores))) +
+table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "Scores"))   %>%  mutate(percent_score = round(Scores / sum(Scores) * 100)) %>% 
+
+    ggplot(., aes(x = position, y = percent_score, fill = as.factor(percent_score))) +
     geom_bar(position = "dodge", stat = "identity", width=0.5) + theme_classic() +
   theme(axis.title.x=element_blank(), 
         legend.position="none", 
         axis.text = element_text(size = 12),
         plot.title = element_text(hjust = 0.5)) +
       
-  geom_text(aes(label = Scores, group = position), position = position_dodge(width = .9), vjust = -0.2) +
+  geom_text(aes(label = paste0(percent_score, "%"), group = position),  position = position_stack(vjust = 0.5), size = 6) + 
   ggtitle("In your paper, did you published ERP plot with error bars?")
+
 ```
 
 ```{r}
-data[75] %>%  filter(!is.na(.)) %>% table()  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>% 
-    ggplot(., aes(x = position, y = scores, fill = as.factor(scores))) +
+data[75] %>%  filter(!is.na(.)) %>% table()  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>% mutate(percent_score = round(scores / sum(scores) * 100)) %>% 
+    ggplot(., aes(x = position, y = percent_score, fill = as.factor(percent_score))) +
     geom_bar(position = "dodge", stat = "identity", width=0.5) + theme_classic() +
    theme(axis.title.x=element_blank(), 
         legend.position="none", 
         axis.text = element_text(size = 12),
         plot.title = element_text(hjust = 0.5)) + ylab("Scores") +
-  geom_text(aes(label = scores, group = position), position = position_dodge(width = .9), vjust = -0.2) +
+     
+  geom_text(aes(label = paste0(percent_score, "%"), group = position),  position = position_stack(vjust = 0.5), size = 6) + 
   ggtitle("In your figure, what did error bars depicted?")
 ```
 
@@ -513,18 +561,19 @@ table(data[118]) %>% data.frame() %>%
   scale_color_manual(values = c("#FF6666", "#66CC66")) +
   scale_fill_manual(values = c("#FF6666", "#66CC66"))  +
   labs(x="Percent score")
-```  
-
+```
 
 ```{r}
-table(data[119])  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>% 
-  ggplot(., aes(x = position, y = scores, fill = as.factor(scores))) +
+table(data[119])  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>%
+  mutate(percent_score = round(scores / sum(scores) * 100)) %>% 
+  ggplot(., aes(x = position, y = percent_score, fill = as.factor(percent_score))) +
     geom_bar(stat = "identity", width=0.5)  + theme_classic() +
      theme(axis.title.x=element_blank(), 
         legend.position="none", 
         axis.text = element_text(size = 12),
         plot.title = element_text(hjust = 0.5)) + ylab("Scores") +
-  geom_text(aes(label = scores, group = position), position = position_dodge(width = .9), vjust = -0.2) +
+  geom_text(aes(label = paste0(percent_score, "%") , 
+                group = position), position = position_stack(vjust = 0.5), size = 8) + 
   ggtitle("Would you like to use a two-dimensional colorbar\nin your publications, if it was easily available?")
 ```
 
@@ -555,4 +604,3 @@ terms(lda, 10)
 
 
 ```
-

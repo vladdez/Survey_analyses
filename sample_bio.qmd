@@ -47,10 +47,11 @@ data <- data[1:121] %>%
 data.frame(table(data[8]))  %>% dplyr::rename(country_work = !!names(.)[1]) %>%
   mutate(country_work = ifelse(Freq >= 3, as.character(country_work), "_Others")) %>% group_by(country_work) %>% 
   dplyr::summarise(Freq = sum(Freq)) %>% 
-    ggplot(data = ., aes(y = reorder(country_work, Freq),  x= Freq, fill = country_work)) +
+  mutate(percent_score = round(Freq / sum(Freq) * 100)) %>% 
+    ggplot(data = ., aes(y = reorder(country_work, percent_score),  x= percent_score, fill = country_work)) +
     geom_bar(stat="identity") + labs(x="Count", y="Country of work of survey participant") +
-    geom_text(aes(label = Freq), 
-    hjust = -0.2) + theme_classic() + 
+         geom_text(aes(label = paste0(percent_score, "%")), 
+            position = position_stack(vjust = 0.5), size = 5)  + theme_classic()  + theme_classic() + 
   theme(legend.position="none", axis.text.y = element_text(size = 14))
 
 ```
@@ -63,10 +64,11 @@ field$Freq[1] <- field$Freq[1] + 1 # from Others
 field$Freq[2] <- field$Freq[2] + 1
 field$Freq[3] <- field$Freq[3] + 1
 field %>% dplyr::rename(area = !!names(.)[1]) %>%
-    ggplot(data = ., aes(x = reorder(area, Freq),  y= Freq, fill = area)) +
+  mutate(percent_score = round(Freq / sum(Freq) * 100)) %>% 
+    ggplot(data = ., aes(x = reorder(area, percent_score),  y= percent_score, fill = area)) +
     geom_bar(stat="identity") + labs(x="Field of research", y="Count") +
-    geom_text(aes(label = Freq), 
-    vjust = -0.2) + theme_classic() + 
+     geom_text(aes(label = paste0(percent_score, "%")), 
+            position = position_stack(vjust = 0.5), size = 6)  + theme_classic() + 
   theme(legend.position="none", axis.text.x = element_text(size = 12))
 ```
 
@@ -169,12 +171,14 @@ data %>% filter(.[[20]] < 50) %>% ggplot(data = ., aes_(as.name(names(data)[20])
 
 #### Self-assessed level
 
-
 ```{r}
 table(data[21]) %>% data.frame()%>% dplyr::rename(level = !!names(.)[1]) %>%
-    ggplot(data = ., aes(x = level, y= Freq, fill = level)) +
+    mutate(percent_score = round(Freq / sum(Freq) * 100)) %>% 
+    ggplot(data = ., aes(x = level, y= percent_score, fill = level)) +
+  
     geom_bar(stat="identity") + xlab("Self-assessed level") +
-    geom_text(aes(label = Freq), vjust = -0.2) + theme_classic() +
+   geom_text(aes(label = paste0(percent_score, "%")), 
+            position = position_stack(vjust = 0.5), size = 6)  + theme_classic() +
   theme(legend.position="none", axis.text.x = element_text(size = 12)) +
     scale_x_discrete(limits = c("Beginner", "Intermediate", "Expert")) +
   labs(y="Count") 
@@ -189,7 +193,6 @@ table(data[22])  %>% data.frame()%>% dplyr::rename(level = !!names(.)[1]) %>%
     geom_bar(stat="identity") + xlab("Code contribution") +
     geom_text(aes(label = Freq), vjust = -0.2)  + theme_classic() + theme(legend.position="none")
 ```
-
 
 ## Time of finishing survey in minutes
 
