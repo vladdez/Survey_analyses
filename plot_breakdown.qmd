@@ -114,11 +114,12 @@ do_vec <- function(vec, data, plot_names){
   rownames(t1) <- plot_names #array(paste0("t_", 1:length(vec)))
   return(t1)
 }
+
 tab <- do_vec(vec, data, plot_names) %>%  data.frame() %>% tibble::rownames_to_column(., "plots") %>%  
   gather(., type, plotted, `N.A`:`Yes`, factor_key=TRUE) %>% 
   filter(type == "Yes") %>% dplyr::select(-type) 
 
-memoried <- slice(num_named, 1)  %>% 
+named <- slice(num_named, 1)  %>% 
   gather(., plots, succeeded, `line`:`channel_img`, factor_key=TRUE)%>% 
   mutate(failed = nrow(data) - succeeded) %>% 
   dplyr::rename(named = succeeded) %>% 
@@ -127,9 +128,11 @@ memoried <- slice(num_named, 1)  %>%
 familiar <-  data[61:68] %>% rename_at(vars(colnames(.)), ~ plot_names) %>% 
   mutate_at(vars(plot_names), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0)))
 
-data.frame(rowSums(t(familiar))) %>%  tibble::rownames_to_column(., "plot") %>% 
+mem_tab <- data.frame(rowSums(t(familiar))) %>%  tibble::rownames_to_column(., "plot") %>% 
    rename_at(vars(colnames(.)), ~ c("plots", "recognized")) %>%
-  merge(., memoried)  %>% left_join(., tab)  %>% #filter(plots != "parallel") %>% 
+  merge(., named)  %>% left_join(., tab)  
+
+mem_tab %>% #filter(plots != "parallel") %>% 
   gather(., type, score,  recognized:plotted, factor_key=TRUE) %>% 
   ggplot(., aes(x = reorder(plots, -score), y = score, fill = type)) +
     geom_bar(position = "dodge", stat = "identity") +
@@ -334,6 +337,7 @@ list(n1, n2, n3, n4, n5, n6, n8) %>% kable(.) %>% kable_styling("striped", posit
 
 ```{r}
 vec <- names(data[ , grepl( ".*Which parts of*." , names(data))])
+which(names(data) %in% vec)
 ```
 
 ```{r, warning=FALSE}
@@ -351,7 +355,7 @@ word_preproc_tool_2 <- function(data, N, lim){
       TRUE ~ as.character(soft)
     ), 
     parts = case_when(
-      str_detect(parts, 'none|n/a|nope|na|idk|nothing|sure|know|can\'t|don\'t') ~ "-",
+      str_detect(parts, 'none|n/a|nope|na|idk|nothing|sure|know|can\'t|don\'t|easy') ~ "-",
       TRUE ~ as.character(parts)
     ),
     new_feature = case_when(
@@ -371,27 +375,28 @@ word_preproc_tool_2 <- function(data, N, lim){
 struggle1 <- word_preproc_tool_2(data, 71, 10) 
 separated_row <- separate_rows(struggle1[98, ], parts, sep = ",|\\.") %>% dplyr::select(parts)
 
-struggle2 <- struggle1 %>% filter( parts != "-") %>% dplyr::select(parts) %>% 
+tmp <- struggle1 %>% filter( parts != "-") %>% dplyr::select(parts) %>% 
   filter(!row_number() %in% c(2, 11, 40, 41, 69, 78, 83, 87, 89, 91))  %>% 
   separate_rows(parts, sep = "2\\)", convert = FALSE) %>% 
   separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
   mutate(problems = case_when(
       grepl("\\b(ci|se|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", parts) == TRUE ~ "uncertainty", 
       grepl("\\b(axes|lable(s)?|label(s)?|legend|ticks)\\b", parts) == TRUE ~ "plot components\n(axes, lables, legend)", 
-      grepl("\\b(color(s)?|colour(s)?|proportion(s)?|publication|scal(e|ing))\\b", parts) == TRUE ~ "styling", 
+      grepl("\\b(color(s)?|colour(s)?|proportion(s)?|publication|scal(e|ing))\\b", parts) == TRUE ~ "styling and color", 
       grepl("\\b(preprocessing|extracting|datatype)\\b", parts) == TRUE ~ "preprocessing", 
       grepl("\\b(syncronisation|organizing|groups)\\b", parts) == TRUE ~ "subplotting", 
       grepl("\\b(mean|significan(t|ce)|permutations|combine)\\b", parts) == TRUE ~ "statistics", 
       )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) 
-n_rest <- nrow(data) - nrow(struggle2)
 
-struggle3 <- struggle2 %>% group_by(problems) %>%
+n_rest <- mem_tab[4, 3] - nrow(tmp)
+
+tmp1 <- tmp %>% group_by(problems) %>%
       dplyr::summarise(n = n()) %>% 
       rbind(c("no complains", as.numeric(n_rest))) %>% 
       mutate(n = as.numeric(n)) %>% 
       mutate(percent = round(n / sum(n), 3) * 100 ,percent1 = round(n / sum(n), 2) * 100) 
 
-struggle3 %>% 
+tmp1 %>% 
   arrange(desc(n)) %>% 
   kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
   kable_classic(full_width = F, html_font = "Arial")
@@ -399,11 +404,11 @@ struggle3 %>%
  # words = ifelse(nchar(words)==0, NA, words),
  #  write.xlsx(., "data/struggles.xlsx", sheetName = "line plot", col.names = TRUE, row.names = TRUE, append = FALSE)
 
-# problems: n of problems is higher than number of rows, 
+# problems: n of problems is higher than number of rows 
 ```
 
 ```{r}
-struggle3 %>% 
+tmp1 %>% 
   arrange(desc(n)) %>% 
   ggplot(., aes(y = reorder(problems, percent), x = percent, fill = problems)) +
   geom_col() +
@@ -414,168 +419,326 @@ struggle3 %>%
   theme(axis.text = element_text(size = 12), legend.position = "none")
 ```
 
+#### 2 
+
+```{r, warning=FALSE}
+struggle2 <- word_preproc_tool_2(data, 82, 10) 
+#separated_row <- separate_rows(struggle1[98, ], parts, sep = ",|\\.") %>% dplyr::select(parts)
+
+tmp <- struggle2 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
+  filter(!row_number() %in% c(18, 31))  %>% 
+  #separate_rows(parts, sep = "2\\)", convert = FALSE) %>% 
+  #separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
+  mutate(problems = case_when(
+      grepl("\\b(ci|se|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", parts) == TRUE ~ "uncertainty", 
+      grepl("\\b(ax(is|es)?|lable(s)?|label(s)?|legend|ticks)\\b", parts) == TRUE ~ "plot components\n(axes, lables, legend)", 
+      grepl("\\b(color(s|ing)?|colour(s)?|proportion(s)?|publication|neg|scal(e|ing))\\b", parts) == TRUE ~ "styling and color", 
+      grepl("\\btopo\\w*", parts) == TRUE ~ "adding topography", 
+      grepl("\\b(channel(s)?|electrodes(s)?|interpretable|read|remembering)\\b", parts) == TRUE ~ "channel selection\n(differentiation, identification)"
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) 
+
+n_rest <- mem_tab[1, 3] - nrow(tmp)
+
+tmp1 <- tmp %>% group_by(problems) %>%
+      dplyr::summarise(n = n()) %>% 
+      rbind(c("no complains", as.numeric(n_rest))) %>% 
+      mutate(n = as.numeric(n)) %>% 
+      mutate(percent = round(n / sum(n), 3) * 100 ,percent1 = round(n / sum(n), 2) * 100) 
+
+tmp1 %>% 
+  arrange(desc(n)) %>% 
+  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
+  kable_classic(full_width = F, html_font = "Arial")
+
+ # words = ifelse(nchar(words)==0, NA, words),
+#write.xlsx(tmp, "data/struggles.xlsx", sheetName = "line plot", col.names = TRUE, row.names = TRUE, append = FALSE)
+
+# problems: n of problems is higher than number of rows 
+
+```
+
+```{r}
+tmp1 %>% 
+  arrange(desc(n)) %>% 
+  ggplot(., aes(y = reorder(problems, percent), x = percent, fill = problems)) +
+  geom_col() +
+  geom_text(aes(label = paste0(percent, "%"), y = problems, x = percent),
+            position = position_stack(vjust = 0.5), color = "black") +
+  labs(x = "Percent", y  = "Problem category") +
+  theme_classic() +
+  theme(axis.text = element_text(size = 12), legend.position = "none")
+```
+#### 3 
+
+```{r, warning=FALSE}
+struggle3 <- word_preproc_tool_2(data, 87, 10) 
+#separated_row <- separate_rows(struggle1[98, ], parts, sep = ",|\\.") %>% dplyr::select(parts)
+
+tmp <- struggle3 %>% filter( parts != "-") %>% dplyr::select(parts) %>% 
+  filter(!row_number() %in% c(5, 7, 16, 18, 43, 50))  %>% 
+  separate_rows(parts, sep = ";", convert = FALSE) %>% filter(nchar(parts) != 0) %>%  
+  filter(!row_number() %in% c(59))  %>% 
+  #separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
+  mutate(problems = case_when(
+    grepl("\\b(head|headshape|montage|topographies)\\b", parts) == TRUE ~ "head shape and montage",
+    grepl("\\b(time|threshold)\\b", parts) == TRUE ~ "time selection",
+      grepl("\\b(ci|se|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", parts) == TRUE ~ "uncertainty",
+      grepl("\\b(channel(s)?|electrode(s)?|sensors|elec)\\b", parts) == TRUE ~ "channel selection\n(differentiation, identification)",
+      grepl("\\b(color(s|ing|bar|map)?|colour(s)?|proportion(s)?|publication|limits|neg|scal(e|ing|es))\\b", parts) == TRUE ~ "styling and color", 
+      grepl("\\b(ax(is|es)?|lable(s)?|label(s|ing)?|legend|ticks|features|layout)\\b", parts) == TRUE ~ "plot components\n(axes, lables, legend)", 
+      grepl("\\b(mean|significan(t|ce)|permutations|p-value(s)?|smoothing|statistical|stats)\\b", parts) == TRUE ~ "statistics",
+      grepl("\\b(interpolat(e|ion)?|edges)\\b", parts) == TRUE ~ "interpolation",
+      
+     # grepl("\\btopo\\w*", parts) == TRUE ~ "adding topography", 
+     
+      )) %>% #filter(is.na(problems))  %>% View() 
+
+filter(nchar(parts) != 0) %>% filter(!is.na(problems)) 
+
+n_rest <- mem_tab[6, 3] - nrow(tmp)
+
+tmp1 <- tmp %>% group_by(problems) %>%
+      dplyr::summarise(n = n()) %>% 
+      rbind(c("no complains", as.numeric(n_rest))) %>% 
+      mutate(n = as.numeric(n)) %>% 
+      mutate(percent = round(n / sum(n), 3) * 100 ,percent1 = round(n / sum(n), 2) * 100) 
+
+tmp1 %>% 
+  arrange(desc(n)) %>% 
+  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
+  kable_classic(full_width = F, html_font = "Arial")
+
+ # words = ifelse(nchar(words)==0, NA, words),
+#write.xlsx(tmp, "data/struggles.xlsx", sheetName = "line plot", col.names = TRUE, row.names = TRUE, append = FALSE)
+
+# problems: n of problems is higher than number of rows 
+
+```
+```{r}
+tmp1 %>% 
+  arrange(desc(n)) %>% 
+  ggplot(., aes(y = reorder(problems, percent), x = percent, fill = problems)) +
+  geom_col() + 
+  geom_text(aes(label = paste0(percent, "%"), y = problems, x = percent),
+            position = position_stack(vjust = 0.5), color = "black") +
+  labs(x = "Percent", y  = "Problem category") +
+  theme_classic() +
+  theme(axis.text = element_text(size = 12), legend.position = "none")
+```
+#### 4
+
+
+```{r, warning=FALSE}
+struggle4 <- word_preproc_tool_2(data, 92, 10) 
+#separated_row <- separate_rows(struggle1[98, ], parts, sep = ",|\\.") %>% dplyr::select(parts)
+
+tmp <- struggle4 %>% filter( parts != "-") %>% dplyr::select(parts) %>% 
+  filter(!grepl("\\b(no|okay)\\b", parts)) %>%
+  filter(!row_number() %in% c(17, 51, 12 ))  %>% 
+  separate_rows(parts, sep = ";", convert = FALSE) %>% 
+#filter(!row_number() %in% c(59))  %>% 
+  #separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
+  mutate(problems = case_when(
+    grepl("\\b(head|headshape|montage|topographies|topoplots|shape)\\b", parts) == TRUE ~ "head shape and montage",
+    grepl("\\b(time(s|course)?|threshold)\\b", parts) == TRUE ~ "time selection",
+      grepl("\\b(ci|se|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", parts) == TRUE ~ "uncertainty",
+      grepl("\\b(channel(s)?|electrode(s)?|sensors|elec)\\b", parts) == TRUE ~ "channel selection\n(differentiation, identification)",
+      grepl("\\b(color(s|ing|bar|map)?|colour(s)?|proportion(s)?|publication|limits|neg|scal(e|ing|es))\\b", parts) == TRUE ~ "styling and color", 
+      grepl("\\b(ax(is|es)?|lable(s)?|label(s|ing)?|legend|ticks|features|markers|layout|specifications)\\b", parts) == TRUE ~ "plot components\n(axes, lables, legend)", 
+      grepl("\\b(mean|significan(t|ce)|permutations|p-value(s)?|smoothing|statistical|stats|t-stat)\\b", parts) == TRUE ~ "statistics",
+      grepl("\\b(interpolat(e|ion)?|edges)\\b", parts) == TRUE ~ "interpolation",
+      TRUE ~ '_other'
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) 
+
+n_rest <- mem_tab[8, 3] - nrow(tmp)
+
+tmp1 <- tmp %>% group_by(problems) %>%
+      dplyr::summarise(n = n()) %>% 
+      rbind(c("no complains", as.numeric(n_rest))) %>% 
+      mutate(n = as.numeric(n)) %>% 
+      mutate(percent = round(n / sum(n), 3) * 100 ,percent1 = round(n / sum(n), 2) * 100) 
+
+tmp1 %>% 
+  arrange(desc(n)) %>% 
+  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
+  kable_classic(full_width = F, html_font = "Arial")
+
+ # words = ifelse(nchar(words)==0, NA, words),
+#write.xlsx(tmp, "data/struggles.xlsx", sheetName = "line plot", col.names = TRUE, row.names = TRUE, append = FALSE)
+
+# problems: n of problems is higher than number of rows 
+
+```
+
+```{r}
+tmp1 %>% 
+  arrange(desc(n)) %>% 
+  ggplot(., aes(y = reorder(problems, percent), x = percent, fill = problems)) +
+  geom_col() + 
+  geom_text(aes(label = paste0(percent, "%"), y = problems, x = percent),
+            position = position_stack(vjust = 0.5), color = "black") +
+  labs(x = "Percent", y  = "Problem category") +
+  theme_classic() +
+  theme(axis.text = element_text(size = 12), legend.position = "none")
+``` 
+#### 5
+
+
+```{r, warning=FALSE}
+struggle5 <- word_preproc_tool_2(data, 99, 10) 
+#separated_row <- separate_rows(struggle1[98, ], parts, sep = ",|\\.") %>% dplyr::select(parts)
+
+tmp <- struggle5 %>% filter( parts != "-") %>% dplyr::select(parts) %>% 
+  #filter(!grepl("\\b(no|okay)\\b", parts)) %>%
+  filter(!row_number() %in% c(33 ))  %>% 
+  separate_rows(parts, sep = ";", convert = FALSE) %>% #View()
+#filter(!row_number() %in% c(59))  %>% 
+  #separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
+  mutate(problems = case_when(
+    grepl("\\b(selecting|marking|spotting)\\b", parts) == TRUE ~ "channel selection\n(differentiation, identification)",
+    grepl("\\b(legible|readable|visible|small|datatype|shape|montage|subplots|size(s)?|channel(s)?|electrode(s)?|sensors)|scal(e|ing|es)|references\\b", parts) == TRUE ~ "legibility and scaling",
+      grepl("\\b(ci|se|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", parts) == TRUE ~ "uncertainty",
+      grepl("\\b(color(s|ing|bar|map)?|colour(s)?|proportion(s)?|publication|limits|quality|scal(e|ing|es))\\b", parts) == TRUE ~ "publication quality and color", 
+      grepl("\\b(ax(is|es)?|lable(s)?|label(s|ing)?|legend|ticks|edit|features|markers|layout|specifications)\\b", parts) == TRUE ~ "plot components\n(axes, lables, legend)", 
+      grepl("\\b(preprocessing|extracting|masks)\\b", parts) == TRUE ~ "preprocessing", 
+    
+      TRUE ~ '_other'
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>% View()
+
+n_rest <- mem_tab[7, 3] - nrow(tmp)
+
+tmp1 <- tmp %>% group_by(problems) %>%
+      dplyr::summarise(n = n()) %>% 
+      rbind(c("no complains", as.numeric(n_rest))) %>% 
+      mutate(n = as.numeric(n)) %>% 
+      mutate(percent = round(n / sum(n), 3) * 100 ,percent1 = round(n / sum(n), 2) * 100) 
+
+tmp1 %>% 
+  arrange(desc(n)) %>% 
+  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
+  kable_classic(full_width = F, html_font = "Arial")
+
+ # words = ifelse(nchar(words)==0, NA, words),
+#write.xlsx(tmp, "data/struggles.xlsx", sheetName = "line plot", col.names = TRUE, row.names = TRUE, append = FALSE)
+
+# problems: n of problems is higher than number of rows 
+
+```
+
+```{r}
+tmp1 %>% 
+  arrange(desc(n)) %>% 
+  ggplot(., aes(y = reorder(problems, percent), x = percent, fill = problems)) +
+  geom_col() + 
+  geom_text(aes(label = paste0(percent, "%"), y = problems, x = percent),
+            position = position_stack(vjust = 0.5), color = "black") +
+  labs(x = "Percent", y  = "Problem category") +
+  theme_classic() +
+  theme(axis.text = element_text(size = 12), legend.position = "none")
+``` 
+#### 6
+
+
+```{r, warning=FALSE}
+struggle6 <- word_preproc_tool_2(data, 104, 10) 
+#separated_row <- separate_rows(struggle1[98, ], parts, sep = ",|\\.") %>% dplyr::select(parts)
+
+tmp <- struggle6 %>% filter( parts != "-") %>% dplyr::select(parts) %>% 
+  filter(!grepl("\\b(x|ok)\\b", parts)) %>% 
+ # filter(!row_number() %in% c(33 ))  %>% 
+  separate_rows(parts, sep = ";", convert = FALSE) %>% #View()
+#filter(!row_number() %in% c(59))  %>% 
+  #separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
+  mutate(problems = case_when(
+    grepl("\\b(sort(ing)?|max|correspondance)\\b", parts) == TRUE ~ "sorting", 
+    grepl("\\b(smoothing)\\b", parts) == TRUE ~ "smoothing", 
+    grepl("\\b(epochs|time)\\b", parts) == TRUE ~ "defining epochs", 
+    grepl("\\b(color|paper)\\b", parts) == TRUE ~ "style", 
+    
+      TRUE ~ '_other'
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>% View()
+
+n_rest <- mem_tab[7, 3] - nrow(tmp)
+
+tmp1 <- tmp %>% group_by(problems) %>%
+      dplyr::summarise(n = n()) %>% 
+      rbind(c("no complains", as.numeric(n_rest))) %>% 
+      mutate(n = as.numeric(n)) %>% 
+      mutate(percent = round(n / sum(n), 3) * 100 ,percent1 = round(n / sum(n), 2) * 100) 
+
+tmp1 %>% 
+  arrange(desc(n)) %>% 
+  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
+  kable_classic(full_width = F, html_font = "Arial")
+
+ # words = ifelse(nchar(words)==0, NA, words),
+#write.xlsx(tmp, "data/struggles.xlsx", sheetName = "line plot", col.names = TRUE, row.names = TRUE, append = FALSE)
+
+# problems: n of problems is higher than number of rows 
+
+```
+```{r}
+tmp1 %>% 
+  arrange(desc(n)) %>% 
+  ggplot(., aes(y = reorder(problems, percent), x = percent, fill = problems)) +
+  geom_col() + 
+  geom_text(aes(label = paste0(percent, "%"), y = problems, x = percent),
+            position = position_stack(vjust = 0.5), color = "black") +
+  labs(x = "Percent", y  = "Problem category") +
+  theme_classic() +
+  theme(axis.text = element_text(size = 12), legend.position = "none")
+``` 
+#### 8
+
+
+```{r, warning=FALSE}
+struggle8 <- word_preproc_tool_2(data, 114, 10) 
+#separated_row <- separate_rows(struggle1[98, ], parts, sep = ",|\\.") %>% dplyr::select(parts)
+
+tmp <- struggle8 %>% filter( parts != "-") %>% dplyr::select(parts) %>% 
+  filter(!grepl("\\b(n|x|ok|dont)\\b", parts)) %>% 
+ # filter(!row_number() %in% c(33 ))  %>% 
+  #separate_rows(parts, sep = ";", convert = FALSE) %>% #View()
+#filter(!row_number() %in% c(59))  %>% 
+  #separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
+  mutate(problems = case_when(
+    grepl("\\b(sort(ing)?|order(ing)?|organisation)\\b", parts) == TRUE ~ "order and sorting", 
+   # grepl("\\b(smoothing)\\b", parts) == TRUE ~ "smoothing", 
+    #grepl("\\b(epochs|time)\\b", parts) == TRUE ~ "defining epochs", 
+    grepl("\\b(color(bar)?|paper)\\b", parts) == TRUE ~ "style", 
+    
+      TRUE ~ '_other'
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) 
+
+n_rest <- mem_tab[2, 3] - nrow(tmp)
+
+tmp1 <- tmp %>% group_by(problems) %>%
+      dplyr::summarise(n = n()) %>% 
+      rbind(c("no complains", as.numeric(n_rest))) %>% 
+      mutate(n = as.numeric(n)) %>% 
+      mutate(percent = round(n / sum(n), 3) * 100 ,percent1 = round(n / sum(n), 2) * 100) 
+
+tmp1 %>% 
+  arrange(desc(n)) %>% 
+  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
+  kable_classic(full_width = F, html_font = "Arial")
+
+ # words = ifelse(nchar(words)==0, NA, words),
+#write.xlsx(tmp, "data/struggles.xlsx", sheetName = "line plot", col.names = TRUE, row.names = TRUE, append = FALSE)
+
+# problems: n of problems is higher than number of rows 
+
+```
+```{r}
+tmp1 %>% 
+  arrange(desc(n)) %>% 
+  ggplot(., aes(y = reorder(problems, percent), x = percent, fill = problems)) +
+  geom_col() + 
+  geom_text(aes(label = paste0(percent, "%"), y = problems, x = percent),
+            position = position_stack(vjust = 0.5), color = "black") +
+  labs(x = "Percent", y  = "Problem category") +
+  theme_classic() +
+  theme(axis.text = element_text(size = 12), legend.position = "none")
+``` 
 ## New features
 
-<!-- ## Frequency of tool usage -->
-
-<!-- ```{r} -->
-
-<!-- vec <- names(data[ , grepl( ".*Which plotting" , names(data))]) %>% str_split_i(., "\\? \\]", 2) %>%  -->
-
-<!--   str_split_i(., "\\...", 2) %>% as.numeric() -->
-
-<!-- ``` -->
-
-<!-- ```{r} -->
-
-<!-- word_preproc_tool <- function(data, N, lim){ -->
-
-<!--   N = 71 -->
-
-<!--   #lim = 10 -->
-
-<!--   tmp <- data %>% dplyr::select(N) %>% filter(!is.na(.)) %>% dplyr::rename(words = !!names(.)[1]) %>%  -->
-
-<!--     mutate(words = ifelse(str_detect(words, 'own|costum'), "custom", as.character(words))) %>%  -->
-
-<!--   mutate(n = lengths(gregexpr("\\W+", words)) + 1) %>% arrange(desc(n)) -->
-
-<!--   rest <- tmp %>% filter(n >= lim) %>% dplyr::select(words) -->
-
-<!--   tmp <- tmp %>% filter(n < lim) %>% dplyr::select(words) -->
-
-<!--   t <- foreach(i = 1:nrow(tmp)) %do% strsplit(tmp[[1]][i], ",|/|\\|+| and |&| or |\\n|\\r|;") -->
-
-<!--   tul <- foreach(i = 1:nrow(tmp)) %do% unlist(t[[i]]) -->
-
-<!--   tul1 <- unlist(tul) -->
-
-<!--   tul2 <- tul1[tul1!=""] -->
-
-<!--   tul2[tul2=="-"] <- NA -->
-
-<!--   tul2 <- na.omit(tul2) -->
-
-<!--   #t <- foreach(i = 1:nrow(tmp)) %do% tokenize_words(as.character(tmp[i, N]), strip_punct = FALSE) -->
-
-<!--   stop_list = c("a", "an", "the", "wise", "by", "over", "of", "per", "for", "like", "s", "at", "code", "script", "recently", "my", "in", "written", "using", "built", "function", "plot", "with",  "itself", "scripting", "scrip", "scripts", "basic")#, "custom") -->
-
-<!--   t1 <- foreach(i = 1:length(tul2)) %do% tokenize_words(as.character(tul2[i])) -->
-
-<!--   t2 <- foreach(i = 1:length(t1)) %do% map(t1[i][[1]], singularize) -->
-
-<!--   t21 <- foreach(i = 1:length(t2)) %do% tokenize_words(as.character(t2[i][[1]])) -->
-
-<!--   t22 <- foreach(i = 1:length(t21)) %do% t21[i][[1]][[1]][!(t21[i][[1]][[1]] %in% stop_list)] -->
-
-<!--   t3 <- foreach(i = 1:length(t22)) %do% paste((unlist(t22[i])), collapse = ' ')  -->
-
-<!--   t4 <- data.frame(matrix(t3)) #%>% dplyr::rename(words = !!names(.)[1]) -->
-
-<!--   return(c(t4, rest)) -->
-
-<!-- } -->
-
-<!-- ``` -->
-
-<!-- #### 1 -->
-
-<!-- ```{r} -->
-
-<!-- test <- word_preproc_tool(data, 71, 10)  -->
-
-<!-- rest <- test[[2]] -->
-
-<!-- fromrest <- data.frame(words = c("fieldtrip","r", "matlab", "fieldtrip", "adobe illustrator", "custom matlab", "custom matlab", "mne" )) -->
-
-<!-- base <- data.frame(matrix(test[[1]]))%>% dplyr::rename(words = !!names(.)[1])%>%  -->
-
-<!--   mutate(words = ifelse(nchar(words)==0, NA, words)) %>%  -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'brain vision'), "brain vision analyser", as.character(words))) %>%  -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'mne'), "mne", as.character(words))) %>%  rbind(., fromrest) %>%  -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'ggplot'), "ggplot", as.character(words)))  -->
-
-<!-- words <- base %>%  -->
-
-<!--   table(.) %>%  -->
-
-<!--   data.frame(.) %>%  arrange(desc(Freq))  -->
-
-<!-- narrow1 <- base %>%  -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'matlab|bar.m|boundedline'), "custom matlab", as.character(words))) %>%  -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'fieldtrip'), "fieldtrip", as.character(words))) %>%  -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'eeglab'), "EEGLAB", as.character(words))) %>%  -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'erplab'), "ERPLAB", as.character(words))) %>%  -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'python|seaborn|matplotlib|plotly'), "custom python", as.character(words))) %>% -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'mne'), "MNE", as.character(words))) %>% -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'ggplot|\\br\\b'), "custom r", as.character(words))) %>%  -->
-
-<!--   table(.) %>%  -->
-
-<!--   data.frame(.) %>%  arrange(desc(Freq)) -->
-
-<!-- narrow1 %>% head() -->
-
-<!-- ``` -->
-
-<!-- #### 2 -->
-
-<!-- ```{r} -->
-
-<!-- test <- word_preproc_tool(data, 82, 10)  -->
-
-<!-- rest <- test[[2]] -->
-
-<!-- fromrest <- data.frame(words = c("fieldtrip","r", "matlab", "fieldtrip", "adobe illustrator", "custom matlab", "custom matlab", "mne" )) -->
-
-<!-- base <- data.frame(matrix(test[[1]]))%>% dplyr::rename(words = !!names(.)[1])%>%  -->
-
-<!--   mutate(words = ifelse(nchar(words)==0, NA, words)) %>%  -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'brain vision'), "brain vision analyser", as.character(words))) %>%  -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'mne'), "MNE", as.character(words))) %>%  rbind(., fromrest) %>%  -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'ggplot'), "ggplot", as.character(words))) %>%  -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'own|cusom'), "custom", as.character(words)))  -->
-
-<!-- words <- base %>%  -->
-
-<!--   table(.) %>%  -->
-
-<!--   data.frame(.) %>%  arrange(desc(Freq))  -->
-
-<!-- narrow2 <- base %>%  -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'matlab|bar.m|boundedline'), "custom matlab", as.character(words))) %>%  -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'fieldtrip|fieldteip|field trip'), "fieldtrip", as.character(words))) %>%  -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'eeglab'), "EEGLAB", as.character(words))) %>%  -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'erplab'), "ERPLAB", as.character(words))) %>%  -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'python|seaborn|matplotlib|plotly'), "custom python", as.character(words))) %>% -->
-
-<!--   mutate(words = ifelse(str_detect(words, 'ggplot|\\br\\b'), "custom r", as.character(words))) %>%  -->
-
-<!--    mutate(words = ifelse(str_detect(words, 'cartool'), "cartool", as.character(words))) %>%  -->
-
-<!--   table(.) %>%  -->
-
-<!--   data.frame(.) %>%  arrange(desc(Freq)) -->
-
-<!-- narrow2 %>% head() -->
-
-<!-- ``` -->
