@@ -38,7 +38,6 @@ data <- data[1:121] %>%
   filter(.[[18]] !='Yes') # not analysed any EEG method
 ```
 
-
 ## In search of single variable representing experience
 
 ```{r, include=FALSE}
@@ -90,6 +89,7 @@ cbind(data[79], factor_scores[1])  %>%
   ggplot(., aes(x=as.factor(ud), y = proxy)) + 
   geom_boxplot() + labs(x = "Aware or not abour colorbar controvercies", y = "Experience") +  theme_classic()
 ```
+
 ## colorbars
 
 ```{r, eval = FALSE, echo = FALSE}
@@ -107,8 +107,7 @@ cbind(data[117], factor_scores[1])  %>%
   geom_boxplot() + labs(x = "Aware or not abour colorbar controvercies", y = "Experience") +  theme_classic()
 ```
 
-
-## Experience \ tools
+## Experience  tools
 
 ```{r, warning=FALSE}
 vec <- names(data[25:51]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
@@ -213,21 +212,26 @@ merge(data.frame(rowSums(software)), data[21]) %>%
   ggplot(., aes(y=n_soft, x=selfass)) + geom_violin()
 ```
 
-
-
-
 <!-- ```{r} -->
+
 <!-- ggpairs(exp_data[1:2])  -->
+
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- ggpairs(exp_data[4:5])  -->
+
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- ggpairs(exp_data[3:5])  -->
+
 <!-- ``` -->
 
 <!-- ```{r} -->
+
 <!-- ggpairs(exp_data)  -->
+
 <!-- ``` -->

@@ -135,7 +135,6 @@ data.frame(rowSums(t(ns))) %>%
   
 ```
 
-
 #### cooccurrence
 
 ```{r, warning=FALSE}

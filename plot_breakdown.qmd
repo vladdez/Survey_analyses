@@ -4,6 +4,7 @@ format: html
 editor: visual
 ---
 
+
 ## Setup
 
 ```{r, message= FALSE, warning=FALSE}
@@ -419,7 +420,7 @@ tmp1 %>%
   theme(axis.text = element_text(size = 12), legend.position = "none")
 ```
 
-#### 2 
+#### 2
 
 ```{r, warning=FALSE}
 struggle2 <- word_preproc_tool_2(data, 82, 10) 
@@ -468,7 +469,8 @@ tmp1 %>%
   theme_classic() +
   theme(axis.text = element_text(size = 12), legend.position = "none")
 ```
-#### 3 
+
+#### 3
 
 ```{r, warning=FALSE}
 struggle3 <- word_preproc_tool_2(data, 87, 10) 
@@ -514,6 +516,7 @@ tmp1 %>%
 # problems: n of problems is higher than number of rows 
 
 ```
+
 ```{r}
 tmp1 %>% 
   arrange(desc(n)) %>% 
@@ -525,8 +528,8 @@ tmp1 %>%
   theme_classic() +
   theme(axis.text = element_text(size = 12), legend.position = "none")
 ```
-#### 4
 
+#### 4
 
 ```{r, warning=FALSE}
 struggle4 <- word_preproc_tool_2(data, 92, 10) 
@@ -580,9 +583,9 @@ tmp1 %>%
   labs(x = "Percent", y  = "Problem category") +
   theme_classic() +
   theme(axis.text = element_text(size = 12), legend.position = "none")
-``` 
-#### 5
+```
 
+#### 5
 
 ```{r, warning=FALSE}
 struggle5 <- word_preproc_tool_2(data, 99, 10) 
@@ -635,9 +638,9 @@ tmp1 %>%
   labs(x = "Percent", y  = "Problem category") +
   theme_classic() +
   theme(axis.text = element_text(size = 12), legend.position = "none")
-``` 
-#### 6
+```
 
+#### 6
 
 ```{r, warning=FALSE}
 struggle6 <- word_preproc_tool_2(data, 104, 10) 
@@ -677,6 +680,7 @@ tmp1 %>%
 # problems: n of problems is higher than number of rows 
 
 ```
+
 ```{r}
 tmp1 %>% 
   arrange(desc(n)) %>% 
@@ -687,9 +691,9 @@ tmp1 %>%
   labs(x = "Percent", y  = "Problem category") +
   theme_classic() +
   theme(axis.text = element_text(size = 12), legend.position = "none")
-``` 
-#### 8
+```
 
+#### 8
 
 ```{r, warning=FALSE}
 struggle8 <- word_preproc_tool_2(data, 114, 10) 
@@ -729,6 +733,7 @@ tmp1 %>%
 # problems: n of problems is higher than number of rows 
 
 ```
+
 ```{r}
 tmp1 %>% 
   arrange(desc(n)) %>% 
@@ -739,6 +744,129 @@ tmp1 %>%
   labs(x = "Percent", y  = "Problem category") +
   theme_classic() +
   theme(axis.text = element_text(size = 12), legend.position = "none")
-``` 
-## New features
+```
+
+## New feature
+
+#### 1
+
+```{r, warning=FALSE}
+
+tmp <- struggle1 %>% filter( new_feature != "-") %>% dplyr::select(new_feature) %>%
+  filter(!grepl("\\b(\\.|\\/|see)\\b", new_feature)) %>%  
+  filter(!row_number() %in% c(13, 18, 20  ))  %>% 
+  separate_rows(new_feature, sep = ";", convert = FALSE) %>% 
+#filter(!row_number() %in% c(59))  %>% 
+  separate_rows(new_feature, sep = "\\\r\\\n", convert = FALSE) %>% 
+  mutate(group = case_when(
+    grepl("\\bsignif\\w*", new_feature) == TRUE ~ "adding significance", 
+    grepl("\\bstat\\w*", new_feature) == TRUE ~ "adding statistics", 
+    grepl("\\btopo\\w*", new_feature) == TRUE ~ "adding topoplot", 
+    grepl("\\b(custom\\w*|details|annotations|font|labels|color|colours|thicker)", new_feature) == TRUE ~ "customization (color, labels)", 
+    grepl("\\b(electrode|click|control|interact\\w*|gui|select\\w*)", new_feature) == TRUE ~ "interactivity and channel selection", 
+    grepl("\\b(highlight|shadow|window)", new_feature) == TRUE ~ "area highlighting", 
+    grepl("\\b(ci|ribbons|se|ses|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", new_feature) == TRUE ~ "uncertainty", 
+    
+      TRUE ~ '_other'
+      )) %>% filter(nchar(new_feature) != 0) #%>% View()
+
+#n_rest <- mem_tab[2, 3] - nrow(tmp)
+
+tmp1 <- tmp %>% group_by(group) %>%
+      dplyr::summarise(n = n()) %>% 
+     # rbind(c("no complains", as.numeric(n_rest))) %>% 
+      mutate(n = as.numeric(n)) %>% 
+      mutate(percent = round(n / sum(n), 3) * 100, percent1 = round(n / sum(n), 2) * 100) 
+
+
+tmp1 %>% 
+  arrange(desc(n)) %>% 
+  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
+  kable_classic(full_width = F, html_font = "Arial")
+
+ # words = ifelse(nchar(words)==0, NA, words),
+#write.xlsx(tmp, "data/struggles.xlsx", sheetName = "line plot", col.names = TRUE, row.names = TRUE, append = FALSE)
+
+# problems: n of problems is higher than number of rows 
+
+```
+
+#### 2
+
+```{r, warning=FALSE}
+
+tmp <- struggle2 %>% filter( new_feature != "-") %>% dplyr::select(new_feature) %>% #View()
+  filter(!grepl("\\b(see|not|useful)\\b", new_feature)) %>%  
+  #filter(!row_number() %in% c(13, 18, 20  ))  %>% 
+  #separate_rows(new_feature, sep = ";", convert = FALSE) %>% 
+#filter(!row_number() %in% c(59))  %>% 
+  separate_rows(new_feature, sep = "\\\r\\\n", convert = FALSE) %>% 
+  mutate(group = case_when(
+    grepl("\\bsignif\\w*", new_feature) == TRUE ~ "adding significance", 
+    grepl("\\b(stat\\w*|average|mean)", new_feature) == TRUE ~ "adding statistics", 
+    grepl("\\btopo\\w*", new_feature) == TRUE ~ "adding topoplot", 
+    grepl("\\b(custom\\w*|details|annotations|opacity|font|labels|color|colour(s)?|thicker)", new_feature) == TRUE ~ "customization (color, labels)", 
+    grepl("\\b(manipulating|highlight|graying|click|control|interact\\w*|gui|select\\w*)", new_feature) == TRUE ~ "interactivity and channel selection", 
+    grepl("\\b(ci|ribbons|se|ses|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", new_feature) == TRUE ~ "uncertainty", 
+    
+      TRUE ~ '_other'
+      )) %>% filter(nchar(new_feature) != 0) #%>% View()
+
+#n_rest <- mem_tab[2, 3] - nrow(tmp)
+
+tmp1 <- tmp %>% group_by(group) %>%
+      dplyr::summarise(n = n()) %>% 
+     # rbind(c("no complains", as.numeric(n_rest))) %>% 
+      mutate(n = as.numeric(n)) %>% 
+      mutate(percent = round(n / sum(n), 3) * 100, percent1 = round(n / sum(n), 2) * 100) 
+
+
+tmp1 %>% 
+  arrange(desc(n)) %>% 
+  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
+  kable_classic(full_width = F, html_font = "Arial")
+
+```
+
+#### 3
+
+```{r, warning=FALSE}
+
+tmp <- struggle3 %>% filter( new_feature != "-") %>% dplyr::select(new_feature) %>% 
+  filter(!grepl("\\b(no|\\/|above|good|balanced)\\b", new_feature)) %>%  #View()
+  #filter(!row_number() %in% c(13, 18, 20  ))  %>% 
+  #separate_rows(new_feature, sep = ";", convert = FALSE) %>% 
+#filter(!row_number() %in% c(59))  %>% 
+  separate_rows(new_feature, sep = "\\\r\\\n", convert = FALSE) %>% 
+  mutate(group = case_when(
+    grepl("\\bsignif\\w*", new_feature) == TRUE ~ "adding significance",
+    grepl("\\b(3d)\\b", new_feature) == TRUE ~ "3d", 
+    grepl("\\b(stat\\w*|average|mean)\\b", new_feature) == TRUE ~ "adding statistics", 
+    grepl("\\btopo\\w*", new_feature) == TRUE ~ "adding topoplot", 
+    grepl("\\b(custom\\w*|details|annotations|opacity|font|labels|color(s|map|maps|bar)?|colour(s)?|thicker)\\b", new_feature) == TRUE ~ "customization (color, labels)", 
+    grepl("\\b(manipulating|highlight|graying|click|control|interact\\w*|gui|select\\w*)", new_feature) == TRUE ~ "interactivity and channel selection", 
+    grepl("\\b(ci|ribbons|se|ses|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", new_feature) == TRUE ~ "uncertainty", 
+    
+      TRUE ~ '_other'
+      )) %>% filter(nchar(new_feature) != 0) %>% View()
+
+#n_rest <- mem_tab[2, 3] - nrow(tmp)
+
+tmp1 <- tmp %>% group_by(group) %>%
+      dplyr::summarise(n = n()) %>% 
+     # rbind(c("no complains", as.numeric(n_rest))) %>% 
+      mutate(n = as.numeric(n)) %>% 
+      mutate(percent = round(n / sum(n), 3) * 100, percent1 = round(n / sum(n), 2) * 100) 
+
+
+tmp1 %>% 
+  arrange(desc(n)) %>% 
+  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
+  kable_classic(full_width = F, html_font = "Arial")
+
+```
+
+
+
+
 
