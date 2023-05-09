@@ -5,12 +5,17 @@ format:
     toc: true
     html-math-method: katex
     css: styles.css
+    code-fold: true
+    code-summary: "Show the code"
 editor: visual
 ---
+```{r setup, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
 
 ## Setup
 
-```{r, message= FALSE, warning=FALSE}
+```{r, message= FALSE, warning=FALSE, echo=FALSE}
 # upload to the git
 library(readxl)
 library(foreach)
@@ -84,37 +89,31 @@ t <- foreach(i = 1:nrow(data)) %do% tokenize_words(as.character(data[i, 11]))
 tt <- foreach(i = 1:length(t)) %do% paste(unlist(t[i]), collapse = ' ') 
 
 
-area1 <- data.frame(matrix(tt)) %>% dplyr::rename(words = !!names(.)[1]) %>%
-  mutate(words = ifelse(str_detect(.[[1]], 'emot|empathy'), "affective neuroscience", words)) %>%  
-  mutate(words =ifelse(str_detect(.[[1]], 'memory'), "memory", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'hearing|audit'), "auditory", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'cognitive load|selective attention|attention|cognition|consciousness|meditation|cognitive control|self|executive functions'), "cognitive control and attention", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'dbs'), "deep brain stimulation", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'decision making|reward'), "decision making", words)) %>%
-  mutate(words =ifelse(str_detect(.[[1]], 'ageing'), "ageing", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'social'), "social cognition", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'olfac'), "olfaction", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'communication|language|speech|biling|english|language processing'), "language and speech", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'bci'), "bci", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'sleep'), "sleep", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'timing|time|temporal'), "time", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'perception'), "perception", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'vis'), "vision", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'developmental|development|ageing'), "development", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'spatial|brain body|motor|motion'), "motor control", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'diagnostics|disorder|psychiatry|epilepsy|autism|patients|therapy|psychopharmacology'), "mental disorders", words)) %>%   
-  mutate(words =ifelse(str_detect(.[[1]], 'signal processing|event related potentials|method|sdf|ieeg'), "dsp", words))
-
-area <- area1 %>%
-  mutate(words = ifelse(str_detect(.[[1]], 'olfaction|vision|auditory|pain'), "perception", words))%>%
-  mutate(words = ifelse(str_detect(.[[1]], 'dsp|computational neuroscience'), "methodology", words)) %>% 
-  mutate(words = ifelse(str_detect(.[[1]], 'mental disorders|deep brain stimulation'), "clinical", words))%>% 
-  mutate(words = ifelse(str_detect(.[[1]], 'social cognition'), "affective neuroscience", words))
+area <- data.frame(matrix(tt)) %>% dplyr::rename(words = !!names(.)[1]) %>%
+   mutate(words2 = case_when(
+    grepl("\\bmemory\\b", words) == TRUE ~ "memory", 
+    grepl("\\b(empathy|emot\\w*|affective|social)\\b", words) == TRUE ~ "affective neuroscience", 
+    grepl("\\b(cognitive load|selective attention|attention|cognition|consciousness|meditation|cognitive control|self|executive functions)\\b", words) == TRUE ~ "cognitive control and attention", 
+    grepl("\\b(hearing|audi\\w*)\\b", words) == TRUE ~ "auditory",
+    grepl("\\b(decision|reward)\\b", words) == TRUE ~ "decision making",
+    grepl("\\b(ageing|aging)\\b", words) == TRUE ~ "ageing",
+    grepl('\\bolfac\\w*', words) ~ 'olfaction',
+    grepl('\\b(communication|language|speech|biling\\w*|english)\\b', words) ~ 'language and speech',
+    grepl('\\bbci\\b', words) ~ 'bci',
+    grepl('\\bsleep\\b', words) ~ 'sleep',
+    grepl('\\b(timing|time|temporal)\\b', words) ~ 'time',
+    grepl('\\bperception\\b', words) ~ 'perception',
+    grepl('\\bvis\\w*', words) ~ 'vision',
+    grepl('\\b(development\\w*|ageing)\\b', words) ~ 'development',
+    grepl('\\b(spatial|brain body|motor|motion)\\b', words) ~ 'motor control',
+    grepl('\\b(diagnostics|disorder(s)?|psychiatry|epilepsy|autism|patients|therapy|psychopharmacology|pain|dbs|stimulation)\\b', words) ~ 'mental disorders',
+    grepl('\\b(signal|potentials|method\\w*|sdf|ieeg|computational)\\b', words) ~ 'methodology',
+    grepl('\\b(olfaction|vision|auditory)\\b', words) ~ 'development',
+    ))
    
-   
-area %>% group_by(words) %>% dplyr::summarise(Freq = n()) %>% 
-  data.frame(.)  %>% mutate(words = as.character(words)) %>%  #arrange(desc(Freq)) %>% 
-    ggplot(data = ., aes(y = reorder(words, Freq),  x= Freq, fill = words)) +
+area %>% group_by(words2) %>% dplyr::summarise(Freq = n()) %>% 
+  data.frame(.)  %>% mutate(words2 = as.character(words2)) %>%  #arrange(desc(Freq)) %>% 
+    ggplot(data = ., aes(y = reorder(words2, Freq),  x= Freq, fill = words2)) +
     geom_bar(stat="identity") + labs(x="Topic of research", y="Frequency") +
     geom_text(aes(label = Freq), 
     hjust = -0.2) + theme_classic() + theme(legend.position="none")
@@ -123,7 +122,7 @@ area %>% group_by(words) %>% dplyr::summarise(Freq = n()) %>%
 
 ## Method
 
-```{r}
+```{r, message= FALSE, warning=FALSE}
 method <- data[14:17]
 ch <- colnames(method)
 ch1 <- foreach(i = ch) %do% str_split_i(i, "\\? \\[", 2) 
@@ -134,18 +133,22 @@ colnames(d) <- c("method", "sum_scores")
 d %>% arrange(desc(sum_scores)) %>% 
     ggplot(., aes(x = reorder(method, sum_scores), y = sum_scores, fill = method)) +
     geom_col(stat = "identity") + labs(x = "Method", y = "Value", fill = "Method") +
-    theme_classic() + theme(legend.position="none")
+    theme_classic() + theme(legend.position="none") + 
+  geom_text(aes(label = sum_scores), vjust = -0.2)
 ```
 
 ## Experience
 
 #### Papers
 
-```{r}
+```{r, message= FALSE, warning=FALSE}
 data[19] %>% dplyr::rename(papers = !!names(.)[1]) %>% filter(papers < 100) %>%  ggplot(data = ., aes(papers)) +
   geom_histogram() +
   labs(x ="How many published papers/preprints do you have, where you used EEG, MEG or iEEG analysis?") + theme_classic()
 # PCA for clustering it 
+```
+```{r}
+data[19] %>% dplyr::rename(papers = !!names(.)[1]) %>% filter(papers < 100) %>% summarise(median_paper = median(papers))
 ```
 
 #### Position
@@ -156,18 +159,22 @@ as.data.frame(table(na.omit(data[12]))) %>% dplyr::rename(position = !!names(.)[
   arrange(desc(Freq)) %>% 
     ggplot(data = ., aes(y = reorder(position, Freq),  x= Freq, fill = position)) +
     geom_bar(stat="identity") + ylab("Position") +
-    geom_text(aes(label = Freq), 
-    hjust = -0.2) + theme_classic() + theme(legend.position="none")
+    geom_text(aes(label = Freq), hjust = -0.2) + 
+  theme_classic() + theme(legend.position="none")
 ```
 
 #### Years
 
-```{r}
+```{r, message= FALSE, warning=FALSE}
 data %>% filter(.[[20]] < 50) %>% ggplot(data = ., aes_(as.name(names(data)[20]))) +
   geom_histogram(bins = 45) +  scale_x_continuous(breaks=seq(0, 30, 5)) +
   labs(x ="Years of experience with EEG, MEG, or iEEG analysis", y="Count") +
   theme_classic() + theme(legend.position="none", axis.text.x = element_text(size = 12)) 
 ```
+```{r}
+data %>% filter(.[[20]] < 50) %>% summarise(median_year = median(.[[20]]))
+```
+
 
 #### Self-assessed level
 
@@ -189,9 +196,13 @@ table(data[21]) %>% data.frame()%>% dplyr::rename(level = !!names(.)[1]) %>%
 
 ```{r}
 table(data[22])  %>% data.frame()%>% dplyr::rename(level = !!names(.)[1]) %>%
+    mutate(percent_score = round(Freq / sum(Freq) * 100)) %>% 
     ggplot(data = ., aes(x = reorder(level, Freq),  y= Freq, fill = level)) +
     geom_bar(stat="identity") + xlab("Code contribution") +
-    geom_text(aes(label = Freq), vjust = -0.2)  + theme_classic() + theme(legend.position="none")
+    geom_text(aes(label = paste0(percent_score, "%")), position = position_stack(vjust = 0.5), size = 6)  +
+  theme_classic() +
+  theme(legend.position="none", axis.text.x = element_text(size = 12)) +
+  labs(y="Count") 
 ```
 
 ## Time of finishing survey in minutes

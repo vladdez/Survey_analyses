@@ -1,12 +1,21 @@
 ---
-title: "user_study"
-format: html
+title: "Linear models"
+format:
+  html:
+    toc: true
+    html-math-method: katex
+    css: styles.css
+    code-fold: true
+    code-summary: "Show the code"
 editor: visual
 ---
+```{r setup, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
 
 ## Setup
 
-```{r, message= FALSE, warning=FALSE}
+```{r, message= FALSE, warning=FALSE, echo=FALSE}
 library(readxl)
 library(foreach)
 library(stringr)
@@ -38,7 +47,7 @@ data <- data[1:121] %>%
   filter(.[[18]] !='Yes') # not analysed any EEG method
 ```
 
-## In search of single variable representing experience
+## Experience factor
 
 ```{r, include=FALSE}
 exp_data <- data[c( 19, 20, 12, 21, 22)]
@@ -55,9 +64,10 @@ short <- exp_data[c(1:2, 5)] %>% mutate(code_contribution = ifelse(code_contribu
 ```{r}
 m = FAMD(exp_data[1:5], ncp=2, axes=c(1,2))
 
-fviz_famd_ind(m, col.ind = "cos2", 
+pics <- fviz_famd_ind(m, col.ind = "cos2", 
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
              repel = TRUE)
+
 ```
 
 ```{r}
@@ -70,19 +80,17 @@ cbind(data[20], factor_scores[1])  %>%
   broom::tidy()
   #lm(data=.,years ~ proxy) %>% summary(.)
 ```
+## Experience and ...
 
-## Up or down
+### Up or down
 
-```{r, eval = FALSE, echo = FALSE}
+```{r}
 
 cbind(data[79], factor_scores[1])  %>% 
    rename_at(vars(colnames(.)), ~ c("ud", "proxy")) %>% filter(!is.na(ud)) %>% 
   mutate(ud = ifelse(ud=="Up", 1, 0)) %>% 
   t.test( proxy ~ ud , data=.) %>% 
   broom::tidy()
-  #glm(data=., ud ~ proxy) %>% summary(.)
-
-
 
 cbind(data[79], factor_scores[1])  %>% 
    rename_at(vars(colnames(.)), ~ c("ud", "proxy")) %>% filter(!is.na(ud)) %>% 
@@ -90,7 +98,7 @@ cbind(data[79], factor_scores[1])  %>%
   geom_boxplot() + labs(x = "Aware or not abour colorbar controvercies", y = "Experience") +  theme_classic()
 ```
 
-## colorbars
+### Colorbars
 
 ```{r, eval = FALSE, echo = FALSE}
 
@@ -107,7 +115,7 @@ cbind(data[117], factor_scores[1])  %>%
   geom_boxplot() + labs(x = "Aware or not abour colorbar controvercies", y = "Experience") +  theme_classic()
 ```
 
-## Experience  tools
+### Tools
 
 ```{r, warning=FALSE}
 vec <- names(data[25:51]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
@@ -121,28 +129,6 @@ software <- data[25:51] %>%
 
 ```
 
-```{r, include=FALSE}
-software  %>% 
-  select_if(colSums(.) > 10) %>%  dplyr::select(years, EEGLAB) %>% 
-  ggplot(., aes(x=as.factor(EEGLAB), y=years)) + 
-  geom_boxplot()
-
-software  %>% 
-  select_if(colSums(.) > 10) %>%  dplyr::select(years, FieldTrip) %>% 
-  ggplot(., aes(x=as.factor(FieldTrip), y=years)) + 
-  geom_boxplot()
-software  %>% 
-  select_if(colSums(.) > 10) %>%  dplyr::select(years, "MNE-Python") %>% 
-  ggplot(., aes(x=as.factor(`MNE-Python`), y=years)) + 
-  geom_boxplot()
-
-software  %>% 
-  select_if(colSums(.) > 10) %>%  dplyr::select(years, Brainstorm) %>% 
-  ggplot(., aes(x=as.factor(Brainstorm), y=years)) + 
-  geom_boxplot()
-```
-
-#### Tools and year of experience
 
 ```{r}
 a <- software  %>% 
@@ -173,7 +159,7 @@ for (i in 1:length(cn)){
 
 ```
 
-```{r}
+```{r, include=FALSE}
 # na.omit(data[51]) %>% nrow() # change others here 
 # other <- c(rep("Custom scripts", each=9), "4DBTi", rep("letswave", 3), "mTRF", "RAGU", "IGOR Pro", "EEGProcessor", "ELAN", "WinEEG") %>% table(.) %>% data.frame(.) %>% rename_at(vars(colnames(.)), ~ c("soft", "sum_scores"))
 # data.frame(rowSums(t(software))) %>%  tibble::rownames_to_column(., "soft") %>% 
@@ -181,9 +167,8 @@ for (i in 1:length(cn)){
 #  rbind(., other) %>% dplyr::group_by(soft) %>% dplyr::summarise(sum_scores = sum(sum_scores)) 
 ```
 
-## Number of used software
+### Number of used software
 
-#### and years of experience
 
 ```{r}
 vec <- names(data[25:50]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
@@ -192,46 +177,60 @@ software <- data[25:50] %>%
     rename_at(vars(colnames(.)), ~ vec) %>% 
   mutate_at(vars(vec), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0))) 
 
-
-  
-ny <- cbind(data.frame(rowSums(software)), data[20]) %>% 
-   rename_at(vars(colnames(.)), ~ c("n_soft", "years")) %>% filter(years < 50, n_soft != 0)  %>% data.frame()
-
-ny %>% 
-  lm(data=., n_soft ~ years) %>% summary(.)
-
-ny %>% ggplot(., aes(x=n_soft, y=years)) + geom_jitter() + geom_smooth()
 ```
-
-#### and self assessment
 
 ```{r}
-merge(data.frame(rowSums(software)), data[21]) %>% 
-   rename_at(vars(colnames(.)), ~ c("n_soft", "selfass")) %>% 
-  #lm(data=., n_soft ~ selfass) %>% summary(.)
-  ggplot(., aes(y=n_soft, x=selfass)) + geom_violin()
+cbind(data.frame(rowSums(software)), factor_scores[1])  %>% 
+   rename_at(vars(colnames(.)), ~ c("n_soft", "experience")) %>% 
+  filter(n_soft > 0) %>% 
+  ggplot(., aes(x=n_soft, y=experience)) + geom_jitter() + geom_smooth()
+```
+```{r}
+cbind(data.frame(rowSums(software)), factor_scores[1])  %>% 
+   rename_at(vars(colnames(.)), ~ c("n_soft", "experience")) %>% 
+  filter(n_soft > 0) %>% 
+  lm(data=., n_soft ~ experience) %>% summary(.)
 ```
 
-<!-- ```{r} -->
 
-<!-- ggpairs(exp_data[1:2])  -->
+### Features
 
-<!-- ``` -->
+```{r}
+feature <- data[52:60] %>% rename_all(., ~str_split_i(colnames(data[52:60]), "\\? \\[", 2) %>% 
+                                        str_sub(., 1, -2) ) %>%  
+  mutate_at(c(colnames(.)), 
+        funs(recode(.,
+        "Very important"= 2, "Important"= 1, "Neutral"= 0,
+        "Low importance"= -1, "Not at all important" = -2 )))  %>% 
+  cbind(., factor_scores[1]) %>% 
+    filter_all(all_vars(!is.na(.))) %>%  
+  rename_at(vars(colnames(.)), ~ c("subplot", "attributes", "speed", "publicable", "reproducable", 
+                                   "zooming", "interactive", "gui", "coding", "experience")) %>% 
+  mutate(experience = round(experience, 2), exp_quartile = cut(experience, 4, labels = c("25", "50", "75", "100"))) %>% 
+  group_by(exp_quartile) %>% dplyr::mutate(n = n()) %>% ungroup() #%>% 
+  #mutate(perc = round(n / sum(n), 2) ) #%>% 
+  
+feature %>% lm(data=., subplot ~ experience) %>% summary()
 
-<!-- ```{r} -->
 
-<!-- ggpairs(exp_data[4:5])  -->
 
-<!-- ``` -->
+feature %>% 
+  pivot_longer(cols = subplot:coding, names_to = "feature", values_to = "likert") %>% #summary()
+  #filter(feature == "gui") %>% 
+  mutate(likert = likert + 3) %>% 
+  group_by(feature, exp_quartile) %>% dplyr::summarise(m = mean(likert)) %>% 
+  ggplot(aes(y = m, x= exp_quartile, fill = exp_quartile)) + 
+  geom_bar(stat = "identity") + 
+  #geom_smooth(aes(y = value, x= experience, color = str_wrap(name, 20)), bw = 0.5, method = "loess", span = 0.7) + 
+  labs(y = "Mean likert scale value", x="Experience quartiles", color = "Features")  + theme_classic() +
+  theme(legend.position = "none", 
+        legend.key.height=unit(2, "cm"), 
+        axis.text.x = element_text(size = 12),
+        strip.text = element_text(size = 14)) + 
+  facet_wrap(~str_wrap(feature, 20)) + 
+  geom_text(aes(label = paste0(round(m, 1))),  position = position_stack(vjust = 0.5), size = 4) 
 
-<!-- ```{r} -->
+```
 
-<!-- ggpairs(exp_data[3:5])  -->
 
-<!-- ``` -->
 
-<!-- ```{r} -->
-
-<!-- ggpairs(exp_data)  -->
-
-<!-- ``` -->

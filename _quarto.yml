@@ -15,11 +15,11 @@ website:
           - text: "1. sample bio"
             file: sample_bio.qmd
           - text: "2. visualisation customs"
-            file: exploration.qmd
+            file: customs.qmd
           - text: "3. linear models"
             file: connections.qmd
-          - text: "4. plot breakdown"
-            file: plot_breakdown.qmd
+          - text: "4. feedbacks"
+            file: feedbacks.qmd
 
 
 format:
