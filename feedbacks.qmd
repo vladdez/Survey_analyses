@@ -468,15 +468,17 @@ tmp <- struggle3 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
     grepl("\\b(head|headshape|montage|topographies)\\b", parts) == TRUE ~ "head shape and montage",
     grepl("\\b(time|threshold)\\b", parts) == TRUE ~ "time selection",
       grepl("\\b(ci|se|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", parts) == TRUE ~ "uncertainty",
-      grepl("\\b(channel(s)?|electrode(s)?|sensors|elec)\\b", parts) == TRUE ~ "channel selection\n(differentiation, identification)",
-      grepl("\\b(color(s|ing|bar|map)?|colour(s)?|proportion(s)?|publication|limits|neg|scal(e|ing|es))\\b", parts) == TRUE ~ "styling and color", 
+      grepl("\\b(scal(e|ing|es))\\b", parts) == TRUE ~ "scaling", 
+      grepl("\\b(interpolat(e|ion)?|edges)\\b", parts) == TRUE ~ "interpolation",
+      grepl("\\b(color(s|ing|bar|map)?|colour(s)?|proportion(s)?|publication|limits|neg)\\b", parts) == TRUE ~ "styling and color", 
+      grepl("\\b(channel(s)?|electrode(s)?|sensors|elec)\\b", parts) == TRUE ~ "channel highlighting",
+      
       grepl("\\b(ax(is|es)?|lable(s)?|label(s|ing)?|legend|ticks|features|layout)\\b", parts) == TRUE ~ "plot components\n(axes, lables, legend)", 
       grepl("\\b(mean|significan(t|ce)|permutations|p-value(s)?|smoothing|statistical|stats)\\b", parts) == TRUE ~ "statistics",
-      grepl("\\b(interpolat(e|ion)?|edges)\\b", parts) == TRUE ~ "interpolation",
       
-     # grepl("\\btopo\\w*", parts) == TRUE ~ "adding topography", 
+
      
-      )) %>% #filter(is.na(problems))  %>% View() 
+      )) %>% #View() 
 
 filter(nchar(parts) != 0) %>% filter(!is.na(problems)) 
 
@@ -720,7 +722,10 @@ tmp1 %>%
 ## The most common struggles
 
 ```{r}
-problems <- rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem8)
+
+problems <- rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem8) %>%
+  group_by(name) %>%  mutate(index = match(name, unique(name))) 
+
 ```
 
 ```{r}
@@ -735,7 +740,9 @@ problems %>% filter(problems == "no complains") %>%
 ```
 ```{r}
 problems %>% filter(problems != "no complains") %>% group_by(name) %>% 
-  arrange(desc(percent1)) %>% slice(1)
+  arrange(desc(percent1)) %>% slice(1) %>% arrange(index) %>%  dplyr::select(name, problems, percent1) %>% 
+  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
+  kable_classic(full_width = F, html_font = "Arial")
 
 ```
 

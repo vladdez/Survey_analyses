@@ -64,9 +64,9 @@ short <- exp_data[c(1:2, 5)] %>% mutate(code_contribution = ifelse(code_contribu
 ```{r}
 m = FAMD(exp_data[1:5], ncp=2, axes=c(1,2))
 
-pics <- fviz_famd_ind(m, col.ind = "cos2", 
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = TRUE)
+# pics <- fviz_famd_ind(m, col.ind = "cos2", 
+#              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+#              repel = TRUE)
 
 ```
 
@@ -152,7 +152,7 @@ for (i in 1:length(cn)){
   dplyr::mutate(., status = ifelse(not_used > used, "younger", "older")) %>% 
   mutate(status = cell_spec(status, color = ifelse(status == "younger", "green", "black")))   %>% 
   kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>%
-   add_header_above(header = c(" " = 1, "Years of user experience" = 3))   %>%
+   add_header_above(header = c(" " = 1, "Mean years of user experience" = 3))   %>%
   kable_classic(full_width = T, html_font = "Arial")
 
 
@@ -192,7 +192,6 @@ cbind(data.frame(rowSums(software)), factor_scores[1])  %>%
   lm(data=., n_soft ~ experience) %>% summary(.)
 ```
 
-
 ### Features
 
 ```{r}
@@ -206,20 +205,22 @@ feature <- data[52:60] %>% rename_all(., ~str_split_i(colnames(data[52:60]), "\\
     filter_all(all_vars(!is.na(.))) %>%  
   rename_at(vars(colnames(.)), ~ c("subplot", "attributes", "speed", "publicable", "reproducable", 
                                    "zooming", "interactive", "gui", "coding", "experience")) %>% 
-  mutate(experience = round(experience, 2), exp_quartile = cut(experience, 4, labels = c("25", "50", "75", "100"))) %>% 
-  group_by(exp_quartile) %>% dplyr::mutate(n = n()) %>% ungroup() #%>% 
-  #mutate(perc = round(n / sum(n), 2) ) #%>% 
-  
-feature %>% lm(data=., subplot ~ experience) %>% summary()
+  mutate(experience = round(experience, 2), exp_cut = cut(experience, 4, labels = c("25%", "50%", "75%", "100%")), 
+         exp_quant = factor(ntile(experience, 4))) %>% 
+  group_by(exp_quant) %>% dplyr::mutate(n = n()) %>% ungroup() 
+```
+```{r}
+table(feature$exp_quant)
+```
 
 
 
+```{r}
 feature %>% 
-  pivot_longer(cols = subplot:coding, names_to = "feature", values_to = "likert") %>% #summary()
-  #filter(feature == "gui") %>% 
+  pivot_longer(cols = subplot:coding, names_to = "feature", values_to = "likert") %>% 
   mutate(likert = likert + 3) %>% 
-  group_by(feature, exp_quartile) %>% dplyr::summarise(m = mean(likert)) %>% 
-  ggplot(aes(y = m, x= exp_quartile, fill = exp_quartile)) + 
+  group_by(feature, exp_quant) %>% dplyr::summarise(m = mean(likert)) %>% 
+  ggplot(aes(y = m, x= exp_quant, fill = exp_quant)) + 
   geom_bar(stat = "identity") + 
   #geom_smooth(aes(y = value, x= experience, color = str_wrap(name, 20)), bw = 0.5, method = "loess", span = 0.7) + 
   labs(y = "Mean likert scale value", x="Experience quartiles", color = "Features")  + theme_classic() +
@@ -234,3 +235,31 @@ feature %>%
 
 
 
+```{r}
+feature %>% 
+  pivot_longer(cols = subplot:coding, names_to = "feature", values_to = "likert") %>%
+  mutate(likert = likert + 3) %>%
+  ggplot(aes(x = likert, fill= experience, colour = exp_quant)) + 
+  geom_density(key_glyph = "timeseries", bw = 0.5) +
+  labs(x = "Mean likert scale value", y="Experience quartiles", color = "Experience\nquantiles")  + 
+  theme_classic() + scale_colour_brewer(palette = "Spectral") +
+  theme(legend.position = "right", 
+        #legend.key.height=unit(2, "cm"), 
+        axis.text.x = element_text(size = 12),
+        strip.text = element_text(size = 14)) + 
+  facet_wrap(~str_wrap(feature, 20)) 
+```
+
+### Channels
+
+```{r}
+data %>% select(23, 24) %>% 
+  cbind(., factor_scores[1]) %>% 
+  rename_at(vars(colnames(.)), ~ c("measure", "analyse", "experience")) %>% 
+  filter(analyse < 500) %>% 
+  mutate(rate = analyse / measure) %>% 
+  ggplot(., aes(x=rate, y=experience)) + 
+  geom_point() + geom_smooth() +
+  labs(x ="analyse / measure") +
+  theme_classic()
+```

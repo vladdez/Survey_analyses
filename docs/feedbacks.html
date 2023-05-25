@@ -1327,32 +1327,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(head|headshape|montage|topographies)</span><span class="sc">\\</span><span class="st">b"</span>, parts) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"head shape and montage"</span>,</span>
 <span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(time|threshold)</span><span class="sc">\\</span><span class="st">b"</span>, parts) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"time selection"</span>,</span>
 <span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(ci|se|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)</span><span class="sc">\\</span><span class="st">b"</span>, parts) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"uncertainty"</span>,</span>
-<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(channel(s)?|electrode(s)?|sensors|elec)</span><span class="sc">\\</span><span class="st">b"</span>, parts) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"channel selection</span><span class="sc">\n</span><span class="st">(differentiation, identification)"</span>,</span>
-<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(color(s|ing|bar|map)?|colour(s)?|proportion(s)?|publication|limits|neg|scal(e|ing|es))</span><span class="sc">\\</span><span class="st">b"</span>, parts) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"styling and color"</span>, </span>
-<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(ax(is|es)?|lable(s)?|label(s|ing)?|legend|ticks|features|layout)</span><span class="sc">\\</span><span class="st">b"</span>, parts) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"plot components</span><span class="sc">\n</span><span class="st">(axes, lables, legend)"</span>, </span>
-<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(mean|significan(t|ce)|permutations|p-value(s)?|smoothing|statistical|stats)</span><span class="sc">\\</span><span class="st">b"</span>, parts) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"statistics"</span>,</span>
-<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(interpolat(e|ion)?|edges)</span><span class="sc">\\</span><span class="st">b"</span>, parts) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"interpolation"</span>,</span>
-<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>     <span class="co"># grepl("\\btopo\\w*", parts) == TRUE ~ "adding topography", </span></span>
-<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>     </span>
-<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">%&gt;%</span> <span class="co">#filter(is.na(problems))  %&gt;% View() </span></span>
-<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(<span class="fu">nchar</span>(parts) <span class="sc">!=</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(problems)) </span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(scal(e|ing|es))</span><span class="sc">\\</span><span class="st">b"</span>, parts) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"scaling"</span>, </span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(interpolat(e|ion)?|edges)</span><span class="sc">\\</span><span class="st">b"</span>, parts) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"interpolation"</span>,</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(color(s|ing|bar|map)?|colour(s)?|proportion(s)?|publication|limits|neg)</span><span class="sc">\\</span><span class="st">b"</span>, parts) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"styling and color"</span>, </span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(channel(s)?|electrode(s)?|sensors|elec)</span><span class="sc">\\</span><span class="st">b"</span>, parts) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"channel highlighting"</span>,</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(ax(is|es)?|lable(s)?|label(s|ing)?|legend|ticks|features|layout)</span><span class="sc">\\</span><span class="st">b"</span>, parts) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"plot components</span><span class="sc">\n</span><span class="st">(axes, lables, legend)"</span>, </span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(mean|significan(t|ce)|permutations|p-value(s)?|smoothing|statistical|stats)</span><span class="sc">\\</span><span class="st">b"</span>, parts) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"statistics"</span>,</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>     </span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">%&gt;%</span> <span class="co">#View() </span></span>
 <span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>n_rest <span class="ot">&lt;-</span> mem_tab[<span class="dv">6</span>, <span class="dv">3</span>] <span class="sc">-</span> <span class="fu">nrow</span>(tmp)</span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(<span class="fu">nchar</span>(parts) <span class="sc">!=</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(problems)) </span>
 <span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a>tmp1 <span class="ot">&lt;-</span> tmp <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(problems) <span class="sc">%&gt;%</span></span>
-<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
-<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rbind</span>(<span class="fu">c</span>(<span class="st">"no complains"</span>, <span class="fu">as.numeric</span>(n_rest))) <span class="sc">%&gt;%</span> </span>
-<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">as.numeric</span>(n)) <span class="sc">%&gt;%</span> </span>
-<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">percent =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">3</span>) <span class="sc">*</span> <span class="dv">100</span> ,<span class="at">percent1 =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span>) </span>
-<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a>problem3 <span class="ot">&lt;-</span> tmp1 <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(problems, percent1) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">name =</span> <span class="st">"topoplot"</span>)</span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a>n_rest <span class="ot">&lt;-</span> mem_tab[<span class="dv">6</span>, <span class="dv">3</span>] <span class="sc">-</span> <span class="fu">nrow</span>(tmp)</span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a>tmp1 <span class="ot">&lt;-</span> tmp <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(problems) <span class="sc">%&gt;%</span></span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rbind</span>(<span class="fu">c</span>(<span class="st">"no complains"</span>, <span class="fu">as.numeric</span>(n_rest))) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">as.numeric</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">percent =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">3</span>) <span class="sc">*</span> <span class="dv">100</span> ,<span class="at">percent1 =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span>) </span>
 <span id="cb32-34"><a href="#cb32-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-35"><a href="#cb32-35" aria-hidden="true" tabindex="-1"></a>tmp1 <span class="sc">%&gt;%</span> </span>
-<span id="cb32-36"><a href="#cb32-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> </span>
-<span id="cb32-37"><a href="#cb32-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="st">"striped"</span>, <span class="at">position =</span> <span class="st">"center"</span>,) <span class="sc">%&gt;%</span> </span>
-<span id="cb32-38"><a href="#cb32-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_classic</span>(<span class="at">full_width =</span> F, <span class="at">html_font =</span> <span class="st">"Arial"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb32-35"><a href="#cb32-35" aria-hidden="true" tabindex="-1"></a>problem3 <span class="ot">&lt;-</span> tmp1 <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(problems, percent1) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">name =</span> <span class="st">"topoplot"</span>)</span>
+<span id="cb32-36"><a href="#cb32-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-37"><a href="#cb32-37" aria-hidden="true" tabindex="-1"></a>tmp1 <span class="sc">%&gt;%</span> </span>
+<span id="cb32-38"><a href="#cb32-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-39"><a href="#cb32-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="st">"striped"</span>, <span class="at">position =</span> <span class="st">"center"</span>,) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-40"><a href="#cb32-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_classic</span>(<span class="at">full_width =</span> F, <span class="at">html_font =</span> <span class="st">"Arial"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 
@@ -1373,14 +1375,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    <td style="text-align:right;"> 64 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> channel selection
-(differentiation, identification) </td>
-   <td style="text-align:right;"> 19 </td>
-   <td style="text-align:right;"> 11.4 </td>
-   <td style="text-align:right;"> 11 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> styling and color </td>
+   <td style="text-align:left;"> channel highlighting </td>
    <td style="text-align:right;"> 14 </td>
    <td style="text-align:right;"> 8.4 </td>
    <td style="text-align:right;"> 8 </td>
@@ -1392,22 +1387,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    <td style="text-align:right;"> 7 </td>
   </tr>
   <tr>
+   <td style="text-align:left;"> styling and color </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 6.0 </td>
+   <td style="text-align:right;"> 6 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> scaling </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 4.2 </td>
+   <td style="text-align:right;"> 4 </td>
+  </tr>
+  <tr>
    <td style="text-align:left;"> time selection </td>
    <td style="text-align:right;"> 6 </td>
    <td style="text-align:right;"> 3.6 </td>
    <td style="text-align:right;"> 4 </td>
   </tr>
   <tr>
+   <td style="text-align:left;"> interpolation </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 3.0 </td>
+   <td style="text-align:right;"> 3 </td>
+  </tr>
+  <tr>
    <td style="text-align:left;"> plot components
 (axes, lables, legend) </td>
    <td style="text-align:right;"> 4 </td>
    <td style="text-align:right;"> 2.4 </td>
-   <td style="text-align:right;"> 2 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> interpolation </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 1.8 </td>
    <td style="text-align:right;"> 2 </td>
   </tr>
   <tr>
@@ -1902,7 +1909,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>problems <span class="ot">&lt;-</span> <span class="fu">rbind</span>(problem1, problem2, problem3, problem4, problem5, problem6, problem8)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>problems <span class="ot">&lt;-</span> <span class="fu">rbind</span>(problem1, problem2, problem3, problem4, problem5, problem6, problem8) <span class="sc">%&gt;%</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(name) <span class="sc">%&gt;%</span>  <span class="fu">mutate</span>(<span class="at">index =</span> <span class="fu">match</span>(name, <span class="fu">unique</span>(name))) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
@@ -1925,20 +1933,59 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <details>
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>problems <span class="sc">%&gt;%</span> <span class="fu">filter</span>(problems <span class="sc">!=</span> <span class="st">"no complains"</span>) <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(name) <span class="sc">%&gt;%</span> </span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(percent1)) <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(percent1)) <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(index) <span class="sc">%&gt;%</span>  dplyr<span class="sc">::</span><span class="fu">select</span>(name, problems, percent1) <span class="sc">%&gt;%</span> </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="st">"striped"</span>, <span class="at">position =</span> <span class="st">"center"</span>,) <span class="sc">%&gt;%</span> </span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_classic</span>(<span class="at">full_width =</span> F, <span class="at">html_font =</span> <span class="st">"Arial"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 7 × 3
-# Groups:   name [7]
-  problems                                               percent1 name          
-  &lt;chr&gt;                                                     &lt;dbl&gt; &lt;chr&gt;         
-1 "styling and color"                                          10 butterfly plot
-2 "order and sorting"                                           5 channel image 
-3 "sorting"                                                     4 erp image     
-4 "uncertainty"                                                30 line plot     
-5 "legibility and scaling"                                     21 topo array    
-6 "time selection"                                             14 topomap       
-7 "channel selection\n(differentiation, identification)"       11 topoplot      </code></pre>
+<div class="cell-output-display">
+
+<table class="table table-striped lightable-classic" style="margin-left: auto; margin-right: auto; font-family: Arial; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> name </th>
+   <th style="text-align:left;"> problems </th>
+   <th style="text-align:right;"> percent1 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> line plot </td>
+   <td style="text-align:left;"> uncertainty </td>
+   <td style="text-align:right;"> 30 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> butterfly plot </td>
+   <td style="text-align:left;"> styling and color </td>
+   <td style="text-align:right;"> 10 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> topoplot </td>
+   <td style="text-align:left;"> channel highlighting </td>
+   <td style="text-align:right;"> 8 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> topomap </td>
+   <td style="text-align:left;"> time selection </td>
+   <td style="text-align:right;"> 14 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> topo array </td>
+   <td style="text-align:left;"> legibility and scaling </td>
+   <td style="text-align:right;"> 21 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> erp image </td>
+   <td style="text-align:left;"> sorting </td>
+   <td style="text-align:right;"> 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> channel image </td>
+   <td style="text-align:left;"> order and sorting </td>
+   <td style="text-align:right;"> 5 </td>
+  </tr>
+</tbody>
+</table>
+
 </div>
 </div>
 </section>
@@ -1949,37 +1996,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> struggle1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>( new_feature <span class="sc">!=</span> <span class="st">"-"</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(new_feature) <span class="sc">%&gt;%</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(</span><span class="sc">\\</span><span class="st">.|</span><span class="sc">\\</span><span class="st">/|see)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature)) <span class="sc">%&gt;%</span>  </span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">row_number</span>() <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">13</span>, <span class="dv">18</span>, <span class="dv">20</span>  ))  <span class="sc">%&gt;%</span> </span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(new_feature, <span class="at">sep =</span> <span class="st">";"</span>, <span class="at">convert =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a><span class="co">#filter(!row_number() %in% c(59))  %&gt;% </span></span>
-<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(new_feature, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\\\r\\\n</span><span class="st">"</span>, <span class="at">convert =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">group =</span> <span class="fu">case_when</span>(</span>
-<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">bsignif</span><span class="sc">\\</span><span class="st">w*"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"adding significance"</span>, </span>
-<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">bstat</span><span class="sc">\\</span><span class="st">w*"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"adding statistics"</span>, </span>
-<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">btopo</span><span class="sc">\\</span><span class="st">w*"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"adding topoplot"</span>, </span>
-<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(custom</span><span class="sc">\\</span><span class="st">w*|details|annotations|font|labels|color|colours|thicker)"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"customization (color, labels)"</span>, </span>
-<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(electrode|click|control|interact</span><span class="sc">\\</span><span class="st">w*|gui|select</span><span class="sc">\\</span><span class="st">w*)"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"interactivity and channel selection"</span>, </span>
-<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(highlight|shadow|window)"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"area highlighting"</span>, </span>
-<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(ci|ribbons|se|ses|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"uncertainty"</span>, </span>
-<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">'_other'</span></span>
-<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">nchar</span>(new_feature) <span class="sc">!=</span> <span class="dv">0</span>) <span class="co">#%&gt;% View()</span></span>
-<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a><span class="co">#n_rest &lt;- mem_tab[2, 3] - nrow(tmp)</span></span>
-<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a>tmp1 <span class="ot">&lt;-</span> tmp <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(group) <span class="sc">%&gt;%</span></span>
-<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
-<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a>     <span class="co"># rbind(c("no complains", as.numeric(n_rest))) %&gt;% </span></span>
-<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">as.numeric</span>(n)) <span class="sc">%&gt;%</span> </span>
-<span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">percent =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">3</span>) <span class="sc">*</span> <span class="dv">100</span>, <span class="at">percent1 =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span>) </span>
-<span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-27"><a href="#cb47-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-28"><a href="#cb47-28" aria-hidden="true" tabindex="-1"></a>tmp1 <span class="sc">%&gt;%</span> </span>
-<span id="cb47-29"><a href="#cb47-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> </span>
-<span id="cb47-30"><a href="#cb47-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="st">"striped"</span>, <span class="at">position =</span> <span class="st">"center"</span>,) <span class="sc">%&gt;%</span> </span>
-<span id="cb47-31"><a href="#cb47-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_classic</span>(<span class="at">full_width =</span> F, <span class="at">html_font =</span> <span class="st">"Arial"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> struggle1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>( new_feature <span class="sc">!=</span> <span class="st">"-"</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(new_feature) <span class="sc">%&gt;%</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(</span><span class="sc">\\</span><span class="st">.|</span><span class="sc">\\</span><span class="st">/|see)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature)) <span class="sc">%&gt;%</span>  </span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">row_number</span>() <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">13</span>, <span class="dv">18</span>, <span class="dv">20</span>  ))  <span class="sc">%&gt;%</span> </span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(new_feature, <span class="at">sep =</span> <span class="st">";"</span>, <span class="at">convert =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co">#filter(!row_number() %in% c(59))  %&gt;% </span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(new_feature, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\\\r\\\n</span><span class="st">"</span>, <span class="at">convert =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">group =</span> <span class="fu">case_when</span>(</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">bsignif</span><span class="sc">\\</span><span class="st">w*"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"adding significance"</span>, </span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">bstat</span><span class="sc">\\</span><span class="st">w*"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"adding statistics"</span>, </span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">btopo</span><span class="sc">\\</span><span class="st">w*"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"adding topoplot"</span>, </span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(custom</span><span class="sc">\\</span><span class="st">w*|details|annotations|font|labels|color|colours|thicker)"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"customization (color, labels)"</span>, </span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(electrode|click|control|interact</span><span class="sc">\\</span><span class="st">w*|gui|select</span><span class="sc">\\</span><span class="st">w*)"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"interactivity and channel selection"</span>, </span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(highlight|shadow|window)"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"area highlighting"</span>, </span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(ci|ribbons|se|ses|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"uncertainty"</span>, </span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">'_other'</span></span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">nchar</span>(new_feature) <span class="sc">!=</span> <span class="dv">0</span>) <span class="co">#%&gt;% View()</span></span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a><span class="co">#n_rest &lt;- mem_tab[2, 3] - nrow(tmp)</span></span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a>tmp1 <span class="ot">&lt;-</span> tmp <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(group) <span class="sc">%&gt;%</span></span>
+<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a>     <span class="co"># rbind(c("no complains", as.numeric(n_rest))) %&gt;% </span></span>
+<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">as.numeric</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">percent =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">3</span>) <span class="sc">*</span> <span class="dv">100</span>, <span class="at">percent1 =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span>) </span>
+<span id="cb46-26"><a href="#cb46-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-27"><a href="#cb46-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-28"><a href="#cb46-28" aria-hidden="true" tabindex="-1"></a>tmp1 <span class="sc">%&gt;%</span> </span>
+<span id="cb46-29"><a href="#cb46-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-30"><a href="#cb46-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="st">"striped"</span>, <span class="at">position =</span> <span class="st">"center"</span>,) <span class="sc">%&gt;%</span> </span>
+<span id="cb46-31"><a href="#cb46-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_classic</span>(<span class="at">full_width =</span> F, <span class="at">html_font =</span> <span class="st">"Arial"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 
@@ -2047,10 +2094,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a> <span class="co"># words = ifelse(nchar(words)==0, NA, words),</span></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="co">#write.xlsx(tmp, "data/struggles.xlsx", sheetName = "line plot", col.names = TRUE, row.names = TRUE, append = FALSE)</span></span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="co"># problems: n of problems is higher than number of rows </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a> <span class="co"># words = ifelse(nchar(words)==0, NA, words),</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="co">#write.xlsx(tmp, "data/struggles.xlsx", sheetName = "line plot", col.names = TRUE, row.names = TRUE, append = FALSE)</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="co"># problems: n of problems is higher than number of rows </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -2059,36 +2106,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> struggle2 <span class="sc">%&gt;%</span> <span class="fu">filter</span>( new_feature <span class="sc">!=</span> <span class="st">"-"</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(new_feature) <span class="sc">%&gt;%</span> <span class="co">#View()</span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(see|not|useful)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature)) <span class="sc">%&gt;%</span>  </span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#filter(!row_number() %in% c(13, 18, 20  ))  %&gt;% </span></span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#separate_rows(new_feature, sep = ";", convert = FALSE) %&gt;% </span></span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="co">#filter(!row_number() %in% c(59))  %&gt;% </span></span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(new_feature, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\\\r\\\n</span><span class="st">"</span>, <span class="at">convert =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">group =</span> <span class="fu">case_when</span>(</span>
-<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">bsignif</span><span class="sc">\\</span><span class="st">w*"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"adding significance"</span>, </span>
-<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(stat</span><span class="sc">\\</span><span class="st">w*|average|mean)"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"adding statistics"</span>, </span>
-<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">btopo</span><span class="sc">\\</span><span class="st">w*"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"adding topoplot"</span>, </span>
-<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(custom</span><span class="sc">\\</span><span class="st">w*|details|annotations|opacity|font|labels|color|colour(s)?|thicker)"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"customization (color, labels)"</span>, </span>
-<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(manipulating|highlight|graying|click|control|interact</span><span class="sc">\\</span><span class="st">w*|gui|select</span><span class="sc">\\</span><span class="st">w*)"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"interactivity and channel selection"</span>, </span>
-<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(ci|ribbons|se|ses|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"uncertainty"</span>, </span>
-<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">'_other'</span></span>
-<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">nchar</span>(new_feature) <span class="sc">!=</span> <span class="dv">0</span>) <span class="co">#%&gt;% View()</span></span>
-<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a><span class="co">#n_rest &lt;- mem_tab[2, 3] - nrow(tmp)</span></span>
-<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a>tmp1 <span class="ot">&lt;-</span> tmp <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(group) <span class="sc">%&gt;%</span></span>
-<span id="cb49-21"><a href="#cb49-21" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
-<span id="cb49-22"><a href="#cb49-22" aria-hidden="true" tabindex="-1"></a>     <span class="co"># rbind(c("no complains", as.numeric(n_rest))) %&gt;% </span></span>
-<span id="cb49-23"><a href="#cb49-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">as.numeric</span>(n)) <span class="sc">%&gt;%</span> </span>
-<span id="cb49-24"><a href="#cb49-24" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">percent =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">3</span>) <span class="sc">*</span> <span class="dv">100</span>, <span class="at">percent1 =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span>) </span>
-<span id="cb49-25"><a href="#cb49-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-26"><a href="#cb49-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-27"><a href="#cb49-27" aria-hidden="true" tabindex="-1"></a>tmp1 <span class="sc">%&gt;%</span> </span>
-<span id="cb49-28"><a href="#cb49-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> </span>
-<span id="cb49-29"><a href="#cb49-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="st">"striped"</span>, <span class="at">position =</span> <span class="st">"center"</span>,) <span class="sc">%&gt;%</span> </span>
-<span id="cb49-30"><a href="#cb49-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_classic</span>(<span class="at">full_width =</span> F, <span class="at">html_font =</span> <span class="st">"Arial"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> struggle2 <span class="sc">%&gt;%</span> <span class="fu">filter</span>( new_feature <span class="sc">!=</span> <span class="st">"-"</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(new_feature) <span class="sc">%&gt;%</span> <span class="co">#View()</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(see|not|useful)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature)) <span class="sc">%&gt;%</span>  </span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#filter(!row_number() %in% c(13, 18, 20  ))  %&gt;% </span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#separate_rows(new_feature, sep = ";", convert = FALSE) %&gt;% </span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="co">#filter(!row_number() %in% c(59))  %&gt;% </span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(new_feature, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\\\r\\\n</span><span class="st">"</span>, <span class="at">convert =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">group =</span> <span class="fu">case_when</span>(</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">bsignif</span><span class="sc">\\</span><span class="st">w*"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"adding significance"</span>, </span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(stat</span><span class="sc">\\</span><span class="st">w*|average|mean)"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"adding statistics"</span>, </span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">btopo</span><span class="sc">\\</span><span class="st">w*"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"adding topoplot"</span>, </span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(custom</span><span class="sc">\\</span><span class="st">w*|details|annotations|opacity|font|labels|color|colour(s)?|thicker)"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"customization (color, labels)"</span>, </span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(manipulating|highlight|graying|click|control|interact</span><span class="sc">\\</span><span class="st">w*|gui|select</span><span class="sc">\\</span><span class="st">w*)"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"interactivity and channel selection"</span>, </span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(ci|ribbons|se|ses|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"uncertainty"</span>, </span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">'_other'</span></span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">nchar</span>(new_feature) <span class="sc">!=</span> <span class="dv">0</span>) <span class="co">#%&gt;% View()</span></span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a><span class="co">#n_rest &lt;- mem_tab[2, 3] - nrow(tmp)</span></span>
+<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-20"><a href="#cb48-20" aria-hidden="true" tabindex="-1"></a>tmp1 <span class="ot">&lt;-</span> tmp <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(group) <span class="sc">%&gt;%</span></span>
+<span id="cb48-21"><a href="#cb48-21" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb48-22"><a href="#cb48-22" aria-hidden="true" tabindex="-1"></a>     <span class="co"># rbind(c("no complains", as.numeric(n_rest))) %&gt;% </span></span>
+<span id="cb48-23"><a href="#cb48-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">as.numeric</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb48-24"><a href="#cb48-24" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">percent =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">3</span>) <span class="sc">*</span> <span class="dv">100</span>, <span class="at">percent1 =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span>) </span>
+<span id="cb48-25"><a href="#cb48-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-26"><a href="#cb48-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-27"><a href="#cb48-27" aria-hidden="true" tabindex="-1"></a>tmp1 <span class="sc">%&gt;%</span> </span>
+<span id="cb48-28"><a href="#cb48-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb48-29"><a href="#cb48-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="st">"striped"</span>, <span class="at">position =</span> <span class="st">"center"</span>,) <span class="sc">%&gt;%</span> </span>
+<span id="cb48-30"><a href="#cb48-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_classic</span>(<span class="at">full_width =</span> F, <span class="at">html_font =</span> <span class="st">"Arial"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 
@@ -2149,38 +2196,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> struggle3 <span class="sc">%&gt;%</span> <span class="fu">filter</span>( new_feature <span class="sc">!=</span> <span class="st">"-"</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(new_feature) <span class="sc">%&gt;%</span> </span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(no|</span><span class="sc">\\</span><span class="st">/|above|good|balanced)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature)) <span class="sc">%&gt;%</span>  <span class="co">#View()</span></span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#filter(!row_number() %in% c(13, 18, 20  ))  %&gt;% </span></span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#separate_rows(new_feature, sep = ";", convert = FALSE) %&gt;% </span></span>
-<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="co">#filter(!row_number() %in% c(59))  %&gt;% </span></span>
-<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(new_feature, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\\\r\\\n</span><span class="st">"</span>, <span class="at">convert =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">group =</span> <span class="fu">case_when</span>(</span>
-<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">bsignif</span><span class="sc">\\</span><span class="st">w*"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"adding significance"</span>,</span>
-<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(3d)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"3d"</span>, </span>
-<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(stat</span><span class="sc">\\</span><span class="st">w*|average|mean)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"adding statistics"</span>, </span>
-<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(interpolat</span><span class="sc">\\</span><span class="st">w*|extrapolat</span><span class="sc">\\</span><span class="st">w*)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"interpolation and extrapolation"</span>, </span>
-<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">btopo</span><span class="sc">\\</span><span class="st">w*"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"adding topoplot"</span>, </span>
-<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(custom</span><span class="sc">\\</span><span class="st">w*|details|annotations|opacity|font|labels|color(s|map|maps|bar)?|colour(s)?|thicker)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"customization (color, labels)"</span>, </span>
-<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(anomatiom|slider|scrolling|gif|manipulating|hightlight|highlight|graying|click|control|interact</span><span class="sc">\\</span><span class="st">w*|gui|select</span><span class="sc">\\</span><span class="st">w*)"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"interactivity and channel selection"</span>, </span>
-<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(ci|ribbons|se|ses|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"uncertainty"</span>, </span>
-<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>     <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(shape(s)?|circle|head)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"head shape"</span>, </span>
-<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">'_other'</span></span>
-<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">nchar</span>(new_feature) <span class="sc">!=</span> <span class="dv">0</span>)<span class="co"># %&gt;% View()</span></span>
-<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a><span class="co">#n_rest &lt;- mem_tab[2, 3] - nrow(tmp)</span></span>
-<span id="cb50-21"><a href="#cb50-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-22"><a href="#cb50-22" aria-hidden="true" tabindex="-1"></a>tmp1 <span class="ot">&lt;-</span> tmp <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(group) <span class="sc">%&gt;%</span></span>
-<span id="cb50-23"><a href="#cb50-23" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
-<span id="cb50-24"><a href="#cb50-24" aria-hidden="true" tabindex="-1"></a>     <span class="co"># rbind(c("no complains", as.numeric(n_rest))) %&gt;% </span></span>
-<span id="cb50-25"><a href="#cb50-25" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">as.numeric</span>(n)) <span class="sc">%&gt;%</span> </span>
-<span id="cb50-26"><a href="#cb50-26" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">percent =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">3</span>) <span class="sc">*</span> <span class="dv">100</span>, <span class="at">percent1 =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span>) </span>
-<span id="cb50-27"><a href="#cb50-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-28"><a href="#cb50-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-29"><a href="#cb50-29" aria-hidden="true" tabindex="-1"></a>tmp1 <span class="sc">%&gt;%</span> </span>
-<span id="cb50-30"><a href="#cb50-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> </span>
-<span id="cb50-31"><a href="#cb50-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="st">"striped"</span>, <span class="at">position =</span> <span class="st">"center"</span>,) <span class="sc">%&gt;%</span> </span>
-<span id="cb50-32"><a href="#cb50-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_classic</span>(<span class="at">full_width =</span> F, <span class="at">html_font =</span> <span class="st">"Arial"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> struggle3 <span class="sc">%&gt;%</span> <span class="fu">filter</span>( new_feature <span class="sc">!=</span> <span class="st">"-"</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(new_feature) <span class="sc">%&gt;%</span> </span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(no|</span><span class="sc">\\</span><span class="st">/|above|good|balanced)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature)) <span class="sc">%&gt;%</span>  <span class="co">#View()</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#filter(!row_number() %in% c(13, 18, 20  ))  %&gt;% </span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#separate_rows(new_feature, sep = ";", convert = FALSE) %&gt;% </span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="co">#filter(!row_number() %in% c(59))  %&gt;% </span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(new_feature, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\\\r\\\n</span><span class="st">"</span>, <span class="at">convert =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">group =</span> <span class="fu">case_when</span>(</span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">bsignif</span><span class="sc">\\</span><span class="st">w*"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"adding significance"</span>,</span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(3d)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"3d"</span>, </span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(stat</span><span class="sc">\\</span><span class="st">w*|average|mean)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"adding statistics"</span>, </span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(interpolat</span><span class="sc">\\</span><span class="st">w*|extrapolat</span><span class="sc">\\</span><span class="st">w*)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"interpolation and extrapolation"</span>, </span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">btopo</span><span class="sc">\\</span><span class="st">w*"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"adding topoplot"</span>, </span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(custom</span><span class="sc">\\</span><span class="st">w*|details|annotations|opacity|font|labels|color(s|map|maps|bar)?|colour(s)?|thicker)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"customization (color, labels)"</span>, </span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(anomatiom|slider|scrolling|gif|manipulating|hightlight|highlight|graying|click|control|interact</span><span class="sc">\\</span><span class="st">w*|gui|select</span><span class="sc">\\</span><span class="st">w*)"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"interactivity and channel selection"</span>, </span>
+<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(ci|ribbons|se|ses|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"uncertainty"</span>, </span>
+<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a>     <span class="fu">grepl</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">b(shape(s)?|circle|head)</span><span class="sc">\\</span><span class="st">b"</span>, new_feature) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"head shape"</span>, </span>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">'_other'</span></span>
+<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">nchar</span>(new_feature) <span class="sc">!=</span> <span class="dv">0</span>)<span class="co"># %&gt;% View()</span></span>
+<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a><span class="co">#n_rest &lt;- mem_tab[2, 3] - nrow(tmp)</span></span>
+<span id="cb49-21"><a href="#cb49-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-22"><a href="#cb49-22" aria-hidden="true" tabindex="-1"></a>tmp1 <span class="ot">&lt;-</span> tmp <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(group) <span class="sc">%&gt;%</span></span>
+<span id="cb49-23"><a href="#cb49-23" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb49-24"><a href="#cb49-24" aria-hidden="true" tabindex="-1"></a>     <span class="co"># rbind(c("no complains", as.numeric(n_rest))) %&gt;% </span></span>
+<span id="cb49-25"><a href="#cb49-25" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">as.numeric</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb49-26"><a href="#cb49-26" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">percent =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">3</span>) <span class="sc">*</span> <span class="dv">100</span>, <span class="at">percent1 =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span>) </span>
+<span id="cb49-27"><a href="#cb49-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-28"><a href="#cb49-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-29"><a href="#cb49-29" aria-hidden="true" tabindex="-1"></a>tmp1 <span class="sc">%&gt;%</span> </span>
+<span id="cb49-30"><a href="#cb49-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb49-31"><a href="#cb49-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> <span class="fu">kable_styling</span>(<span class="st">"striped"</span>, <span class="at">position =</span> <span class="st">"center"</span>,) <span class="sc">%&gt;%</span> </span>
+<span id="cb49-32"><a href="#cb49-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_classic</span>(<span class="at">full_width =</span> F, <span class="at">html_font =</span> <span class="st">"Arial"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 
@@ -2260,9 +2307,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>feed <span class="ot">&lt;-</span> data[<span class="dv">120</span>] <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">feed =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>]) <span class="sc">%&gt;%</span>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(feed), feed <span class="sc">!=</span> <span class="st">"-"</span>) <span class="co">#%&gt;% View()</span></span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>feed  <span class="sc">%&gt;%</span></span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">row_number</span>() <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">14</span>, <span class="dv">17</span>, <span class="dv">32</span>, <span class="dv">37</span>, <span class="dv">41</span>))<span class="co"># just appreciation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>feed <span class="ot">&lt;-</span> data[<span class="dv">120</span>] <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">feed =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>]) <span class="sc">%&gt;%</span>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(feed), feed <span class="sc">!=</span> <span class="st">"-"</span>) <span class="co">#%&gt;% View()</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>feed  <span class="sc">%&gt;%</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">row_number</span>() <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">14</span>, <span class="dv">17</span>, <span class="dv">32</span>, <span class="dv">37</span>, <span class="dv">41</span>))<span class="co"># just appreciation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 49 × 1

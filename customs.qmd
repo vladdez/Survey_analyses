@@ -177,7 +177,7 @@ How many channels do you typically measure?
 
 ```{r, warning=FALSE, message=FALSE}
 data %>% ggplot(data = ., aes_(as.name(names(data)[23]))) +
-  geom_histogram() +  scale_x_continuous(breaks=seq(0, 300, 30)) +
+  geom_histogram(bins=300) +  scale_x_continuous(breaks=seq(0, 300, 30)) +
     labs(x ="How many channels do you typically measure?") + theme_classic()
 ```
 
@@ -185,7 +185,7 @@ How many channels do you typically analyse?
 
 ```{r, warning=FALSE, message=FALSE}
 data %>% filter(.[[24]] < 500) %>% ggplot(data = ., aes_(as.name(names(data)[24]))) +
-  geom_histogram() +  scale_x_continuous(breaks=seq(0, 300, 30))+
+  geom_histogram(bins=300) +  scale_x_continuous(breaks=seq(0, 300, 30))+
     labs(x ="How many channels of those you measured do you typically analyse?") + theme_classic()
 
 ```
@@ -198,7 +198,17 @@ data %>% select(23, 24) %>%
   filter(analyse < 500) %>% 
   gather(key=Type, value=Value) %>% 
   ggplot(aes(x=Value, fill=Type)) + 
-  geom_histogram(position="stack") + labs(x ="Number of channels") +
+  geom_histogram(bins=300, position="stack") + labs(x ="Number of channels") +
+  theme_classic()
+```
+
+```{r}
+data %>% select(23, 24) %>% 
+  rename_at(vars(colnames(.)), ~ c("measure", "analyse")) %>% 
+  filter(analyse < 500) %>% 
+  gather(key=Type, value=Value) %>% 
+  ggplot(aes(x=Value, fill=Type)) + 
+  geom_histogram(bins=100, position="dodge") + labs(x ="Number of channels") +
   theme_classic()
 ```
 
@@ -208,7 +218,7 @@ data %>% select(23, 24) %>%
   filter(analyse < 500) %>% 
   mutate(rate = analyse / measure) %>% 
   ggplot(aes(x=rate)) + 
-  geom_histogram() + labs(x ="analyse / measure") +
+  geom_histogram(bins=300) + labs(x ="analyse / measure") +
   theme_classic()
 ```
 ```{r}
@@ -226,6 +236,13 @@ data %>% select(23, 24) %>%
         plot.title = element_text(hjust = 0.5)) +
   geom_text(aes(label = paste0(perc, "%")),  position = position_stack(vjust = 0.5), size = 6) 
 ```
+```{r}
+data %>% select(23, 24) %>% 
+  rename_at(vars(colnames(.)), ~ c("measure", "analyse")) %>% 
+  filter(analyse < 500) %>% ggplot(., aes(measure, analyse)) + geom_point() + theme_classic() +
+  scale_x_continuous(breaks = seq(0, 300, by = 20)) + scale_y_continuous(breaks = seq(0, 300, by = 20))
+```
+
 
 ## Software usage
 
@@ -540,6 +557,8 @@ filter(n() > 2) %>% group_by(area, ud) %>% dplyr::summarise(n = n()) %>%
 ## Error bars
 
 ```{r}
+table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "Scores"))  %>% 
+  filter(position != "Never published this plot") %>% mutate(sum = sum(Scores)) 
 table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "Scores"))   %>%  mutate(percent_score = round(Scores / sum(Scores) * 100)) %>% 
 
     ggplot(., aes(x = position, y = percent_score, fill = as.factor(percent_score))) +
@@ -552,12 +571,16 @@ table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position"
   geom_text(aes(label = paste0(percent_score, "%"), group = position),  position = position_stack(vjust = 0.5), size = 6) + 
   ggtitle("In your paper, did you published ERP plot with error bars?")
 
+
 ```
 
+# Never published - throw them away
+
 ```{r}
-table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "Scores"))   %>%  
-  mutate(percent_score = round(Scores / sum(Scores) * 100)) %>% 
+table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "Scores")) %>% 
   filter(position != "Never published this plot") %>% 
+  mutate(percent_score = round(Scores / sum(Scores) * 100)) %>% 
+  
     ggplot(., aes(x = position, y = percent_score, fill = as.factor(percent_score))) +
     geom_bar(position = "dodge", stat = "identity", width=0.5) + theme_classic() +
   theme(axis.title.x=element_blank(), 
