@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
+<meta name="generator" content="quarto-1.2.475">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -255,7 +255,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data/results-survey3.xlsx"</span>)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data/results-survey.xlsx"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data[<span class="dv">1</span><span class="sc">:</span><span class="dv">121</span>] <span class="sc">%&gt;%</span> </span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(.[[<span class="dv">18</span>]] <span class="sc">!=</span><span class="st">'Yes'</span>) <span class="co"># not analysed any EEG method</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -519,7 +519,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">na.omit</span>(data[<span class="dv">51</span>]) <span class="sc">%&gt;%</span> <span class="fu">nrow</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 21</code></pre>
+<pre><code>[1] 22</code></pre>
 </div>
 <details>
 <summary>Show the code</summary>
@@ -593,12 +593,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell-output cell-output-stdout">
 <pre><code>                   soft sum_scores
 1            MNE.Python         11
-2             FieldTrip          8
-3                EEGLAB          7
-4        Custom.scripts          2
-5 Brain.Vision.Analyser          1
+2                EEGLAB          9
+3             FieldTrip          8
+4 Brain.Vision.Analyser          2
+5        Custom.scripts          2
 6                ERPLAB          1
-7                  SPM.          1</code></pre>
+7                  SPM.          1
+8                Unfold          1</code></pre>
 </div>
 </div>
 </section>
@@ -711,48 +712,48 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> Flexible tweaking of plot attributes (colors, linewidths, margins etc.) </td>
-   <td style="text-align:right;"> 292 </td>
-   <td style="text-align:right;"> 1.56 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Presentation/publication ready figures </td>
-   <td style="text-align:right;"> 226 </td>
-   <td style="text-align:right;"> 1.21 </td>
+   <td style="text-align:right;"> 325 </td>
+   <td style="text-align:right;"> 1.53 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Reproducibility of interactively generated or modified plots </td>
-   <td style="text-align:right;"> 223 </td>
-   <td style="text-align:right;"> 1.19 </td>
+   <td style="text-align:right;"> 256 </td>
+   <td style="text-align:right;"> 1.20 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Generating plots by coding </td>
-   <td style="text-align:right;"> 221 </td>
-   <td style="text-align:right;"> 1.18 </td>
+   <td style="text-align:right;"> 253 </td>
+   <td style="text-align:right;"> 1.19 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Combine with a custom plot created outside of the toolbox (as subplot or inset) </td>
-   <td style="text-align:right;"> 116 </td>
-   <td style="text-align:right;"> 0.62 </td>
+   <td style="text-align:left;"> Presentation/publication ready figures </td>
+   <td style="text-align:right;"> 249 </td>
+   <td style="text-align:right;"> 1.17 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Zooming or panning within a plot </td>
-   <td style="text-align:right;"> 109 </td>
-   <td style="text-align:right;"> 0.58 </td>
+   <td style="text-align:right;"> 125 </td>
+   <td style="text-align:right;"> 0.59 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Combine with a custom plot created outside of the toolbox (as subplot or inset) </td>
+   <td style="text-align:right;"> 121 </td>
+   <td style="text-align:right;"> 0.57 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Speed of plotting </td>
-   <td style="text-align:right;"> 80 </td>
-   <td style="text-align:right;"> 0.43 </td>
+   <td style="text-align:right;"> 96 </td>
+   <td style="text-align:right;"> 0.45 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Interactive selection of time-ranges or electrodes e.g. via Sliders or Dropdown menus </td>
-   <td style="text-align:right;"> 72 </td>
-   <td style="text-align:right;"> 0.39 </td>
+   <td style="text-align:right;"> 81 </td>
+   <td style="text-align:right;"> 0.38 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Generating plots by clicking (GUI) </td>
-   <td style="text-align:right;"> -68 </td>
-   <td style="text-align:right;"> -0.36 </td>
+   <td style="text-align:right;"> -72 </td>
+   <td style="text-align:right;"> -0.34 </td>
   </tr>
 </tbody>
 </table>
@@ -951,8 +952,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>  position Scores sum
-1       No     57 141
-2      Yes     84 141</code></pre>
+1       No     63 157
+2      Yes     94 157</code></pre>
 </div>
 <details>
 <summary>Show the code</summary>
@@ -1021,13 +1022,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>G03Q15[other]. What did the error bars depict in your figure? [Other]
+                                            - 
+                                            1 
 68% CI, which is close to SEM under normality 
                                             1 
                     95% ci over channel means 
                                             1 
           i'm not sure but i think it was sem 
                                             1 
+                             I don't remember 
+                                            1 
         median absolute deviaton or quantiles 
+                                            1 
+                                           NA 
                                             1 
                                            Sd 
                                             1 
@@ -1072,7 +1079,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>j <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(dependson)) <span class="sc">%&gt;%</span> <span class="fu">select</span>(dependson)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 33 × 1
+<pre><code># A tibble: 37 × 1
    dependson                                                                    
    &lt;chr&gt;                                                                        
  1 "the design of course"                                                       
@@ -1085,14 +1092,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  8 "the task design"                                                            
  9 "the type of response (eg for mrcps response is seen before actual movement …
 10 "the task design, paradigm and signal of interest."                          
-# … with 23 more rows</code></pre>
+# … with 27 more rows</code></pre>
 </div>
 <details>
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>j <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(dependson))  <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>dependson)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 18 × 1
+<pre><code># A tibble: 21 × 1
    q                                                                            
    &lt;chr&gt;                                                                        
  1 minimum 200ms for erps and theta or beta power                               
@@ -1105,14 +1112,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  8 put down 100, but that's just what i typically use, might be diff for differ…
  9 at least the baseline window used for the baseline correction?               
 10 in this case it has sense as the -100 : 0 ms is not flat                     
-11 1/3 to 1/2 of the post-stimulus time plotted                                 
-12 i would plot the same baseline period as the one used for baseline correction
-13 i would recommend to plot the baseline period corresponding to the baseline-…
-14 in general, i think it should be roughly the same length as the time window …
-15 assuming the baseline is -250 to 0 ms, i would like to see activity before t…
-16 the actual baseline length you have in the experiment                        
-17 ideally, the entire duration for the baseline correction should be depicted  
-18 it depends - at least as long as the period you use for correction (which ma…</code></pre>
+# … with 11 more rows</code></pre>
 </div>
 <details>
 <summary>Show the code</summary>

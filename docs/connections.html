@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
+<meta name="generator" content="quarto-1.2.475">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -249,7 +249,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data/results-survey3.xlsx"</span>)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data/results-survey.xlsx"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data[<span class="dv">1</span><span class="sc">:</span><span class="dv">121</span>] <span class="sc">%&gt;%</span> </span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(.[[<span class="dv">18</span>]] <span class="sc">!=</span><span class="st">'Yes'</span>) <span class="co"># not analysed any EEG method</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -291,13 +291,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(factor_scores)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>       Dim.1      Dim.2
-1 -1.5303106 -0.1469071
-2 -0.8668375 -0.5862766
-3 -0.2361600 -1.4409580
-4  0.6099401 -0.9023251
-5  0.1887863  1.2908970
-6  0.9587131 -0.7597601</code></pre>
+<pre><code>        Dim.1      Dim.2
+1 -0.47174407  1.4097273
+2 -0.42577958  0.3429289
+3  0.05764252 -0.3374638
+4  0.43679041 -1.2564451
+5 -0.08151050 -0.4608666
+6  0.45156717 -1.2526304</code></pre>
 </div>
 <details>
 <summary>Show the code</summary>
@@ -308,9 +308,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 8
-  estimate statistic  p.value parameter conf.low conf.high method        alter…¹
-     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;  
-1    0.617      10.7 5.08e-21       185    0.520     0.699 Pearson's pr… two.si…
+  estimate statistic   p.value parameter conf.low conf.high method       alter…¹
+     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;  
+1    0.964      52.9 1.02e-123       211    0.953     0.973 Pearson's p… two.si…
 # … with abbreviated variable name ¹​alternative</code></pre>
 </div>
 <details>
@@ -336,7 +336,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code># A tibble: 1 × 10
   estim…¹ estim…² estim…³ stati…⁴ p.value param…⁵ conf.…⁶ conf.…⁷ method alter…⁸
     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;  
-1   0.405   0.348 -0.0576    1.15   0.257    38.9  -0.307    1.12 Welch… two.si…
+1  -0.103 -0.0667  0.0368  -0.706   0.481    191.  -0.393   0.186 Welch… two.si…
 # … with abbreviated variable names ¹​estimate, ²​estimate1, ³​estimate2,
 #   ⁴​statistic, ⁵​parameter, ⁶​conf.low, ⁷​conf.high, ⁸​alternative</code></pre>
 </div>
@@ -418,62 +418,68 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> BESA </td>
-   <td style="text-align:right;"> 7.74 </td>
-   <td style="text-align:right;"> 8.58 </td>
+   <td style="text-align:right;"> 7.45 </td>
+   <td style="text-align:right;"> 9.92 </td>
    <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Brainstorm </td>
-   <td style="text-align:right;"> 7.64 </td>
-   <td style="text-align:right;"> 8.53 </td>
+   <td style="text-align:right;"> 7.26 </td>
+   <td style="text-align:right;"> 9.29 </td>
    <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Brain Vision Analyser </td>
-   <td style="text-align:right;"> 7.74 </td>
-   <td style="text-align:right;"> 8.00 </td>
+   <td style="text-align:right;"> 7.39 </td>
+   <td style="text-align:right;"> 8.35 </td>
    <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
   </tr>
   <tr>
    <td style="text-align:left;"> EEGLAB </td>
-   <td style="text-align:right;"> 6.27 </td>
-   <td style="text-align:right;"> 8.72 </td>
-   <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ERPLAB </td>
-   <td style="text-align:right;"> 7.46 </td>
-   <td style="text-align:right;"> 9.08 </td>
-   <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FieldTrip </td>
-   <td style="text-align:right;"> 7.51 </td>
-   <td style="text-align:right;"> 8.11 </td>
-   <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> LIMO </td>
-   <td style="text-align:right;"> 7.57 </td>
-   <td style="text-align:right;"> 10.50 </td>
-   <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> MNE-Python </td>
-   <td style="text-align:right;"> 8.22 </td>
-   <td style="text-align:right;"> 7.19 </td>
-   <td style="text-align:left;"> <span style="     color: green !important;">younger</span> </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> SPM </td>
-   <td style="text-align:right;"> 7.71 </td>
+   <td style="text-align:right;"> 5.95 </td>
    <td style="text-align:right;"> 8.58 </td>
    <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
   </tr>
   <tr>
+   <td style="text-align:left;"> ERPLAB </td>
+   <td style="text-align:right;"> 7.18 </td>
+   <td style="text-align:right;"> 9.16 </td>
+   <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FieldTrip </td>
+   <td style="text-align:right;"> 6.89 </td>
+   <td style="text-align:right;"> 8.44 </td>
+   <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> LIMO </td>
+   <td style="text-align:right;"> 7.37 </td>
+   <td style="text-align:right;"> 10.60 </td>
+   <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> MNE-Python </td>
+   <td style="text-align:right;"> 7.94 </td>
+   <td style="text-align:right;"> 7.12 </td>
+   <td style="text-align:left;"> <span style="     color: green !important;">younger</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> SPM </td>
+   <td style="text-align:right;"> 7.51 </td>
+   <td style="text-align:right;"> 8.58 </td>
+   <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Unfold </td>
+   <td style="text-align:right;"> 7.55 </td>
+   <td style="text-align:right;"> 8.31 </td>
+   <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
+  </tr>
+  <tr>
    <td style="text-align:left;"> Custom scripts </td>
-   <td style="text-align:right;"> 7.32 </td>
-   <td style="text-align:right;"> 8.62 </td>
+   <td style="text-align:right;"> 7.23 </td>
+   <td style="text-align:right;"> 8.22 </td>
    <td style="text-align:left;"> <span style="     color: black !important;">older</span> </td>
   </tr>
 </tbody>
@@ -521,18 +527,18 @@ lm(formula = n_soft ~ experience, data = .)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--3.2500 -1.3027 -0.3206  0.9280  7.3483 
+-2.2263 -1.0671 -0.0685  0.9654  7.9333 
 
 Coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)  3.05683    0.12848   23.79  &lt; 2e-16 ***
-experience   0.33443    0.08278    4.04 7.85e-05 ***
+(Intercept)  3.03351    0.12359  24.546   &lt;2e-16 ***
+experience   0.10920    0.08584   1.272    0.205    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 1.747 on 183 degrees of freedom
-Multiple R-squared:  0.08189,   Adjusted R-squared:  0.07687 
-F-statistic: 16.32 on 1 and 183 DF,  p-value: 7.854e-05</code></pre>
+Residual standard error: 1.795 on 209 degrees of freedom
+Multiple R-squared:  0.007684,  Adjusted R-squared:  0.002936 
+F-statistic: 1.618 on 1 and 209 DF,  p-value: 0.2047</code></pre>
 </div>
 </div>
 </section>
@@ -564,7 +570,7 @@ F-statistic: 16.32 on 1 and 183 DF,  p-value: 7.854e-05</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>
  1  2  3  4 
-44 44 43 43 </code></pre>
+50 50 49 49 </code></pre>
 </div>
 </div>
 <div class="cell">

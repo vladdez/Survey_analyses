@@ -10,7 +10,7 @@ format:
 editor: visual
 ---
 
-```{r setup, include=FALSE} 
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
@@ -43,7 +43,7 @@ library(padr)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
-data <- read_excel("data/results-survey3.xlsx")
+data <- read_excel("data/results-survey.xlsx")
 data <- data[1:121] %>% 
   filter(.[[18]] !='Yes') # not analysed any EEG method
 
@@ -120,7 +120,6 @@ mem_tab <- data.frame(rowSums(t(familiar))) %>%  tibble::rownames_to_column(., "
   merge(., named)  %>% left_join(., tab)  
 mem_tab
 ```
-
 
 ## The most common names for each plot
 
@@ -719,6 +718,7 @@ tmp1 %>%
   theme_classic() +
   theme(axis.text = element_text(size = 12), legend.position = "none")
 ```
+
 ## The most common struggles
 
 ```{r}
@@ -738,6 +738,7 @@ problems %>% filter(problems == "no complains") %>%
   theme_classic() +
   theme(axis.text = element_text(size = 12), legend.position = "none")
 ```
+
 ```{r}
 problems %>% filter(problems != "no complains") %>% group_by(name) %>% 
   arrange(desc(percent1)) %>% slice(1) %>% arrange(index) %>%  dplyr::select(name, problems, percent1) %>% 
@@ -745,7 +746,6 @@ problems %>% filter(problems != "no complains") %>% group_by(name) %>%
   kable_classic(full_width = F, html_font = "Arial")
 
 ```
-
 
 ## New feature
 
@@ -868,8 +868,6 @@ tmp1 %>%
 
 ```
 
-
-
 ## Feedback
 
 ```{r}
@@ -897,4 +895,3 @@ terms(lda, 10)
 
 
 ```
-

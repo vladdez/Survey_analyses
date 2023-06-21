@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
+<meta name="generator" content="quarto-1.2.475">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -245,7 +245,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <details>
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data/results-survey3.xlsx"</span>)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data/results-survey.xlsx"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data[<span class="dv">1</span><span class="sc">:</span><span class="dv">121</span>] <span class="sc">%&gt;%</span> </span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(.[[<span class="dv">18</span>]] <span class="sc">!=</span><span class="st">'Yes'</span>) <span class="co"># not analysed any EEG method</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -327,14 +327,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>        plots recognized named plotted
-1   butterfly        147   140     110
-2 channel_img        109    98      44
-3     erp_img        117   109      62
-4        line        174   171     163
-5    parallel          7     5       2
-6        topo        167   166     153
-7  topo_array        165   148     121
-8    topo_map        170   169     137</code></pre>
+1   butterfly        168   160     125
+2 channel_img        125   112      51
+3     erp_img        133   125      70
+4        line        199   196     187
+5    parallel         11     9       5
+6        topo        192   191     175
+7  topo_array        187   169     133
+8    topo_map        195   193     153</code></pre>
 </div>
 </div>
 </section>
@@ -368,18 +368,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>                     Line plot  n
-1                          erp 74
-2                 averaged erp 30
-3                       _other 13
+1                          erp 87
+2                 averaged erp 32
+3                       _other 19
 4  erp timecourse (timeseries) 12
 5              erp wave(form)s 12
-6                  time series  9
+6                  time series 11
 7                      average  5
-8                       single  5
-9                         line  4
+8                         line  5
+9                       single  5
 10                    response  4
-11                        p300  2
-12                    waveform  2</code></pre>
+11                    waveform  3
+12                        p300  2</code></pre>
 </div>
 </div>
 </section>
@@ -408,12 +408,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>                    Butterfly_plot  n
-1                        butterfly 69
-2 single or individual channel erp 19
-3                              erp 15
-4       multichannel/electrode erp 15
-5                      time series 10
-6                           _other  7
+1                        butterfly 75
+2 single or individual channel erp 23
+3                              erp 18
+4       multichannel/electrode erp 17
+5                      time series 12
+6                           _other 11
 7                 evoked responces  3
 8                        spaghetti  2</code></pre>
 </div>
@@ -442,13 +442,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>            Topoplot  n
-1         topography 68
-2         topo(plot) 63
+1         topography 76
+2         topo(plot) 75
 3            topomap 13
-4             _other  8
-5          scalp map  7
-6 scalp distribution  5
-7            heatmap  3</code></pre>
+4             _other 10
+5          scalp map  8
+6            heatmap  5
+7 scalp distribution  5</code></pre>
 </div>
 </div>
 </section>
@@ -480,17 +480,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>             Topo map  n
-1                topo 39
-2          topography 36
-3           time topo 24
-4             topomap 13
-5     time topography 12
-6   topographical map  9
-7           scalp map  8
-8              _other  6
-9         topo series  6
-10        time series  5
-11            heatmap  3
+1                topo 44
+2          topography 39
+3           time topo 29
+4             topomap 14
+5     time topography 13
+6           scalp map  9
+7         topo series  9
+8   topographical map  9
+9              _other  8
+10        time series  6
+11            heatmap  4
 12 scalp distribution  3</code></pre>
 </div>
 </div>
@@ -521,14 +521,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>                  Topo array  n
-1                        erp 54
-2            topographic erp 29
+1                        erp 65
+2            topographic erp 30
 3 multi or multichannel plot 17
-4                     _other  9
+4                     _other 13
 5                    channel  6
-6                   topo erp  5
-7                      scalp  4
-8                       topo  4
+6                       topo  5
+7                   topo erp  5
+8                      scalp  4
 9                time series  2</code></pre>
 </div>
 </div>
@@ -560,14 +560,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>                    ERP image  n
-1                   erp image 30
-2                         erp 12
-3                      _other  9
-4               sorted trials  9
-5   trial or trial variations  7
-6                     heatmap  6
+1                   erp image 33
+2               sorted trials 13
+3                         erp 12
+4                      _other 11
+5                     heatmap  7
+6   trial or trial variations  7
 7                      raster  5
-8  time series or frequencies  4
+8  time series or frequencies  5
 9                     voltage  3
 10                  waterfall  2</code></pre>
 </div>
@@ -591,7 +591,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Parallel plot n
-1    amplitudes 4</code></pre>
+1        _other 4
+2    amplitudes 4</code></pre>
 </div>
 </div>
 </section>
@@ -622,15 +623,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Channel_image  n
-1      channels 10
-2           erp  9
-3       heatmap  8
-4     erp image  7
-5       voltage  6
-6         image  5
-7        raster  5
-8        matrix  4
-9 channel image  3</code></pre>
+1      channels 12
+2           erp 11
+3       heatmap 10
+4     erp image  8
+5 channel image  6
+6       voltage  6
+7         image  5
+8        raster  5
+9        matrix  4</code></pre>
 </div>
 <details>
 <summary>Show the code</summary>
@@ -668,15 +669,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> erp </td>
-   <td style="text-align:right;"> 74 </td>
+   <td style="text-align:right;"> 87 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> averaged erp </td>
-   <td style="text-align:right;"> 30 </td>
+   <td style="text-align:right;"> 32 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> _other </td>
-   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 19 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> erp timecourse (timeseries) </td>
@@ -688,10 +689,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </tr>
   <tr>
    <td style="text-align:left;"> time series </td>
-   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 11 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> average </td>
+   <td style="text-align:right;"> 5 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> line </td>
    <td style="text-align:right;"> 5 </td>
   </tr>
   <tr>
@@ -699,19 +704,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    <td style="text-align:right;"> 5 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> line </td>
-   <td style="text-align:right;"> 4 </td>
-  </tr>
-  <tr>
    <td style="text-align:left;"> response </td>
    <td style="text-align:right;"> 4 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> p300 </td>
-   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> waveform </td>
+   <td style="text-align:right;"> 3 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> waveform </td>
+   <td style="text-align:left;"> p300 </td>
    <td style="text-align:right;"> 2 </td>
   </tr>
 </tbody>
@@ -730,27 +731,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> butterfly </td>
-   <td style="text-align:right;"> 69 </td>
+   <td style="text-align:right;"> 75 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> single or individual channel erp </td>
-   <td style="text-align:right;"> 19 </td>
+   <td style="text-align:right;"> 23 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> erp </td>
-   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> 18 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> multichannel/electrode erp </td>
-   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> 17 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> time series </td>
-   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 12 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> _other </td>
-   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 11 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> evoked responces </td>
@@ -776,11 +777,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> topography </td>
-   <td style="text-align:right;"> 68 </td>
+   <td style="text-align:right;"> 76 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> topo(plot) </td>
-   <td style="text-align:right;"> 63 </td>
+   <td style="text-align:right;"> 75 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> topomap </td>
@@ -788,19 +789,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </tr>
   <tr>
    <td style="text-align:left;"> _other </td>
-   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 10 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> scalp map </td>
-   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 8 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> heatmap </td>
+   <td style="text-align:right;"> 5 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> scalp distribution </td>
    <td style="text-align:right;"> 5 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> heatmap </td>
-   <td style="text-align:right;"> 3 </td>
   </tr>
 </tbody>
 </table>
@@ -818,47 +819,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> topo </td>
-   <td style="text-align:right;"> 39 </td>
+   <td style="text-align:right;"> 44 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> topography </td>
-   <td style="text-align:right;"> 36 </td>
+   <td style="text-align:right;"> 39 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> time topo </td>
-   <td style="text-align:right;"> 24 </td>
+   <td style="text-align:right;"> 29 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> topomap </td>
-   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 14 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> time topography </td>
-   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 13 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> scalp map </td>
+   <td style="text-align:right;"> 9 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> topo series </td>
+   <td style="text-align:right;"> 9 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> topographical map </td>
    <td style="text-align:right;"> 9 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> scalp map </td>
+   <td style="text-align:left;"> _other </td>
    <td style="text-align:right;"> 8 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> _other </td>
-   <td style="text-align:right;"> 6 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> topo series </td>
-   <td style="text-align:right;"> 6 </td>
-  </tr>
-  <tr>
    <td style="text-align:left;"> time series </td>
-   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 6 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> heatmap </td>
-   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 4 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> scalp distribution </td>
@@ -880,11 +881,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> erp </td>
-   <td style="text-align:right;"> 54 </td>
+   <td style="text-align:right;"> 65 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> topographic erp </td>
-   <td style="text-align:right;"> 29 </td>
+   <td style="text-align:right;"> 30 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> multi or multichannel plot </td>
@@ -892,11 +893,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </tr>
   <tr>
    <td style="text-align:left;"> _other </td>
-   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 13 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> channel </td>
    <td style="text-align:right;"> 6 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> topo </td>
+   <td style="text-align:right;"> 5 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> topo erp </td>
@@ -904,10 +909,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </tr>
   <tr>
    <td style="text-align:left;"> scalp </td>
-   <td style="text-align:right;"> 4 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> topo </td>
    <td style="text-align:right;"> 4 </td>
   </tr>
   <tr>
@@ -930,7 +931,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> erp image </td>
-   <td style="text-align:right;"> 30 </td>
+   <td style="text-align:right;"> 33 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> sorted trials </td>
+   <td style="text-align:right;"> 13 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> erp </td>
@@ -938,19 +943,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </tr>
   <tr>
    <td style="text-align:left;"> _other </td>
-   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 11 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> sorted trials </td>
-   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:left;"> heatmap </td>
+   <td style="text-align:right;"> 7 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> trial or trial variations </td>
    <td style="text-align:right;"> 7 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> heatmap </td>
-   <td style="text-align:right;"> 6 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> raster </td>
@@ -958,7 +959,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </tr>
   <tr>
    <td style="text-align:left;"> time series or frequencies </td>
-   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 5 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> voltage </td>
@@ -984,19 +985,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> channels </td>
-   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 12 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> erp </td>
-   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 11 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> heatmap </td>
-   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 10 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> erp image </td>
-   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 8 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> channel image </td>
+   <td style="text-align:right;"> 6 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> voltage </td>
@@ -1013,10 +1018,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <tr>
    <td style="text-align:left;"> matrix </td>
    <td style="text-align:right;"> 4 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> channel image </td>
-   <td style="text-align:right;"> 3 </td>
   </tr>
 </tbody>
 </table>
@@ -1123,45 +1124,45 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> no complains </td>
-   <td style="text-align:right;"> 91 </td>
-   <td style="text-align:right;"> 53.2 </td>
-   <td style="text-align:right;"> 53 </td>
+   <td style="text-align:right;"> 106 </td>
+   <td style="text-align:right;"> 54.1 </td>
+   <td style="text-align:right;"> 54 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> uncertainty </td>
-   <td style="text-align:right;"> 51 </td>
-   <td style="text-align:right;"> 29.8 </td>
-   <td style="text-align:right;"> 30 </td>
+   <td style="text-align:right;"> 62 </td>
+   <td style="text-align:right;"> 31.6 </td>
+   <td style="text-align:right;"> 32 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> plot components
 (axes, lables, legend) </td>
    <td style="text-align:right;"> 12 </td>
-   <td style="text-align:right;"> 7.0 </td>
-   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 6.1 </td>
+   <td style="text-align:right;"> 6 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> styling and color </td>
    <td style="text-align:right;"> 7 </td>
-   <td style="text-align:right;"> 4.1 </td>
+   <td style="text-align:right;"> 3.6 </td>
    <td style="text-align:right;"> 4 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> statistics </td>
-   <td style="text-align:right;"> 4 </td>
-   <td style="text-align:right;"> 2.3 </td>
-   <td style="text-align:right;"> 2 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> preprocessing </td>
    <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 1.8 </td>
+   <td style="text-align:right;"> 1.5 </td>
+   <td style="text-align:right;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> statistics </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 1.5 </td>
    <td style="text-align:right;"> 2 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> subplotting </td>
    <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 1.8 </td>
+   <td style="text-align:right;"> 1.5 </td>
    <td style="text-align:right;"> 2 </td>
   </tr>
 </tbody>
@@ -1251,40 +1252,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> no complains </td>
-   <td style="text-align:right;"> 107 </td>
-   <td style="text-align:right;"> 76.4 </td>
-   <td style="text-align:right;"> 76 </td>
+   <td style="text-align:right;"> 125 </td>
+   <td style="text-align:right;"> 78.1 </td>
+   <td style="text-align:right;"> 78 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> styling and color </td>
-   <td style="text-align:right;"> 14 </td>
-   <td style="text-align:right;"> 10.0 </td>
-   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 17 </td>
+   <td style="text-align:right;"> 10.6 </td>
+   <td style="text-align:right;"> 11 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> channel selection
 (differentiation, identification) </td>
    <td style="text-align:right;"> 11 </td>
-   <td style="text-align:right;"> 7.9 </td>
-   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 6.9 </td>
+   <td style="text-align:right;"> 7 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> adding topography </td>
    <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 3.6 </td>
-   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 3.1 </td>
+   <td style="text-align:right;"> 3 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> plot components
 (axes, lables, legend) </td>
-   <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 1.4 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.6 </td>
    <td style="text-align:right;"> 1 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> uncertainty </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0.7 </td>
+   <td style="text-align:right;"> 0.6 </td>
    <td style="text-align:right;"> 1 </td>
   </tr>
 </tbody>
@@ -1370,57 +1371,57 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> no complains </td>
-   <td style="text-align:right;"> 106 </td>
-   <td style="text-align:right;"> 63.9 </td>
-   <td style="text-align:right;"> 64 </td>
+   <td style="text-align:right;"> 136 </td>
+   <td style="text-align:right;"> 71.2 </td>
+   <td style="text-align:right;"> 71 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> channel highlighting </td>
    <td style="text-align:right;"> 14 </td>
-   <td style="text-align:right;"> 8.4 </td>
-   <td style="text-align:right;"> 8 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> head shape and montage </td>
-   <td style="text-align:right;"> 11 </td>
-   <td style="text-align:right;"> 6.6 </td>
+   <td style="text-align:right;"> 7.3 </td>
    <td style="text-align:right;"> 7 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> styling and color </td>
    <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 6.0 </td>
-   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 5.2 </td>
+   <td style="text-align:right;"> 5 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> head shape and montage </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 4.7 </td>
+   <td style="text-align:right;"> 5 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> scaling </td>
-   <td style="text-align:right;"> 7 </td>
-   <td style="text-align:right;"> 4.2 </td>
-   <td style="text-align:right;"> 4 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> time selection </td>
    <td style="text-align:right;"> 6 </td>
-   <td style="text-align:right;"> 3.6 </td>
-   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 3.1 </td>
+   <td style="text-align:right;"> 3 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> interpolation </td>
    <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 3.0 </td>
+   <td style="text-align:right;"> 2.6 </td>
+   <td style="text-align:right;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> time selection </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 2.6 </td>
    <td style="text-align:right;"> 3 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> plot components
 (axes, lables, legend) </td>
-   <td style="text-align:right;"> 4 </td>
-   <td style="text-align:right;"> 2.4 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 1.6 </td>
    <td style="text-align:right;"> 2 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> statistics </td>
    <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 1.8 </td>
+   <td style="text-align:right;"> 1.6 </td>
    <td style="text-align:right;"> 2 </td>
   </tr>
 </tbody>
@@ -1500,52 +1501,52 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> no complains </td>
-   <td style="text-align:right;"> 119 </td>
-   <td style="text-align:right;"> 70.4 </td>
+   <td style="text-align:right;"> 135 </td>
+   <td style="text-align:right;"> 69.9 </td>
    <td style="text-align:right;"> 70 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> time selection </td>
    <td style="text-align:right;"> 23 </td>
-   <td style="text-align:right;"> 13.6 </td>
-   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 11.9 </td>
+   <td style="text-align:right;"> 12 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> _other </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 6.7 </td>
+   <td style="text-align:right;"> 7 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> styling and color </td>
    <td style="text-align:right;"> 11 </td>
-   <td style="text-align:right;"> 6.5 </td>
-   <td style="text-align:right;"> 7 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> _other </td>
-   <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 3.0 </td>
-   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 5.7 </td>
+   <td style="text-align:right;"> 6 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> channel selection
 (differentiation, identification) </td>
    <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 1.8 </td>
+   <td style="text-align:right;"> 1.6 </td>
    <td style="text-align:right;"> 2 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> head shape and montage </td>
    <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 1.8 </td>
+   <td style="text-align:right;"> 1.6 </td>
    <td style="text-align:right;"> 2 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> plot components
 (axes, lables, legend) </td>
    <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 1.8 </td>
+   <td style="text-align:right;"> 1.6 </td>
    <td style="text-align:right;"> 2 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> statistics </td>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 1.2 </td>
+   <td style="text-align:right;"> 1.0 </td>
    <td style="text-align:right;"> 1 </td>
   </tr>
 </tbody>
@@ -1632,46 +1633,52 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> no complains </td>
-   <td style="text-align:right;"> 101 </td>
-   <td style="text-align:right;"> 68.2 </td>
-   <td style="text-align:right;"> 68 </td>
+   <td style="text-align:right;"> 118 </td>
+   <td style="text-align:right;"> 69.8 </td>
+   <td style="text-align:right;"> 70 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> legibility and scaling </td>
-   <td style="text-align:right;"> 31 </td>
-   <td style="text-align:right;"> 20.9 </td>
-   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 32 </td>
+   <td style="text-align:right;"> 18.9 </td>
+   <td style="text-align:right;"> 19 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> publication quality and color </td>
    <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 3.4 </td>
+   <td style="text-align:right;"> 3.0 </td>
    <td style="text-align:right;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> _other </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 2.4 </td>
+   <td style="text-align:right;"> 2 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> plot components
 (axes, lables, legend) </td>
    <td style="text-align:right;"> 4 </td>
-   <td style="text-align:right;"> 2.7 </td>
-   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 2.4 </td>
+   <td style="text-align:right;"> 2 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> channel selection
 (differentiation, identification) </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 2.0 </td>
    <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 1.2 </td>
+   <td style="text-align:right;"> 1 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> preprocessing </td>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 1.4 </td>
+   <td style="text-align:right;"> 1.2 </td>
    <td style="text-align:right;"> 1 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> uncertainty </td>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 1.4 </td>
+   <td style="text-align:right;"> 1.2 </td>
    <td style="text-align:right;"> 1 </td>
   </tr>
 </tbody>
@@ -1750,38 +1757,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> no complains </td>
-   <td style="text-align:right;"> 133 </td>
-   <td style="text-align:right;"> 89.9 </td>
-   <td style="text-align:right;"> 90 </td>
+   <td style="text-align:right;"> 151 </td>
+   <td style="text-align:right;"> 89.3 </td>
+   <td style="text-align:right;"> 89 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> sorting </td>
-   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 7 </td>
    <td style="text-align:right;"> 4.1 </td>
    <td style="text-align:right;"> 4 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> smoothing </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 2.0 </td>
+   <td style="text-align:left;"> _other </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 2.4 </td>
    <td style="text-align:right;"> 2 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> _other </td>
+   <td style="text-align:left;"> smoothing </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 1.8 </td>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 1.4 </td>
-   <td style="text-align:right;"> 1 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> defining epochs </td>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 1.4 </td>
+   <td style="text-align:right;"> 1.2 </td>
    <td style="text-align:right;"> 1 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> style </td>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 1.4 </td>
+   <td style="text-align:right;"> 1.2 </td>
    <td style="text-align:right;"> 1 </td>
   </tr>
 </tbody>
@@ -1858,26 +1865,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> no complains </td>
-   <td style="text-align:right;"> 87 </td>
-   <td style="text-align:right;"> 88.8 </td>
-   <td style="text-align:right;"> 89 </td>
+   <td style="text-align:right;"> 98 </td>
+   <td style="text-align:right;"> 87.5 </td>
+   <td style="text-align:right;"> 88 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> order and sorting </td>
-   <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 5.1 </td>
-   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 6.2 </td>
+   <td style="text-align:right;"> 6 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> _other </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 3.1 </td>
-   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 3.6 </td>
+   <td style="text-align:right;"> 4 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> style </td>
    <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 3.1 </td>
+   <td style="text-align:right;"> 2.7 </td>
    <td style="text-align:right;"> 3 </td>
   </tr>
 </tbody>
@@ -1951,27 +1958,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <tr>
    <td style="text-align:left;"> line plot </td>
    <td style="text-align:left;"> uncertainty </td>
-   <td style="text-align:right;"> 30 </td>
+   <td style="text-align:right;"> 32 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> butterfly plot </td>
    <td style="text-align:left;"> styling and color </td>
-   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 11 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> topoplot </td>
    <td style="text-align:left;"> channel highlighting </td>
-   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 7 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> topomap </td>
    <td style="text-align:left;"> time selection </td>
-   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 12 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> topo array </td>
    <td style="text-align:left;"> legibility and scaling </td>
-   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 19 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> erp image </td>
@@ -1981,7 +1988,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <tr>
    <td style="text-align:left;"> channel image </td>
    <td style="text-align:left;"> order and sorting </td>
-   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 6 </td>
   </tr>
 </tbody>
 </table>
@@ -2042,50 +2049,50 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> uncertainty </td>
-   <td style="text-align:right;"> 15 </td>
-   <td style="text-align:right;"> 24.2 </td>
-   <td style="text-align:right;"> 24 </td>
+   <td style="text-align:right;"> 18 </td>
+   <td style="text-align:right;"> 25.7 </td>
+   <td style="text-align:right;"> 26 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> _other </td>
-   <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 16.1 </td>
-   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 20.0 </td>
+   <td style="text-align:right;"> 20 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> customization (color, labels) </td>
-   <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 16.1 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 15.7 </td>
    <td style="text-align:right;"> 16 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> interactivity and channel selection </td>
    <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 14.5 </td>
-   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> 12.9 </td>
+   <td style="text-align:right;"> 13 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> adding significance </td>
    <td style="text-align:right;"> 6 </td>
-   <td style="text-align:right;"> 9.7 </td>
-   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 8.6 </td>
+   <td style="text-align:right;"> 9 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> adding statistics </td>
    <td style="text-align:right;"> 6 </td>
-   <td style="text-align:right;"> 9.7 </td>
-   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 8.6 </td>
+   <td style="text-align:right;"> 9 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> area highlighting </td>
    <td style="text-align:right;"> 4 </td>
-   <td style="text-align:right;"> 6.5 </td>
+   <td style="text-align:right;"> 5.7 </td>
    <td style="text-align:right;"> 6 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> adding topoplot </td>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 3.2 </td>
+   <td style="text-align:right;"> 2.9 </td>
    <td style="text-align:right;"> 3 </td>
   </tr>
 </tbody>
@@ -2151,38 +2158,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
   <tr>
    <td style="text-align:left;"> interactivity and channel selection </td>
-   <td style="text-align:right;"> 15 </td>
-   <td style="text-align:right;"> 36.6 </td>
-   <td style="text-align:right;"> 37 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 35.6 </td>
+   <td style="text-align:right;"> 36 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> customization (color, labels) </td>
-   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 11 </td>
    <td style="text-align:right;"> 24.4 </td>
    <td style="text-align:right;"> 24 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> adding topoplot </td>
-   <td style="text-align:right;"> 7 </td>
-   <td style="text-align:right;"> 17.1 </td>
-   <td style="text-align:right;"> 17 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 20.0 </td>
+   <td style="text-align:right;"> 20 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> _other </td>
    <td style="text-align:right;"> 4 </td>
-   <td style="text-align:right;"> 9.8 </td>
-   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 8.9 </td>
+   <td style="text-align:right;"> 9 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> adding statistics </td>
    <td style="text-align:right;"> 4 </td>
-   <td style="text-align:right;"> 9.8 </td>
-   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 8.9 </td>
+   <td style="text-align:right;"> 9 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> uncertainty </td>
    <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 2.4 </td>
+   <td style="text-align:right;"> 2.2 </td>
    <td style="text-align:right;"> 2 </td>
   </tr>
 </tbody>
@@ -2244,55 +2251,55 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <tr>
    <td style="text-align:left;"> customization (color, labels) </td>
    <td style="text-align:right;"> 17 </td>
-   <td style="text-align:right;"> 27.4 </td>
-   <td style="text-align:right;"> 27 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> interactivity and channel selection </td>
-   <td style="text-align:right;"> 12 </td>
-   <td style="text-align:right;"> 19.4 </td>
-   <td style="text-align:right;"> 19 </td>
+   <td style="text-align:right;"> 24.6 </td>
+   <td style="text-align:right;"> 25 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> _other </td>
-   <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 16.1 </td>
-   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 20.3 </td>
+   <td style="text-align:right;"> 20 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> interactivity and channel selection </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 20.3 </td>
+   <td style="text-align:right;"> 20 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 3d </td>
    <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 8.1 </td>
-   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 7.2 </td>
+   <td style="text-align:right;"> 7 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> head shape </td>
    <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 8.1 </td>
-   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 7.2 </td>
+   <td style="text-align:right;"> 7 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> interpolation and extrapolation </td>
    <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 8.1 </td>
-   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 7.2 </td>
+   <td style="text-align:right;"> 7 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> adding topoplot </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 5.8 </td>
+   <td style="text-align:right;"> 6 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> adding significance </td>
    <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 4.8 </td>
-   <td style="text-align:right;"> 5 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> adding topoplot </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 4.8 </td>
-   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 4.3 </td>
+   <td style="text-align:right;"> 4 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> adding statistics </td>
    <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 3.2 </td>
+   <td style="text-align:right;"> 2.9 </td>
    <td style="text-align:right;"> 3 </td>
   </tr>
 </tbody>
@@ -2312,7 +2319,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">row_number</span>() <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">14</span>, <span class="dv">17</span>, <span class="dv">32</span>, <span class="dv">37</span>, <span class="dv">41</span>))<span class="co"># just appreciation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 49 × 1
+<pre><code># A tibble: 58 × 1
    feed                                                                         
    &lt;chr&gt;                                                                        
  1 "Not only 2-d, but also CIRCULAR colorbars please\r\nThey are essential to v…
@@ -2325,7 +2332,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  8 "Dynamic head montage videos"                                                
  9 "I feel like Matlab is not very easy to implement in public and interactive …
 10 "I think everything that relates to plotting ERPs + results of statistical t…
-# … with 39 more rows</code></pre>
+# … with 48 more rows</code></pre>
 </div>
 </div>
 <div class="cell">

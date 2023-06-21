@@ -9,7 +9,8 @@ format:
     code-summary: "Show the code"
 editor: visual
 ---
-```{r setup, include=FALSE} 
+
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
@@ -41,7 +42,7 @@ library(stringr)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
-data <- read_excel("data/results-survey3.xlsx")
+data <- read_excel("data/results-survey.xlsx")
 data <- data[1:121] %>% 
   filter(.[[18]] !='Yes') # not analysed any EEG method
 ```
@@ -49,15 +50,18 @@ data <- data[1:121] %>%
 ## Country
 
 ```{r}
-data.frame(table(data[8]))  %>% dplyr::rename(country_work = !!names(.)[1]) %>%
+tmp <- data.frame(table(data[8]))  %>% dplyr::rename(country_work = !!names(.)[1]) %>%
   mutate(country_work = ifelse(Freq >= 3, as.character(country_work), "_Others")) %>% group_by(country_work) %>% 
   dplyr::summarise(Freq = sum(Freq)) %>% 
-  mutate(percent_score = round(Freq / sum(Freq) * 100)) %>% 
-    ggplot(data = ., aes(y = reorder(country_work, percent_score),  x= percent_score, fill = country_work)) +
-    geom_bar(stat="identity") + labs(x="Count", y="Country of work of survey participant") +
-         geom_text(aes(label = paste0(percent_score, "%")), 
-            position = position_stack(vjust = 0.5), size = 5)  + theme_classic()  + theme_classic() + 
-  theme(legend.position="none", axis.text.y = element_text(size = 14))
+  dplyr::mutate(percent_score = round(Freq / sum(Freq) * 100)) 
+
+tmp %>%
+  ggplot(data = ., aes(y = reorder(country_work, percent_score),  x= percent_score, fill = country_work)) +
+  geom_bar(stat = "identity") + labs(x = "Count", y = "Country of work of survey participant") +
+  geom_text(aes(label = paste0(percent_score, "%")), 
+  position = position_stack(vjust = 0.5), size = 5)  + theme_classic()  + 
+  labs(caption = sprintf("N of respondents = %d", sum(tmp$Freq))) +
+  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text.y = element_text(size = 14))
 
 ```
 
@@ -72,9 +76,10 @@ field %>% dplyr::rename(area = !!names(.)[1]) %>%
   mutate(percent_score = round(Freq / sum(Freq) * 100)) %>% 
     ggplot(data = ., aes(x = reorder(area, percent_score),  y= percent_score, fill = area)) +
     geom_bar(stat="identity") + labs(x="Field of research", y="Count") +
-     geom_text(aes(label = paste0(percent_score, "%")), 
-            position = position_stack(vjust = 0.5), size = 6)  + theme_classic() + 
-  theme(legend.position="none", axis.text.x = element_text(size = 12))
+    geom_text(aes(label = paste0(percent_score, "%")), 
+            position = position_stack(vjust = 0.5), size = 5)  + theme_classic() + 
+    labs(caption = sprintf("N of respondents = %d", sum(field$Freq))) +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text.y = element_text(size = 14))
 ```
 
 ```{r, include=FALSE}
@@ -87,7 +92,6 @@ as.data.frame(na.omit(data[10]))
 ```{r}
 t <- foreach(i = 1:nrow(data)) %do% tokenize_words(as.character(data[i, 11]))
 tt <- foreach(i = 1:length(t)) %do% paste(unlist(t[i]), collapse = ' ') 
-
 
 area <- data.frame(matrix(tt)) %>% dplyr::rename(words = !!names(.)[1]) %>%
    mutate(words2 = case_when(
@@ -116,7 +120,9 @@ area %>% group_by(words2) %>% dplyr::summarise(Freq = n()) %>%
     ggplot(data = ., aes(y = reorder(words2, Freq),  x= Freq, fill = words2)) +
     geom_bar(stat="identity") + labs(x="Topic of research", y="Frequency") +
     geom_text(aes(label = Freq), 
-    hjust = -0.2) + theme_classic() + theme(legend.position="none")
+    hjust = -0.2) + theme_classic() +
+    labs(caption = sprintf("N of respondents = %d", nrow(area))) +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text.y = element_text(size = 11))
 
 ```
 
@@ -124,17 +130,16 @@ area %>% group_by(words2) %>% dplyr::summarise(Freq = n()) %>%
 
 ```{r, message= FALSE, warning=FALSE}
 method <- data[14:17]
-ch <- colnames(method)
-ch1 <- foreach(i = ch) %do% str_split_i(i, "\\? \\[", 2) 
-colnames(method) <- foreach(i = ch1) %do% str_sub(i, 1, -2)
-d <- data.frame(rowSums(t(data.frame(foreach(i = colnames(method)) %do% ifelse(method[i]=="Yes", 1, 0))))) 
-d <- tibble::rownames_to_column(d, "plots") 
-colnames(d) <- c("method", "sum_scores")
-d %>% arrange(desc(sum_scores)) %>% 
+colnames(method) <- names(method) %>%  str_split_i(., "\\? \\[", 2)  %>%  str_sub(., 1, -2)
+
+data.frame(rowSums(t(data.frame(foreach(i = colnames(method)) %do% ifelse(method[i]=="Yes", 1, 0))))) %>% tibble::rownames_to_column(., "plots") %>% 
+    dplyr::rename(method = !!names(.)[1], sum_scores = !!names(.)[2])  %>% arrange(desc(sum_scores)) %>% 
     ggplot(., aes(x = reorder(method, sum_scores), y = sum_scores, fill = method)) +
     geom_col(stat = "identity") + labs(x = "Method", y = "Value", fill = "Method") +
     theme_classic() + theme(legend.position="none") + 
-  geom_text(aes(label = sum_scores), vjust = -0.2)
+  geom_text(aes(label = sum_scores), vjust = -0.2) +
+    labs(caption = sprintf("N of respondents = %d", nrow(method))) +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text.y = element_text(size = 14))
 ```
 
 ## Experience
@@ -142,67 +147,80 @@ d %>% arrange(desc(sum_scores)) %>%
 #### Papers
 
 ```{r, message= FALSE, warning=FALSE}
+tmp_med <- data[19] %>% dplyr::rename(papers = !!names(.)[1]) %>% filter(papers < 100) %>% summarise(median_paper = median(papers)) %>% as.character()
 data[19] %>% dplyr::rename(papers = !!names(.)[1]) %>% filter(papers < 100) %>%  ggplot(data = ., aes(papers)) +
   geom_histogram() +
-  labs(x ="How many published papers/preprints do you have, where you used EEG, MEG or iEEG analysis?") + theme_classic()
-# PCA for clustering it 
-```
-```{r}
-data[19] %>% dplyr::rename(papers = !!names(.)[1]) %>% filter(papers < 100) %>% summarise(median_paper = median(papers))
+  labs(x ="The number of published papers/preprints with EEG, MEG or iEEG analysis?", y = "Count") + theme_classic() +
+  labs(caption = sprintf("N of respondents - %d, median - %s", nrow(method), tmp_med)) +
+  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 12))
 ```
 
 #### Position
 
 ```{r}
 #na.omit(data[13]) # recode Others
-as.data.frame(table(na.omit(data[12]))) %>% dplyr::rename(position = !!names(.)[1]) %>%
-  arrange(desc(Freq)) %>% 
-    ggplot(data = ., aes(y = reorder(position, Freq),  x= Freq, fill = position)) +
-    geom_bar(stat="identity") + ylab("Position") +
+pos <- as.data.frame(table(na.omit(data[12]))) %>% dplyr::rename(position = !!names(.)[1]) %>% 
+   mutate(position = factor(position, levels = rev(c('Bachelor student', 'Master student', 'Doctoral researcher', 
+                                             'Postdoctoral researcher', 'Professor', 'Industry senior researcher', 'Medical doctor', 'Other')))) 
+pos %>% 
+    ggplot(data = ., aes(y = position, x= Freq, fill = position)) +
+    geom_bar(stat="identity") + labs(x = "Position", y = "Frequency") +
     geom_text(aes(label = Freq), hjust = -0.2) + 
-  theme_classic() + theme(legend.position="none")
+  theme_classic() + 
+    labs(caption = sprintf("N of respondents - %d", sum(pos$Freq))) +
+  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
+
 ```
 
 #### Years
 
 ```{r, message= FALSE, warning=FALSE}
-data %>% filter(.[[20]] < 50) %>% ggplot(data = ., aes_(as.name(names(data)[20]))) +
+year <- data %>% dplyr::rename(years = !!names(.)[20]) %>% filter(.[[20]] < 50) 
+
+year %>% ggplot(data = ., aes(x = years)) +
   geom_histogram(bins = 45) +  scale_x_continuous(breaks=seq(0, 30, 5)) +
   labs(x ="Years of experience with EEG, MEG, or iEEG analysis", y="Count") +
-  theme_classic() + theme(legend.position="none", axis.text.x = element_text(size = 12)) 
+  theme_classic() + theme(legend.position="none", axis.text.x = element_text(size = 12)) +
+labs(caption = sprintf("N of respondents - %d, median - %d", nrow(year), median(year$years))) +
+  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
 ```
-```{r}
-data %>% filter(.[[20]] < 50) %>% summarise(median_year = median(.[[20]]))
-```
-
 
 #### Self-assessed level
 
 ```{r}
-table(data[21]) %>% data.frame()%>% dplyr::rename(level = !!names(.)[1]) %>%
-    mutate(percent_score = round(Freq / sum(Freq) * 100)) %>% 
+sal <- table(data[21]) %>% data.frame() %>% dplyr::rename(level = !!names(.)[1]) %>%
+    mutate(percent_score = round(Freq / sum(Freq) * 100)) 
+
+sal %>% 
     ggplot(data = ., aes(x = level, y= percent_score, fill = level)) +
-  
     geom_bar(stat="identity") + xlab("Self-assessed level") +
-   geom_text(aes(label = paste0(percent_score, "%")), 
+    geom_text(aes(label = paste0(percent_score, "%")), 
             position = position_stack(vjust = 0.5), size = 6)  + theme_classic() +
-  theme(legend.position="none", axis.text.x = element_text(size = 12)) +
-    scale_x_discrete(limits = c("Beginner", "Intermediate", "Expert")) +
-  labs(y="Count") 
+    theme(legend.position="none", axis.text.x = element_text(size = 12)) +
+      scale_x_discrete(limits = c("Beginner", "Intermediate", "Expert")) +
+    labs(y="Count") +
+    labs(caption = sprintf("N of respondents - %d",  sum(sal$Freq))) +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
 
 ```
 
 #### Code contribution
 
 ```{r}
+colours = c("#f9a65a", "#599ad3")
+
 table(data[22])  %>% data.frame()%>% dplyr::rename(level = !!names(.)[1]) %>%
     mutate(percent_score = round(Freq / sum(Freq) * 100)) %>% 
     ggplot(data = ., aes(x = reorder(level, Freq),  y= Freq, fill = level)) +
-    geom_bar(stat="identity") + xlab("Code contribution") +
+    geom_bar(stat="identity", width = 0.5) + xlab("Code contribution") +
     geom_text(aes(label = paste0(percent_score, "%")), position = position_stack(vjust = 0.5), size = 6)  +
   theme_classic() +
   theme(legend.position="none", axis.text.x = element_text(size = 12)) +
-  labs(y="Count") 
+  labs(y="Count") +
+    labs(caption = sprintf("N of respondents - %d",  sum(sal$Freq))) +
+  scale_fill_manual(values=colours) +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
+
 ```
 
 ## Time of finishing survey in minutes

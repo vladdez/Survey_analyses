@@ -9,7 +9,8 @@ format:
     code-summary: "Show the code"
 editor: visual
 ---
-```{r setup, include=FALSE} 
+
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
@@ -42,7 +43,7 @@ library(factoextra)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
-data <- read_excel("data/results-survey3.xlsx")
+data <- read_excel("data/results-survey.xlsx")
 data <- data[1:121] %>% 
   filter(.[[18]] !='Yes') # not analysed any EEG method
 ```
@@ -80,6 +81,7 @@ cbind(data[20], factor_scores[1])  %>%
   broom::tidy()
   #lm(data=.,years ~ proxy) %>% summary(.)
 ```
+
 ## Experience and ...
 
 ### Up or down
@@ -129,7 +131,6 @@ software <- data[25:51] %>%
 
 ```
 
-
 ```{r}
 a <- software  %>% 
   select_if(colSums(.) > 10) 
@@ -169,7 +170,6 @@ for (i in 1:length(cn)){
 
 ### Number of used software
 
-
 ```{r}
 vec <- names(data[25:50]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
 
@@ -185,6 +185,7 @@ cbind(data.frame(rowSums(software)), factor_scores[1])  %>%
   filter(n_soft > 0) %>% 
   ggplot(., aes(x=n_soft, y=experience)) + geom_jitter() + geom_smooth()
 ```
+
 ```{r}
 cbind(data.frame(rowSums(software)), factor_scores[1])  %>% 
    rename_at(vars(colnames(.)), ~ c("n_soft", "experience")) %>% 
@@ -209,11 +210,10 @@ feature <- data[52:60] %>% rename_all(., ~str_split_i(colnames(data[52:60]), "\\
          exp_quant = factor(ntile(experience, 4))) %>% 
   group_by(exp_quant) %>% dplyr::mutate(n = n()) %>% ungroup() 
 ```
+
 ```{r}
 table(feature$exp_quant)
 ```
-
-
 
 ```{r}
 feature %>% 
@@ -232,8 +232,6 @@ feature %>%
   geom_text(aes(label = paste0(round(m, 1))),  position = position_stack(vjust = 0.5), size = 4) 
 
 ```
-
-
 
 ```{r}
 feature %>% 

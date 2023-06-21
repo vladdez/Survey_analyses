@@ -10,7 +10,7 @@ format:
 editor: visual
 ---
 
-```{r setup, include=FALSE} 
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
@@ -42,7 +42,7 @@ library(stringi)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
-data <- read_excel("data/results-survey3.xlsx")
+data <- read_excel("data/results-survey.xlsx")
 data <- data[1:121] %>% 
   filter(.[[18]] !='Yes') # not analysed any EEG method
 ```
@@ -56,13 +56,18 @@ vec <- c("line", "butterfly", "topo",  "topo_map", "topo_array", "erp_image", "p
 familiar <-  data[61:68] %>% rename_at(vars(colnames(.)), ~ vec) %>% 
   mutate_at(vars(vec), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0)))
 
-data.frame(rowSums(t(familiar))) %>%  tibble::rownames_to_column(., "plot") %>% 
+rec <- data.frame(rowSums(t(familiar))) %>%  tibble::rownames_to_column(., "plot") %>% 
    rename_at(vars(colnames(.)), ~ c("plot", "sum_scores"))  %>% 
-  arrange(., desc(sum_scores)) %>% 
+  arrange(., desc(sum_scores))
+rec %>% 
   ggplot(data = ., aes(y = reorder(plot, sum_scores), x= sum_scores, fill=plot)) +
   geom_bar(stat="identity") + ylab("plot") + theme_classic() + 
+    geom_text(aes(label = score, group = res), position = position_dodge(width = .9), vjust = -0.2) +
   theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
-  ggtitle("Select ERP plot you are familiar with") 
+  labs(y = "Plot types", x = "Scores") + 
+  ggtitle("Select ERP plot you are familiar with") +
+  labs(caption = sprintf("N of respondents - %d",  nrow(familiar))) +
+  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
 
 ```
 
@@ -124,10 +129,14 @@ slice(num_named, 1)  %>%
     labs(x = "Category", y = "Value", fill = "Group") +
     theme_classic() + theme(axis.title.x=element_blank(), plot.title = element_text(hjust = 0.5)) +
   geom_text(aes(label = score, group = res), position = position_dodge(width = .9), vjust = -0.2) +
-  ggtitle("Plot naming")
+  ggtitle("Plot naming") +
+  labs(caption = sprintf("N of respondents - %d",  nrow(familiar))) +
+  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
+
 
 
 ```
+
 ### Plotting
 
 ```{r, message= FALSE, warning=FALSE}
@@ -167,8 +176,11 @@ mem_tab %>% #filter(plots != "parallel") %>%
     geom_bar(position = "dodge", stat = "identity") +
     labs(x = "Plot type", y = "Number of users", fill = "Level of\nfamiliarity\nwith plot") +
     theme_classic() + geom_text(aes(label = score, group = type), position = position_dodge(width = .9), vjust = -0.2) +  theme(plot.title = element_text(hjust = 0.5)) +
-  ggtitle("Familiarity with plots")
+  ggtitle("Familiarity with plots") +
+  labs(caption = sprintf("N of respondents - %d",  nrow(familiar))) +
+  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
 ```
+
 #### named correctly
 
 ## Channels
@@ -176,17 +188,26 @@ mem_tab %>% #filter(plots != "parallel") %>%
 How many channels do you typically measure?
 
 ```{r, warning=FALSE, message=FALSE}
-data %>% ggplot(data = ., aes_(as.name(names(data)[23]))) +
+chs <- data %>% dplyr::rename(channels = !!names(.)[23]) %>% filter(channels < 10000) 
+
+chs %>% 
+  ggplot(data = ., aes(x = channels)) + ylab("Counts") +
   geom_histogram(bins=300) +  scale_x_continuous(breaks=seq(0, 300, 30)) +
-    labs(x ="How many channels do you typically measure?") + theme_classic()
+    labs(x ="How many channels do you typically measure?") + theme_classic() +
+  labs(caption = sprintf("N of respondents - %d",  nrow(chs))) +
+  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
 ```
 
 How many channels do you typically analyse?
 
 ```{r, warning=FALSE, message=FALSE}
-data %>% filter(.[[24]] < 500) %>% ggplot(data = ., aes_(as.name(names(data)[24]))) +
+chs <- data %>% filter(.[[24]] < 500)
+  
+  chs %>% ggplot(data = ., aes_(as.name(names(data)[24]))) +
   geom_histogram(bins=300) +  scale_x_continuous(breaks=seq(0, 300, 30))+
-    labs(x ="How many channels of those you measured do you typically analyse?") + theme_classic()
+    labs(x ="How many channels of those you measured do you typically analyse?") + theme_classic() +
+  labs(caption = sprintf("N of respondents - %d",  nrow(chs))) +
+  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
 
 ```
 
@@ -221,6 +242,7 @@ data %>% select(23, 24) %>%
   geom_histogram(bins=300) + labs(x ="analyse / measure") +
   theme_classic()
 ```
+
 ```{r}
 data %>% select(23, 24) %>% 
   rename_at(vars(colnames(.)), ~ c("measure", "analyse")) %>% 
@@ -236,13 +258,13 @@ data %>% select(23, 24) %>%
         plot.title = element_text(hjust = 0.5)) +
   geom_text(aes(label = paste0(perc, "%")),  position = position_stack(vjust = 0.5), size = 6) 
 ```
+
 ```{r}
 data %>% select(23, 24) %>% 
   rename_at(vars(colnames(.)), ~ c("measure", "analyse")) %>% 
   filter(analyse < 500) %>% ggplot(., aes(measure, analyse)) + geom_point() + theme_classic() +
   scale_x_continuous(breaks = seq(0, 300, by = 20)) + scale_y_continuous(breaks = seq(0, 300, by = 20))
 ```
-
 
 ## Software usage
 
@@ -325,7 +347,6 @@ data.frame(rowSums(software)) %>%  dplyr::rename(n_soft = rowSums.software.) %>%
 
 data.frame(rowSums(software)) %>%  dplyr::rename(n_soft = rowSums.software.) %>% summarise(median_n_soft = median(n_soft))
 ```
-
 
 #### Cooccurrence
 
@@ -458,7 +479,6 @@ feature1 %>% filter(index %in% c(1, 3, 5)) %>%
         strip.text = element_text(size = 14))  + 
   labs(x="Scores on Likert scale", y="Density") 
 ```
-
 
 ## Up or down
 
@@ -704,5 +724,3 @@ table(data[119])  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("positio
                 group = position), position = position_stack(vjust = 0.5), size = 8) + 
   ggtitle("Would you like to use a two-dimensional colorbar\nin your publications, if it was easily available?")
 ```
-
-
