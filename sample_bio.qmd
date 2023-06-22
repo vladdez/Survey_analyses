@@ -61,7 +61,7 @@ tmp %>%
   geom_text(aes(label = paste0(percent_score, "%")), 
   position = position_stack(vjust = 0.5), size = 5)  + theme_classic()  + 
   labs(caption = sprintf("N of respondents = %d", sum(tmp$Freq))) +
-  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text.y = element_text(size = 14))
+  theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text.y = element_text(size = 14))
 
 ```
 
@@ -122,7 +122,7 @@ area %>% group_by(words2) %>% dplyr::summarise(Freq = n()) %>%
     geom_text(aes(label = Freq), 
     hjust = -0.2) + theme_classic() +
     labs(caption = sprintf("N of respondents = %d", nrow(area))) +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text.y = element_text(size = 11))
+    theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text.y = element_text(size = 11))
 
 ```
 
@@ -168,7 +168,7 @@ pos %>%
     geom_text(aes(label = Freq), hjust = -0.2) + 
   theme_classic() + 
     labs(caption = sprintf("N of respondents - %d", sum(pos$Freq))) +
-  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
+  theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
 
 ```
 

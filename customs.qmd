@@ -59,15 +59,16 @@ familiar <-  data[61:68] %>% rename_at(vars(colnames(.)), ~ vec) %>%
 rec <- data.frame(rowSums(t(familiar))) %>%  tibble::rownames_to_column(., "plot") %>% 
    rename_at(vars(colnames(.)), ~ c("plot", "sum_scores"))  %>% 
   arrange(., desc(sum_scores))
+
 rec %>% 
-  ggplot(data = ., aes(y = reorder(plot, sum_scores), x= sum_scores, fill=plot)) +
+  ggplot(data = ., aes(y = reorder(plot, sum_scores), x= sum_scores, fill = plot)) +
   geom_bar(stat="identity") + ylab("plot") + theme_classic() + 
-    geom_text(aes(label = score, group = res), position = position_dodge(width = .9), vjust = -0.2) +
+  geom_text(aes(label = sum_scores, group = plot), position = position_dodge(width = .9), hjust = -0.1) +
   theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
   labs(y = "Plot types", x = "Scores") + 
-  ggtitle("Select ERP plot you are familiar with") +
+  ggtitle("Select plots you are familiar with") +
   labs(caption = sprintf("N of respondents - %d",  nrow(familiar))) +
-  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
+  theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
 
 ```
 
@@ -214,39 +215,37 @@ chs <- data %>% filter(.[[24]] < 500)
 Combined version
 
 ```{r}
-data %>% select(23, 24) %>% 
-  rename_at(vars(colnames(.)), ~ c("measure", "analyse")) %>% 
-  filter(analyse < 500) %>% 
+cv <- data %>% select(23, 24) %>% 
+  rename_at(vars(colnames(.)), ~ c("measure", "analyse")) %>%   filter(measure < 10000,analyse < 500) 
+
+cv %>%
   gather(key=Type, value=Value) %>% 
   ggplot(aes(x=Value, fill=Type)) + 
-  geom_histogram(bins=300, position="stack") + labs(x ="Number of channels") +
-  theme_classic()
+  geom_histogram(bins=300, position="stack") + labs(x ="Number of channels", y = "Count") +
+  theme_classic() +
+  labs(caption = sprintf("N of respondents - %d",  nrow(cv))) +
+  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
 ```
 
-```{r}
-data %>% select(23, 24) %>% 
-  rename_at(vars(colnames(.)), ~ c("measure", "analyse")) %>% 
-  filter(analyse < 500) %>% 
-  gather(key=Type, value=Value) %>% 
-  ggplot(aes(x=Value, fill=Type)) + 
-  geom_histogram(bins=100, position="dodge") + labs(x ="Number of channels") +
-  theme_classic()
-```
 
 ```{r}
-data %>% select(23, 24) %>% 
+cv <- data %>% select(23, 24) %>% 
   rename_at(vars(colnames(.)), ~ c("measure", "analyse")) %>% 
-  filter(analyse < 500) %>% 
-  mutate(rate = analyse / measure) %>% 
+  filter(measure < 10000,analyse < 500)  %>% 
+  mutate(rate = analyse / measure)
+
+cv %>% 
   ggplot(aes(x=rate)) + 
   geom_histogram(bins=300) + labs(x ="analyse / measure") +
-  theme_classic()
+  theme_classic()+
+  labs(caption = sprintf("N of respondents - %d",  nrow(cv))) +
+  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
 ```
 
 ```{r}
 data %>% select(23, 24) %>% 
   rename_at(vars(colnames(.)), ~ c("measure", "analyse")) %>% 
-  filter(analyse < 500) %>% 
+    filter(measure < 10000, analyse < 500)  %>% 
   mutate(rate = analyse / measure) %>% 
   mutate(rate_ms = factor(ifelse(rate < 0.5, "lower median", "higher median")), quartile = cut(rate, 4)) %>%
   group_by(quartile) %>% 
@@ -256,14 +255,19 @@ data %>% select(23, 24) %>%
   theme(legend.position="none", 
         axis.text = element_text(size = 12),
         plot.title = element_text(hjust = 0.5)) +
-  geom_text(aes(label = paste0(perc, "%")),  position = position_stack(vjust = 0.5), size = 6) 
+  geom_text(aes(label = paste0(perc, "%")),  position = position_stack(vjust = 0.5), size = 6) +
+  labs(caption = sprintf("N of respondents - %d",  nrow(cv))) +
+  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
 ```
 
 ```{r}
 data %>% select(23, 24) %>% 
   rename_at(vars(colnames(.)), ~ c("measure", "analyse")) %>% 
-  filter(analyse < 500) %>% ggplot(., aes(measure, analyse)) + geom_point() + theme_classic() +
-  scale_x_continuous(breaks = seq(0, 300, by = 20)) + scale_y_continuous(breaks = seq(0, 300, by = 20))
+  filter(measure < 10000, analyse < 500)  %>% ggplot(., aes(measure, analyse)) + geom_point() + theme_classic() +
+  scale_x_continuous(breaks = seq(0, 300, by = 20)) + scale_y_continuous(breaks = seq(0, 300, by = 20)) +
+  labs(caption = sprintf("N of respondents - %d",  nrow(cv))) +
+  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
+
 ```
 
 ## Software usage
@@ -311,14 +315,16 @@ d <- data.frame(rowSums(t(software))) %>%  tibble::rownames_to_column(., "soft")
 ```
 
 ```{r}
-d  %>% filter(sum_scores != 0) %>% 
-  mutate(soft = ifelse(sum_scores >= 3, as.character(soft), "_Others")) %>% group_by(soft) %>% 
+d %>% filter(sum_scores != 0) %>% 
+  mutate(soft = ifelse(sum_scores > 3, as.character(soft), "_Others")) %>% group_by(soft) %>% 
   dplyr::summarise(sum_scores = sum(sum_scores)) %>% ungroup() %>% 
-  mutate(percent_score = round(sum_scores / sum(sum_scores) * 100)) %>% 
+  mutate(percent_score = round(sum_scores / sum(sum_scores) * 100))  %>% 
     ggplot(data = ., aes(y = reorder(soft, percent_score),  x= percent_score, fill = soft)) +
     geom_bar(stat="identity") + labs(x= "Scores", y="Analytical tools") +
     geom_text(aes(label = paste0(percent_score, "%")), 
-            position = position_stack(vjust = 0.5), size = 4)  + theme_classic() + theme(legend.position="none", axis.text.y = element_text(size = 14))
+            position = position_stack(vjust = 0.5), size = 4)  + theme_classic() + theme(legend.position="none", axis.text.y = element_text(size = 14)) +
+    labs(caption = sprintf("N of respondents - %d",  nrow(software))) +
+    theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
 ```
 
 #### Monousers
@@ -339,13 +345,15 @@ data.frame(rowSums(t(ns))) %>%
 #### Number of used tools
 
 ```{r}
+nu_med <- data.frame(rowSums(software)) %>%  dplyr::rename(n_soft = rowSums.software.) %>% summarise(median_n_soft = median(n_soft)) %>% as.numeric()
+
 data.frame(rowSums(software)) %>%  dplyr::rename(n_soft = rowSums.software.) %>% 
  ggplot(data = ., aes(n_soft)) +
   geom_histogram(bins = 45) +  scale_x_continuous(breaks=seq(0, 30, 1)) +
   labs(x ="Number of software used", y="Count") +
-  theme_classic() + theme(legend.position="none", axis.text.x = element_text(size = 12)) 
-
-data.frame(rowSums(software)) %>%  dplyr::rename(n_soft = rowSums.software.) %>% summarise(median_n_soft = median(n_soft))
+  theme_classic() + theme(legend.position="none", axis.text.x = element_text(size = 12))  +
+    labs(caption = sprintf("N of respondents - %d, median - %d",  nrow(software), nu_med)) +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
 ```
 
 #### Cooccurrence
@@ -354,12 +362,9 @@ data.frame(rowSums(software)) %>%  dplyr::rename(n_soft = rowSums.software.) %>%
 # how to order by diagonal matrix 
 # how to add others
 software <- data[25:50]
-ch <- colnames(software)
-ch1 <- foreach(i = ch) %do% str_split_i(i, "\\? \\[", 2) 
-ch1 <- foreach(i = ch1) %do% str_sub(i, 1, -2)
 d1 <- foreach(i = colnames(software)) %do% ifelse(software[i]=="Yes", 1, 0)
 c <- crossprod(matrix(unlist(d1), ncol = 26))
-rownames(c) <- ch1
+rownames(c) <- colnames(software) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
 colnames(c) <- rownames(c)
 
 diag.order <- order(diag(c), decreasing = FALSE)
@@ -371,7 +376,9 @@ melt(mat_reordered) %>% ggplot(., aes(x=Var1, y=Var2)) +
   scale_fill_gradient(low = "white", high = "red") +
   theme(legend.title = element_blank(),
         axis.title=element_blank(),
-        axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) 
+        axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
+    labs(caption = sprintf("N of respondents - %d",  nrow(software))) +
+    theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
 
 ```
 
@@ -388,7 +395,9 @@ melt(new_matrix) %>% ggplot(., aes(x=Var1, y=Var2)) +
   scale_fill_gradient(low = "white", high = "red") +
   theme(legend.title = element_blank(),
         axis.title=element_blank(),
-        axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) 
+        axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
+    labs(caption = sprintf("N of respondents - %d. Zero rows are excluded",  nrow(software))) +
+    theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
 ```
 
 ## Important features
@@ -515,9 +524,12 @@ area <- area1 %>%
 ```
 
 ```{r}
-table(data[79]) %>% data.frame() %>% 
+colours = c("#f9a65a", "#599ad3")
+ud <- table(data[79]) %>% data.frame() %>% 
   rename_at(vars(colnames(.)), ~ c("position", "scores")) %>%
-  mutate(percent_score = round(scores / sum(scores) * 100)) %>% 
+  mutate(percent_score = round(scores / sum(scores) * 100)) 
+
+ud %>% 
     ggplot(., aes(x = position, y = percent_score, fill = as.factor(percent_score))) +
     geom_bar(position = "dodge", stat = "identity", width=0.5) + 
     theme_classic() +
@@ -527,37 +539,20 @@ table(data[79]) %>% data.frame() %>%
           plot.title = element_text(hjust = 0.5)) +
   geom_text(aes(label = paste0(percent_score, "%"), group = position), 
             position = position_stack(vjust = 0.5)) +
-  ggtitle("In ERP plot, should positive voltages be plotted upwards, or downwards?")
-```
-
-```{r, eval = FALSE, echo = FALSE}
-
-
-data[c(79, 20)] %>% 
-  rename_at(vars(colnames(.)), ~ c("position", "years")) %>%
-  filter(years < 50, !is.na(position))  %>% 
-    ggplot(., aes(x = position, y = years)) +
-    geom_col(stat = "identity", width = 0.5) +
-    theme_classic() +
-    theme(axis.title.x=element_blank(), 
-          legend.position="none", 
-          axis.text = element_text(size = 12),
-          plot.title = element_text(hjust = 0.5)) +
-  geom_text(aes(label = paste0(percent_score, "%"), group = position), 
-            position = position_stack(vjust = 0.5)) +
-  ggtitle("In ERP plot, should positive voltages be plotted upwards, or downwards?")
-
-
-   geom_text(aes(label = paste0(percent_score, "%", "\n(", answer, ")")), 
-            position = position_stack(vjust = 0.5), size = 4) + 
+  ggtitle("In ERP plot, should positive voltages be plotted upwards, or downwards?") +
+  scale_fill_manual(values=colours) +
+    labs(caption = sprintf("N of respondents - %d",  sum(ud$scores))) +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
 ```
 
 ```{r, warning=FALSE}
-cbind(unlist(area$words), unlist(data[[79]])) %>% data.frame() %>% 
+as <- cbind(unlist(area$words), unlist(data[[79]])) %>% data.frame() %>% 
 filter(.[[2]] != "NANA") %>% dplyr::rename(area=X1, ud=X2) %>%
 group_by(area) %>%
 filter(n() > 2) %>% group_by(area, ud) %>% dplyr::summarise(n = n()) %>% 
-  group_by(area) %>% dplyr::mutate(nn = sum(n)) %>% 
+  group_by(area) %>% dplyr::mutate(nn = sum(n)) %>% filter(area != "")
+
+as %>% 
   ggplot(., aes(x = n, y = reorder(area, nn), fill = ud)) +
    geom_col(stat = "identity", width = 0.5) +
   labs(x = "Count", y = "area of study", fill ="Positive:") +
@@ -570,7 +565,10 @@ filter(n() > 2) %>% group_by(area, ud) %>% dplyr::summarise(n = n()) %>%
         legend.title = element_blank(),
         axis.title.y=element_blank()
         ) +  
-  theme_classic()
+  theme_classic() +
+scale_fill_manual(values=colours) +
+    labs(caption = sprintf("N of respondents - %d",  sum(as$n))) +
+    theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
 
 ```
 
@@ -597,10 +595,11 @@ table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position"
 # Never published - throw them away
 
 ```{r}
-table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "Scores")) %>% 
+eb <- table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "Scores")) %>% 
   filter(position != "Never published this plot") %>% 
-  mutate(percent_score = round(Scores / sum(Scores) * 100)) %>% 
-  
+  mutate(percent_score = round(Scores / sum(Scores) * 100)) 
+
+eb %>% 
     ggplot(., aes(x = position, y = percent_score, fill = as.factor(percent_score))) +
     geom_bar(position = "dodge", stat = "identity", width=0.5) + theme_classic() +
   theme(axis.title.x=element_blank(), 
@@ -609,12 +608,18 @@ table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position"
         plot.title = element_text(hjust = 0.5)) +
       
   geom_text(aes(label = paste0(percent_score, "%"), group = position),  position = position_stack(vjust = 0.5), size = 6) + 
-  ggtitle("In your paper, did you published ERP plot with error bars?")
+  ggtitle("In your paper, did you published ERP plot with error bars?")+
+scale_fill_manual(values=colours) +
+    labs(caption = sprintf("N of respondents - %d",  sum(eb$Scores))) +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
+
 
 ```
 
 ```{r}
-data[75] %>%  filter(!is.na(.)) %>% table()  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>% mutate(percent_score = round(scores / sum(scores) * 100)) %>% filter(position != "Other") %>% 
+ebd <- data[75] %>%  filter(!is.na(.)) %>% table()  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>% mutate(percent_score = round(scores / sum(scores) * 100)) %>% filter(position != "Other") 
+
+ebd %>% 
     ggplot(., aes(x = position, y = percent_score, fill = as.factor(percent_score))) +
     geom_bar(position = "dodge", stat = "identity", width=0.5) + theme_classic() +
    theme(axis.title.x=element_blank(), 
@@ -623,7 +628,11 @@ data[75] %>%  filter(!is.na(.)) %>% table()  %>% data.frame() %>% rename_at(vars
         plot.title = element_text(hjust = 0.5)) + ylab("Scores") +
      
   geom_text(aes(label = paste0(percent_score, "%"), group = position),  position = position_stack(vjust = 0.5), size = 6) + 
-  ggtitle("In your figure, what did error bars depicted?")
+  ggtitle("In your figure, what did error bars depicted?")+
+    scale_fill_manual(values=colours) +
+    labs(caption = sprintf("N of respondents - %d",  sum(ebd$scores))) +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
+
 ```
 
 ```{r}
@@ -635,12 +644,16 @@ data[76] %>%  filter(!is.na(.)) %>% table()
 #### periods
 
 ```{r}
-table(abs(data[77])) %>% data.frame() %>%  dplyr::rename(baseline = !!names(.)[1]) %>%
+bl <- table(abs(data[77])) %>% data.frame() %>%  dplyr::rename(baseline = !!names(.)[1]) 
+
+bl %>%
     ggplot(data = ., aes(x = baseline, y= Freq)) +
-    geom_bar(stat="identity") + xlab("Recomended baseline in msec") +  
+    geom_bar(stat="identity") + labs(x = "Recomended baseline in msec", y = "Scores") +  
   scale_y_continuous(breaks=seq(0, 60, 5)) + theme_classic() +
   theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
-  geom_text(aes(label = Freq, group = baseline), position = position_dodge(width = .9), vjust = -0.2)
+  geom_text(aes(label = Freq, group = baseline), position = position_dodge(width = .9), vjust = -0.3)  +
+    labs(caption = sprintf("N of respondents - %d",  sum(bl$Freq))) +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
 ```
 
 #### justification
@@ -665,24 +678,8 @@ j %>% filter(is.na(dependson))  %>% select(-dependson)
 ## Colorbars
 
 ```{r}
-table(data[117]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>% 
-  ggplot(., aes(x = position, y = scores, fill = as.factor(scores))) +
-    geom_bar(position = "dodge", stat = "identity", width=0.5) + theme_classic() +
-  theme(axis.title.x=element_blank(), legend.position="none", plot.title = element_text(hjust = 0.5)) +
-  geom_text(aes(label = scores, group = position), position = position_dodge(width = .9), vjust = -0.2) +
-  ggtitle("Are you aware of perceptual controvericies of colorbars?")
-```
+cb <- table(data[117]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) 
 
-```{r}
-table(data[118]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>% 
-  ggplot(., aes(x = position, y = scores, fill = as.factor(scores))) +
-    geom_bar(position = "dodge", stat = "identity", width=0.5) + theme_classic() +
-  theme(axis.title.x=element_blank(), legend.position="none", plot.title = element_text(hjust = 0.5)) +
-  geom_text(aes(label = scores, group = position), position = position_dodge(width = .9), vjust = -0.2) +
-  ggtitle("Do you know about two-dimensional colorbars?")
-```
-
-```{r}
 rbind(table(data[117]) %>% data.frame() %>% 
   rename_at(vars(colnames(.)), ~ c("answer", "scores")) %>% 
   mutate(questions = "Awareness about\ncontrovercies of\ncolorbars")%>%
@@ -690,7 +687,7 @@ rbind(table(data[117]) %>% data.frame() %>%
 
 table(data[118]) %>% data.frame() %>% 
   rename_at(vars(colnames(.)), ~ c("answer", "scores")) %>% 
-  mutate(questions = "Awareness about\n2d colorbars") %>%
+  mutate(questions = "Awareness about\n2D colorbars") %>%
   mutate(percent_score = round(scores / sum(scores) * 100))
 ) %>% 
   
@@ -708,19 +705,25 @@ table(data[118]) %>% data.frame() %>%
         ) +
   scale_color_manual(values = c("#FF6666", "#66CC66")) +
   scale_fill_manual(values = c("#FF6666", "#66CC66"))  +
-  labs(x="Percent score")
+  labs(x="Percent score") +
+    labs(caption = sprintf("N of respondents - %d",  sum(cb$scores))) +
+    theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
 ```
 
 ```{r}
-table(data[119])  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>%
-  mutate(percent_score = round(scores / sum(scores) * 100)) %>% 
-  ggplot(., aes(x = position, y = percent_score, fill = as.factor(percent_score))) +
+tdc <- table(data[119])  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>%
+  mutate(percent_score = round(scores / sum(scores) * 100)) 
+
+tdc %>% 
+  ggplot(., aes(y = position, x = percent_score, fill = as.factor(percent_score))) +
     geom_bar(stat = "identity", width=0.5)  + theme_classic() +
-     theme(axis.title.x=element_blank(), 
+     theme(axis.title.y=element_blank(), 
         legend.position="none", 
         axis.text = element_text(size = 12),
-        plot.title = element_text(hjust = 0.5)) + ylab("Scores") +
+        plot.title = element_text(hjust = 0.5)) + labs(x = "Scores") +
   geom_text(aes(label = paste0(percent_score, "%") , 
-                group = position), position = position_stack(vjust = 0.5), size = 8) + 
-  ggtitle("Would you like to use a two-dimensional colorbar\nin your publications, if it was easily available?")
+                group = position), position = position_stack(vjust = 0.5), size = 5) + 
+  ggtitle("Would you like to use a two-dimensional colorbar\nin your publications, if it was easily available?") +
+    labs(caption = sprintf("N of respondents - %d",  sum(tdc$scores))) +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
 ```
