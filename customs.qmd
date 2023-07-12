@@ -38,6 +38,8 @@ library(text2vec)
 library(tidyr)
 library(kableExtra)
 library(stringi)
+library(ggpubr)
+library(ggrepel)
 
 ```
 
@@ -49,7 +51,7 @@ data <- data[1:121] %>%
 
 ## Familiarity with plots
 
-### Recognition
+#### Recognition
 
 ```{r, warning=FALSE}
 vec <- c("line", "butterfly", "topo",  "topo_map", "topo_array", "erp_image", "parallel", "channel_image")
@@ -141,6 +143,11 @@ slice(num_named, 1)  %>%
 ### Plotting
 
 ```{r, message= FALSE, warning=FALSE}
+
+plot_vec <- rev(c("Parallel\nplot", "Channel\nimage", "ERP image", "Butterfly\nplot", "Topo array", "Topomap", "Topoplot", "Lineplot"))
+
+colorname <- c("#f9a65a", "#599ad3", "#8dc63f")
+
 vec_plotted <- names(data[ , grepl( "Have you ever plotted " , names(data))]) 
 
 
@@ -173,13 +180,19 @@ mem_tab <- data.frame(rowSums(t(familiar))) %>%  tibble::rownames_to_column(., "
 
 mem_tab %>% #filter(plots != "parallel") %>% 
   gather(., type, score,  recognized:plotted, factor_key=TRUE) %>% 
-  ggplot(., aes(x = reorder(plots, -score), y = score, fill = type)) +
+  ggplot(., aes(x = score, y = reorder(plots, -score), fill = reorder(type, score))) +
     geom_bar(position = "dodge", stat = "identity") +
-    labs(x = "Plot type", y = "Number of users", fill = "Level of\nfamiliarity\nwith plot") +
-    theme_classic() + geom_text(aes(label = score, group = type), position = position_dodge(width = .9), vjust = -0.2) +  theme(plot.title = element_text(hjust = 0.5)) +
-  ggtitle("Familiarity with plots") +
-  labs(caption = sprintf("N of respondents - %d",  nrow(familiar))) +
-  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
+    labs(y = "", x = "Number of users", fill = "Level of\nfamiliarity\nwith plot") +
+    theme_classic() + 
+  geom_text(aes(label = score, group = reorder(type, score)), position = position_dodge(width = .9), hjust = -0.2, size = 3) +  
+  theme(plot.title = element_text(hjust = 0.5)) +
+  #ggtitle("Familiarity with plots")  +  
+  xlim(0, 210) + #scale_fill_grey(start = 0.8, end = 0.2) +
+  scale_fill_brewer(palette = "Blues") +
+   guides(fill = guide_legend(reverse=T)) +
+  theme(plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) +
+    scale_y_discrete(labels = plot_vec) #+
+  labs(caption = sprintf("N of respondents - %d",  nrow(familiar)))
 ```
 
 #### named correctly
@@ -231,43 +244,19 @@ cv %>%
 ```{r}
 cv <- data %>% select(23, 24) %>% 
   rename_at(vars(colnames(.)), ~ c("measure", "analyse")) %>% 
-  filter(measure < 10000,analyse < 500)  %>% 
-  mutate(rate = analyse / measure)
+  filter(measure < 10000, analyse < 500)  %>% 
+  mutate(rate = round(analyse / measure, 2)) 
 
-cv %>% 
-  ggplot(aes(x=rate)) + 
-  geom_histogram(bins=300) + labs(x ="analyse / measure") +
-  theme_classic()+
-  labs(caption = sprintf("N of respondents - %d",  nrow(cv))) +
-  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
-```
-
-```{r}
-data %>% select(23, 24) %>% 
-  rename_at(vars(colnames(.)), ~ c("measure", "analyse")) %>% 
-    filter(measure < 10000, analyse < 500)  %>% 
-  mutate(rate = analyse / measure) %>% 
-  mutate(rate_ms = factor(ifelse(rate < 0.5, "lower median", "higher median")), quartile = cut(rate, 4)) %>%
-  group_by(quartile) %>% 
-  dplyr::summarise(n = n()) %>% ungroup() %>%  mutate(perc = round(n / sum(n), 2) * 100) %>% 
-  ggplot(aes(x=quartile, y = perc, fill = quartile)) + geom_bar(stat = "identity", width=0.5) +
- theme_classic() +  labs(x ="analyse / measure")+ 
-  theme(legend.position="none", 
-        axis.text = element_text(size = 12),
-        plot.title = element_text(hjust = 0.5)) +
-  geom_text(aes(label = paste0(perc, "%")),  position = position_stack(vjust = 0.5), size = 6) +
-  labs(caption = sprintf("N of respondents - %d",  nrow(cv))) +
-  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
-```
-
-```{r}
-data %>% select(23, 24) %>% 
-  rename_at(vars(colnames(.)), ~ c("measure", "analyse")) %>% 
-  filter(measure < 10000, analyse < 500)  %>% ggplot(., aes(measure, analyse)) + geom_point() + theme_classic() +
-  scale_x_continuous(breaks = seq(0, 300, by = 20)) + scale_y_continuous(breaks = seq(0, 300, by = 20)) +
-  labs(caption = sprintf("N of respondents - %d",  nrow(cv))) +
-  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
-
+cv %>% group_by(rate) %>% dplyr::summarise(n = n()) %>% 
+  mutate(p = round(n / sum(n), 2)) %>% 
+  ggplot(aes(x=rate, y = p)) + 
+  geom_col(position = "identity", bins=300, fill ="lightblue1", colour ="dodgerblue3") + 
+  labs(x ="Ratio of electrodes analysed / measured", y = "") +
+  theme_classic() +
+  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + ylim(0, 0.4) +    
+  scale_x_continuous(labels = scales::percent)  + scale_y_continuous(labels = scales::percent, limits = c(0, 0.4)) #+
+  
+  labs(caption = sprintf("N of respondents - %d",  nrow(cv))) 
 ```
 
 ## Software usage
@@ -306,25 +295,31 @@ software <- data[25:50] %>%
 
 
 d <- data.frame(rowSums(t(software))) %>%  tibble::rownames_to_column(., "soft") %>% 
-    rename_at(vars(colnames(.)), ~ c("soft", "sum_scores"))   #%>% 
-  # rbind(., other) %>% # not sure is it correct
-  # dplyr::group_by(soft) %>% dplyr::summarise(sum_scores = sum(sum_scores)) %>% 
-  # arrange(., desc(sum_scores))
+    rename_at(vars(colnames(.)), ~ c("soft", "sum_scores"))   %>% 
+    filter(sum_scores != 0) %>% 
+      mutate(soft = ifelse(sum_scores > 8, as.character(soft), "Other")) %>% group_by(soft) %>% 
+      dplyr::summarise(sum_scores = sum(sum_scores)) %>% ungroup() %>% 
+      mutate(percent_score = round(sum_scores / nrow(software) * 100))  %>% 
+  mutate(soft = factor(soft, levels = soft[rev(order(sum_scores))]))
 
 
 ```
 
 ```{r}
-d %>% filter(sum_scores != 0) %>% 
-  mutate(soft = ifelse(sum_scores > 3, as.character(soft), "_Others")) %>% group_by(soft) %>% 
-  dplyr::summarise(sum_scores = sum(sum_scores)) %>% ungroup() %>% 
-  mutate(percent_score = round(sum_scores / sum(sum_scores) * 100))  %>% 
-    ggplot(data = ., aes(y = reorder(soft, percent_score),  x= percent_score, fill = soft)) +
-    geom_bar(stat="identity") + labs(x= "Scores", y="Analytical tools") +
+tools <- rev(c("EEGLAB", "FieldTrip", expression(italic("Custom scripts")), "MNE-Python", "ERPLAB", "Brain Vision Analyser",
+           expression(italic("Other")), "Brainstorm", "SPM", "LIMO", "Unfold", "BESA", "Curry", "Cartool"))
+
+d %>% 
+    ggplot(data = ., aes(y = reorder(soft, percent_score),  x= percent_score)) +#, fill = soft)) +
+    geom_bar(stat="identity", fill ="lightblue1", colour ="dodgerblue3") + labs(x= "", y="Analytical tools") +
     geom_text(aes(label = paste0(percent_score, "%")), 
-            position = position_stack(vjust = 0.5), size = 4)  + theme_classic() + theme(legend.position="none", axis.text.y = element_text(size = 14)) +
-    labs(caption = sprintf("N of respondents - %d",  nrow(software))) +
-    theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
+            hjust = -0.2, size = 4)  + 
+  theme_classic() + theme(legend.position="none", axis.text.y = element_text(size = 14))  +
+    theme(legend.position="none", plot.caption.position = "plot", 
+          plot.caption = element_text(hjust=0), axis.text.x = element_blank(), axis.text = element_text(size = 10)) + 
+  xlim(0, 68) +
+    scale_y_discrete(labels = tools)#+
+    labs(caption = sprintf("N of respondents - %d",  nrow(software)))
 ```
 
 #### Monousers
@@ -400,7 +395,7 @@ melt(new_matrix) %>% ggplot(., aes(x=Var1, y=Var2)) +
     theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
 ```
 
-## Important features
+### Important features
 
 ```{r, warning=FALSE}
 feature <- data[52:60] %>% rename_all(., ~str_split_i(colnames(data[52:60]), "\\? \\[", 2) %>% 
@@ -448,7 +443,7 @@ feature1 %>% filter(index %in% c(2, 6, 7, 4)) %>%
 ```
 
 ```{r}
-feature1 %>% filter(index %in% c(2, 6, 7, 4)) %>% 
+f1 <- feature1 %>% filter(index %in% c(2, 6, 7, 4)) %>% 
   ggplot() + 
   stat_density(aes(x = value, color = str_wrap(name, 20)),
                   geom="line", position="identity", bw = 0.5, size = 1) +
@@ -459,13 +454,13 @@ feature1 %>% filter(index %in% c(2, 6, 7, 4)) %>%
         axis.text = element_text(size = 14),
         strip.text = element_text(size = 14))  + 
   labs(x="Scores on Likert scale", y="Density") 
+f1
 ```
 
 ```{r}
-feature1 %>% filter(index %in% c(8, 9)) %>% 
-  ggplot() + 
-   stat_density(aes(x = value, color = str_wrap(name, 20)),
-                  geom="line", position="identity", bw = 0.5, size = 1) +
+f2 <- feature1 %>% filter(index %in% c(8, 9)) %>% 
+  ggplot(aes(x = value, color = str_wrap(name, 20))) + 
+   geom_line(stat = "density", bw = 0.5, size = 1) +
   labs(x = "score", color ="Features")  + theme_classic() +
   theme(
         legend.key.height=unit(1, "cm"),
@@ -473,13 +468,13 @@ feature1 %>% filter(index %in% c(8, 9)) %>%
         axis.text = element_text(size = 14),
         strip.text = element_text(size = 14))  + 
   labs(x="Scores on Likert scale", y="Density") 
+f2
 ```
 
 ```{r}
-feature1 %>% filter(index %in% c(1, 3, 5)) %>% 
-  ggplot() + 
-   stat_density(aes(x = value, color = str_wrap(name, 20)),
-                  geom="line", position="identity", bw = 0.5, size = 1) +
+f3 <- feature1 %>% filter(index %in% c(1, 3, 5)) %>% 
+  ggplot(aes(x = value, color = str_wrap(name, 20))) + 
+   geom_line(stat = "density", bw = 0.5, size = 1) +
   labs(x = "score", color ="Features")  + theme_classic() +
   theme(
         legend.key.height=unit(1, "cm"),
@@ -487,7 +482,147 @@ feature1 %>% filter(index %in% c(1, 3, 5)) %>%
         axis.text = element_text(size = 14),
         strip.text = element_text(size = 14))  + 
   labs(x="Scores on Likert scale", y="Density") 
+
+f3 
 ```
+
+
+ 
+##### Combination
+ 
+```{r}
+
+plot_features <- c(
+  "Combine with a custom plot created outside of the toolbox (as subplot or inset)",
+  "Flexible tweaking of plot attributes (colors, linewidths, margins etc.)",
+  "Speed of plotting",
+  "Presentation/publication ready figures",
+  "Reproducibility of interactively generated or modified plots",
+  "Zooming or panning within a plot",
+  "Interactive selection of time-ranges or electrodes e.g. via Sliders or Dropdown menus",
+  "Generating plots by clicking (GUI)",
+  "Generating plots by coding"
+)
+
+comb_data <- feature1 %>% 
+    mutate(gr = case_when(
+    index %in% c(1, 3, 5) ~ 'Mixed', 
+    index %in% c(8, 9) ~ 'Moderate',
+    index %in% c(2, 6, 7, 4) ~ 'Favored')) %>% 
+   mutate(name = case_when(
+  name == "Combine with a custom plot created outside of the toolbox (as subplot or inset)" ~ "Inset",
+  name == "Flexible tweaking of plot attributes (colors, linewidths, margins etc.)"~ "Flexible",
+  name == "Speed of plotting"~ "Speed",
+  name == "Presentation/publication ready figures"~ "Publicable",
+  name == "Reproducibility of interactively generated or modified plots"~ "Reproducable",
+  name == "Zooming or panning within a plot"~ "Zooming",
+  name == "Interactive selection of time-ranges or electrodes e.g. via Sliders or Dropdown menus"~ "Interactive",
+  name == "Generating plots by clicking (GUI)"~ "GUI",
+  name == "Generating plots by coding" ~ "Coding"
+  )) 
+
+comb <- comb_data %>% 
+  ggplot(aes(x = value, label = name, color = str_wrap(name, 20))) + 
+   geom_line(stat = "density", bw = 0.5, size = 1) +
+  labs(x = "score", color = "Features") +
+  theme_classic() +
+  theme(
+    legend.key.height = unit(1, "cm"),
+    legend.text = element_text(color = "black"),
+    legend.title = element_blank(),
+    legend.position = "none",
+    strip.background = element_blank(), 
+    axis.text = element_text(size = 14),
+    strip.text = element_text(size = 14),
+    panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(linetype = "dashed"),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(),
+  ) +
+  labs(x = "Scores on Likert scale", y = "Density")  +
+  facet_wrap(~gr)
+```
+
+```{r}
+p <- ggplot_build(comb)
+
+# These are the columns of interest    
+p$data[[1]]$x
+p$data[[1]]$density
+
+
+test <- aggregate((value) ~ name, data = comb_data, function(x) last(density(x, bw = 0.5)$y)) %>%
+  cbind(., aggregate((value) ~ name, data = comb_data, function(x) max(density(x, bw = 0.5)$x))[,2]) %>% 
+  rename_at(vars(colnames(.)), ~ c("name", "denymax", "denxmax")) %>%
+  mutate(gr = case_when(
+      grepl("\\b(GUI|Interactive|Inset)\\b", name) == TRUE ~ "Mixed", 
+      grepl("\\b(Speed|Zooming)\\b", name) == TRUE ~ "Moderate",
+      grepl("\\b(Coding|Flexible|Reproducable|Publicable)\\b", name) == TRUE ~ "Favored",
+      ))
+```
+
+```{r}
+cbPalette <- c("#e3342f", "#f6993f", "#f1a20b", "#38c172", "#3490dc", "#6574cd", "#9561e2", "#4dc0b5", "#f66d9b")
+comb +  geom_label_repel(data = test, aes(label = name, x = denxmax, y = denymax, group = gr ) ,
+                    nudge = 45) +  scale_color_manual(values=cbPalette) +
+    labs(caption = sprintf("N of respondents - %d",  nrow(feature))) 
+
+
+# comb +  geom_label_repel(aes(label = name, y = round(after_stat(density), 2)),
+#                     stat = 'density', bw = .5,
+#                     n = 1, nudge = 45
+#                     )
+
+```
+
+```{r}
+
+comb +  theme(legend.position = "bottom"
+                    )
+
+```
+
+
+```{r}
+set.seed(42)
+ggplot(Orange, aes(age, circumference, color = Tree)) +
+  geom_line() +
+  coord_cartesian(xlim = c(min(Orange$age), max(Orange$age) + 90)) +
+  geom_text_repel(
+    data = subset(Orange, age == max(age)),
+    aes(label = paste("Tree", Tree)),
+    size = 6,
+    nudge_x = 45,
+    segment.color = NA
+  ) +
+  theme_classic(base_size = 16) +
+  theme(legend.position = "none") +
+  labs(title = "Orange Trees", x = "Age (days)", y = "Circumference (mm)")
+```
+
+```{r}
+set.seed(123)
+
+test <- data.frame(x = rnorm(1000)) |>
+    ggplot(aes(x = x)) +
+    geom_line(stat = 'density', bw = .5)
+
+p2 <- ggplot_build(test)
+
+# These are the columns of interest    
+p2$data[[1]]$x
+p2$data[[1]]$density
+
+test +
+    geom_text_repel(aes(x =max(p2$data[[1]]$x), label = max(p2$data[[1]]$x)),
+                    stat = 'density', bw = .5,
+                    n = 1 ## ten density labels
+                    )
+
+
+
+```
+
 
 ## Up or down
 
@@ -530,19 +665,20 @@ ud <- table(data[79]) %>% data.frame() %>%
   mutate(percent_score = round(scores / sum(scores) * 100)) 
 
 ud %>% 
-    ggplot(., aes(x = position, y = percent_score, fill = as.factor(percent_score))) +
-    geom_bar(position = "dodge", stat = "identity", width=0.5) + 
+    ggplot(., aes(y = position, x = percent_score)) + #, fill = as.factor(percent_score))) +
+    geom_bar(position = "dodge", stat = "identity", width=0.5, fill ="lightblue1", colour ="dodgerblue3") + 
     theme_classic() +
-    theme(axis.title.x=element_blank(), 
-          legend.position="none", 
+    theme(axis.title=element_blank(), 
+          legend.position="none", axis.text.x = element_blank(),
           axis.text = element_text(size = 12),
           plot.title = element_text(hjust = 0.5)) +
-  geom_text(aes(label = paste0(percent_score, "%"), group = position), 
-            position = position_stack(vjust = 0.5)) +
+  geom_text(aes(label = paste0(percent_score, "%"), group = position), hjust = -0.2, 
+            #position = position_stack(vjust = 0.5)
+            ) +
   ggtitle("In ERP plot, should positive voltages be plotted upwards, or downwards?") +
-  scale_fill_manual(values=colours) +
-    labs(caption = sprintf("N of respondents - %d",  sum(ud$scores))) +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
+  scale_fill_manual(values=colours) + xlim(0, 83) +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))  +
+    labs(caption = sprintf("N of respondents - %d",  sum(ud$scores))) 
 ```
 
 ```{r, warning=FALSE}
@@ -555,7 +691,7 @@ filter(n() > 2) %>% group_by(area, ud) %>% dplyr::summarise(n = n()) %>%
 as %>% 
   ggplot(., aes(x = n, y = reorder(area, nn), fill = ud)) +
    geom_col(stat = "identity", width = 0.5) +
-  labs(x = "Count", y = "area of study", fill ="Positive:") +
+  labs(x = "Count", y = "", fill ="Positive:") +
   geom_text(aes(label = n, #paste0(n, "%"), 
                 group = ud), 
             position = position_stack(vjust = 0.5)) +
@@ -566,9 +702,9 @@ as %>%
         axis.title.y=element_blank()
         ) +  
   theme_classic() +
-scale_fill_manual(values=colours) +
-    labs(caption = sprintf("N of respondents - %d",  sum(as$n))) +
-    theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
+scale_fill_manual(values=colours)  +
+    theme(legend.position="right", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) #+
+    labs(caption = sprintf("N of respondents - %d",  sum(as$n)))
 
 ```
 
@@ -592,26 +728,28 @@ table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position"
 
 ```
 
-# Never published - throw them away
+Never published - throw them away
 
 ```{r}
-eb <- table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "Scores")) %>% 
-  filter(position != "Never published this plot") %>% 
+eb <- table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("Position", "Scores")) %>% 
+  filter(Position != "Never published this plot") %>% 
   mutate(percent_score = round(Scores / sum(Scores) * 100)) 
 
-eb %>% 
-    ggplot(., aes(x = position, y = percent_score, fill = as.factor(percent_score))) +
-    geom_bar(position = "dodge", stat = "identity", width=0.5) + theme_classic() +
-  theme(axis.title.x=element_blank(), 
+eb_fig <- eb %>% 
+    ggplot(., aes(y = Position, x = percent_score)) + #, fill = as.factor(percent_score))) +
+    geom_bar(stat = "identity", width=0.5, position = "dodge", fill ="lightblue1", colour ="dodgerblue3") + theme_classic() +
+  theme(axis.title.x=element_blank(), axis.text.x = element_blank(),
         legend.position="none", 
         axis.text = element_text(size = 12),
         plot.title = element_text(hjust = 0.5)) +
-      
-  geom_text(aes(label = paste0(percent_score, "%"), group = position),  position = position_stack(vjust = 0.5), size = 6) + 
-  ggtitle("In your paper, did you published ERP plot with error bars?")+
-scale_fill_manual(values=colours) +
-    labs(caption = sprintf("N of respondents - %d",  sum(eb$Scores))) +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
+  geom_text(aes(label = paste0(percent_score, "%"), group = Position),  #position = position_stack(vjust = 0.5), 
+            hjust = -0.2) + 
+  ggtitle("In your paper, did you\npublished ERP plot with error bars?")+
+scale_fill_manual(values=colours)  +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 70)
+
+eb_fig  +
+    labs(caption = sprintf("N of respondents - %d",  sum(eb$Scores)))
 
 
 ```
@@ -619,21 +757,32 @@ scale_fill_manual(values=colours) +
 ```{r}
 ebd <- data[75] %>%  filter(!is.na(.)) %>% table()  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>% mutate(percent_score = round(scores / sum(scores) * 100)) %>% filter(position != "Other") 
 
-ebd %>% 
-    ggplot(., aes(x = position, y = percent_score, fill = as.factor(percent_score))) +
-    geom_bar(position = "dodge", stat = "identity", width=0.5) + theme_classic() +
-   theme(axis.title.x=element_blank(), 
+ebd_fig <- ebd %>% 
+    ggplot(., aes(y = position, x = percent_score)) + #, fill = as.factor(percent_score))) +
+    geom_bar(position = "dodge", stat = "identity", width=0.5, fill ="lightblue1", colour ="dodgerblue3") + theme_classic() +
+   theme(axis.title.x=element_blank(), axis.text.x = element_blank(),
         legend.position="none", 
-        axis.text = element_text(size = 12),
-        plot.title = element_text(hjust = 0.5)) + ylab("Scores") +
+        plot.title = element_text(hjust = 0.5)) + ylab("") +
      
-  geom_text(aes(label = paste0(percent_score, "%"), group = position),  position = position_stack(vjust = 0.5), size = 6) + 
-  ggtitle("In your figure, what did error bars depicted?")+
-    scale_fill_manual(values=colours) +
-    labs(caption = sprintf("N of respondents - %d",  sum(ebd$scores))) +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
+  geom_text(aes(label = paste0(percent_score, "%"), group = position),  hjust = -0.2) + 
+            #position = position_stack(vjust = 0.5), 
+            #size = 6
+  ggtitle("In your figure,\nwhat did error bars depicted?")+
+    scale_fill_manual(values=colours) + scale_y_discrete(labels = c("Standart error\nof the mean", "Confidence\ninterval")) +
+    theme(plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 80) 
+
+ebd_fig +
+    labs(caption = sprintf("N of respondents - %d",  sum(ebd$scores))) 
 
 ```
+
+```{r}
+ggarrange(eb_fig, ebd_fig, 
+          labels = c("A", "B"),
+          ncol = 2, nrow = 2, align = 'h')  
+```
+
+
 
 ```{r}
 data[76] %>%  filter(!is.na(.)) %>% table()
@@ -641,20 +790,8 @@ data[76] %>%  filter(!is.na(.)) %>% table()
 
 ## Baseline
 
-#### periods
-
-```{r}
-bl <- table(abs(data[77])) %>% data.frame() %>%  dplyr::rename(baseline = !!names(.)[1]) 
-
-bl %>%
-    ggplot(data = ., aes(x = baseline, y= Freq)) +
-    geom_bar(stat="identity") + labs(x = "Recomended baseline in msec", y = "Scores") +  
-  scale_y_continuous(breaks=seq(0, 60, 5)) + theme_classic() +
-  theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
-  geom_text(aes(label = Freq, group = baseline), position = position_dodge(width = .9), vjust = -0.3)  +
-    labs(caption = sprintf("N of respondents - %d",  sum(bl$Freq))) +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
-```
+Think about the baseline period (the time before the stimulus onset). How many milliseconds would you recommend to plot?
+Help:	Please, provide the baseline duration for the plot, not the duration for the baseline-correction
 
 #### justification
 
@@ -671,11 +808,33 @@ j <- data %>%
   dplyr::rename(dependson = b) #%>% 
 j %>% filter(!is.na(dependson)) %>% select(dependson)
 j %>% filter(is.na(dependson))  %>% select(-dependson)
-
+#j %>% write.csv(., "data/justification.csv")
   #View()
+just <- read.csv("data/justification.csv") %>% dplyr::select(group, num)
+
+just2 <- just %>% filter(is.na(num)) %>% group_by(group) %>% dplyr::summarise(n = n())
+
 ```
 
-## Colorbars
+#### periods
+
+```{r}
+bl <- table(abs(just[2] %>% na.omit() %>% rbind(data[77] %>% dplyr::rename(num = !!names(.)[1]) , .))) %>% data.frame() %>%  dplyr::rename(baseline = !!names(.)[1]) %>% 
+  mutate(percent_score = round(Freq / sum(Freq), 2) *100)
+
+bl %>%
+    ggplot(data = ., aes(x = baseline, y = percent_score)) +
+    geom_bar(stat="identity", fill ="lightblue1", colour ="dodgerblue3") + 
+  labs(x = "Recomended baseline in msec", y = "") +  
+  scale_y_continuous(breaks=seq(0, 60, 5)) + theme_classic() +
+  theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
+  geom_text(aes(label = paste0(percent_score, "%"), group = baseline), position = position_dodge(width = .9), vjust = -0.3)   +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text.y = element_blank(), axis.text = element_text(size = 10)) #+
+    labs(caption = sprintf("N of respondents - %d",  sum(bl$Freq)))
+```
+
+
+## Colormaps
 
 ```{r}
 cb <- table(data[117]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) 
@@ -709,6 +868,26 @@ table(data[118]) %>% data.frame() %>%
     labs(caption = sprintf("N of respondents - %d",  sum(cb$scores))) +
     theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
 ```
+
+```{r}
+cb  %>% 
+  mutate(percent_score = round(scores / sum(scores) * 100)) %>% 
+    ggplot(., aes(y = position, x = percent_score)) + #, fill = as.factor(percent_score))) +
+    geom_bar(position = "dodge", stat = "identity", width=0.5, fill ="lightblue1", colour ="dodgerblue3") + theme_classic() +
+   theme(axis.title.x=element_blank(),  axis.text.x = element_blank(),
+        legend.position="none", 
+        axis.text = element_text(size = 12),
+        plot.title = element_text(hjust = 0.5)) + ylab("Percent") +
+     
+  geom_text(aes(label = paste0(percent_score, "%"), group = position),  hjust = -0.2) + 
+            #position = position_stack(vjust = 0.5), 
+            #size = 6
+  ggtitle("Are you aware about\nperceptual controvercies of colormaps?")+
+    scale_fill_manual(values=colours) +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 65) #+
+    labs(caption = sprintf("N of respondents - %d",  sum(ebd$scores)))  
+```
+
 
 ```{r}
 tdc <- table(data[119])  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>%

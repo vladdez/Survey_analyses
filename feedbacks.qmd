@@ -61,7 +61,7 @@ word_preproc <- function(data, N){
     mutate(words_prep = sapply(words_prep, function(x) paste(x[!x %in% stop_list], collapse = " "))) %>% 
     mutate(words_prep = stri_replace_all_regex(words_prep,
                                   pattern=c(" \\(.*", ", or.*", " across.*", " with.*", " at.*", " by.*", " over.*", #" of.*", 
-                                            " for.*", " per.*", " across.*", " accross.*", " between.*"),
+  " for.*", " per.*", " across.*", " accross.*", " between.*"),
                                   replacement=c(''),
                                   vectorize=FALSE)) %>% 
     mutate(words_prep = str_split(words_prep, "\\s+")) %>%
@@ -740,10 +740,14 @@ problems %>% filter(problems == "no complains") %>%
 ```
 
 ```{r}
+plot_names <- c("line plot", "butterfly plot", "topoplot", "topomap", "topo array", "erp image", "channel image")
+
 problems %>% filter(problems != "no complains") %>% group_by(name) %>% 
-  arrange(desc(percent1)) %>% slice(1) %>% arrange(index) %>%  dplyr::select(name, problems, percent1) %>% 
-  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
-  kable_classic(full_width = F, html_font = "Arial")
+  arrange(desc(percent1)) %>% slice(1) %>% arrange(index) %>%  dplyr::select(name, problems, percent1) %>%  
+ arrange(match(name, plot_names))  %>% 
+  mutate(name = factor(name, levels = plot_names)) %>% 
+  kable(escape = F, booktabs = T, col.names = c("Plot name", "The main problem", "Percent of respondents")) %>% kable_styling("striped", position = "center") %>% 
+  kable_classic(full_width = F, html_font = "Arial") 
 
 ```
 
