@@ -254,9 +254,13 @@ cv %>% group_by(rate) %>% dplyr::summarise(n = n()) %>%
   labs(x ="Ratio of electrodes analysed / measured", y = "") +
   theme_classic() +
   theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + ylim(0, 0.4) +    
-  scale_x_continuous(labels = scales::percent)  + scale_y_continuous(labels = scales::percent, limits = c(0, 0.4)) #+
+  scale_x_continuous(labels = scales::percent)  + scale_y_continuous(labels = scales::percent, limits = c(0, 0.4)) +
   
   labs(caption = sprintf("N of respondents - %d",  nrow(cv))) 
+```
+```{r}
+cv %>% dplyr::select(rate) %>% group_by(rate) %>% dplyr::summarise(n = n()) %>% 
+  mutate(p = round(n / sum(n), 2)) %>% arrange(desc(n))
 ```
 
 ## Software usage
@@ -744,9 +748,9 @@ eb_fig <- eb %>%
         plot.title = element_text(hjust = 0.5)) +
   geom_text(aes(label = paste0(percent_score, "%"), group = Position),  #position = position_stack(vjust = 0.5), 
             hjust = -0.2) + 
-  ggtitle("In your paper, did you\npublished ERP plot with error bars?")+
+  ggtitle("In your paper, have you published\nan ERP plot with error bars?")+
 scale_fill_manual(values=colours)  +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 70)
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 70) + labs(y = "")
 
 eb_fig  +
     labs(caption = sprintf("N of respondents - %d",  sum(eb$Scores)))
@@ -767,14 +771,15 @@ ebd_fig <- ebd %>%
   geom_text(aes(label = paste0(percent_score, "%"), group = position),  hjust = -0.2) + 
             #position = position_stack(vjust = 0.5), 
             #size = 6
-  ggtitle("In your figure,\nwhat did error bars depicted?")+
-    scale_fill_manual(values=colours) + scale_y_discrete(labels = c("Standart error\nof the mean", "Confidence\ninterval")) +
+  ggtitle("In your figure,\nwhat did the error bars represent?")+
+    scale_fill_manual(values=colours) + scale_y_discrete(labels = c("Standard error\nof the mean", "Confidence\ninterval")) +
     theme(plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 80) 
 
 ebd_fig +
     labs(caption = sprintf("N of respondents - %d",  sum(ebd$scores))) 
 
 ```
+### Combination
 
 ```{r}
 ggarrange(eb_fig, ebd_fig, 
@@ -829,7 +834,7 @@ bl %>%
   scale_y_continuous(breaks=seq(0, 60, 5)) + theme_classic() +
   theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
   geom_text(aes(label = paste0(percent_score, "%"), group = baseline), position = position_dodge(width = .9), vjust = -0.3)   +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text.y = element_blank(), axis.text = element_text(size = 10)) #+
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text.y = element_blank(), axis.text = element_text(size = 10)) +
     labs(caption = sprintf("N of respondents - %d",  sum(bl$Freq)))
 ```
 
@@ -884,8 +889,8 @@ cb  %>%
             #size = 6
   ggtitle("Are you aware about\nperceptual controvercies of colormaps?")+
     scale_fill_manual(values=colours) +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 65) #+
-    labs(caption = sprintf("N of respondents - %d",  sum(ebd$scores)))  
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 65) +
+    labs(caption = sprintf("N of respondents - %d",  sum(cb$scores)))  
 ```
 
 

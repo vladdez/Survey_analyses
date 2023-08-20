@@ -85,6 +85,19 @@ country_fig <- country %>%
 country_fig + 
   labs(caption = sprintf("N of respondents = %d", sum(country$Freq))) 
 ```
+```{r}
+data.frame(table(data[8]))  %>% dplyr::rename(country_work = !!names(.)[1]) %>%
+  #mutate(country_work = ifelse(Freq >= 6, as.character(country_work), "Others")) %>%
+  group_by(country_work) %>% 
+  mutate(country_work = case_when(
+    country_work == "United Kingdom" ~ "UK",
+    TRUE ~ as.character(country_work)  
+  )) %>% 
+  dplyr::summarise(Freq = sum(Freq)) %>% 
+  dplyr::mutate(percent_score = round(Freq / sum(Freq) * 100)) %>% 
+  mutate(country_work = factor(country_work, levels = country_work[rev(order(percent_score))])) %>% 
+  arrange(desc(Freq))
+```
 
 ### Field
 
