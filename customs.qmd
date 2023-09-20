@@ -551,8 +551,8 @@ comb <- comb_data %>%
 p <- ggplot_build(comb)
 
 # These are the columns of interest    
-p$data[[1]]$x
-p$data[[1]]$density
+#p$data[[1]]$x
+#p$data[[1]]$density
 
 
 test <- aggregate((value) ~ name, data = comb_data, function(x) last(density(x, bw = 0.5)$y)) %>%
@@ -587,7 +587,7 @@ comb +  theme(legend.position = "bottom"
 ```
 
 
-```{r}
+```{r, eval = FALSE, echo = FALSE}
 set.seed(42)
 ggplot(Orange, aes(age, circumference, color = Tree)) +
   geom_line() +
@@ -604,7 +604,7 @@ ggplot(Orange, aes(age, circumference, color = Tree)) +
   labs(title = "Orange Trees", x = "Age (days)", y = "Circumference (mm)")
 ```
 
-```{r}
+```{r, eval = FALSE, echo = FALSE}
 set.seed(123)
 
 test <- data.frame(x = rnorm(1000)) |>

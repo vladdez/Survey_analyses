@@ -195,6 +195,7 @@ n3 <- word_preproc(data, 85)  %>%
   data.frame(.) %>% arrange(desc(Freq))  %>% 
    rename_at(vars(colnames(.)), ~ c("Topoplot", "n")) 
 n3
+write.csv(n3, "topo.csv")
 ```
 
 #### 4
@@ -361,7 +362,7 @@ tab %>% kable(
 
 
 ```
-```{r}
+```{r, eval = FALSE, echo = FALSE}
 library(tables)
 library(kableExtra)
 library(stargazer)
@@ -601,8 +602,7 @@ tmp <- struggle4 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
       grepl("\\b(mean|significan(t|ce)|permutations|p-value(s)?|smoothing|statistical|stats|t-stat)\\b", parts) == TRUE ~ "statistics",
       grepl("\\b(interpolat(e|ion)?|edges)\\b", parts) == TRUE ~ "interpolation",
       TRUE ~ '_other'
-      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>% 
-  filter(problems =="_other") %>% View()
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>%   filter(problems =="_other") %>% View()
 
 n_rest <- mem_tab[8, 3] - nrow(tmp)
 
@@ -658,8 +658,7 @@ tmp <- struggle5 %>% filter( parts != "-") %>% dplyr::select(parts) %>% #View()
       grepl("\\b(preprocessing|extracting|masks)\\b", parts) == TRUE ~ "preprocessing", 
     
       TRUE ~ '_other'
-      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>% 
-  filter(problems =="legibility and scaling") %>% View()
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>%   filter(problems =="legibility and scaling") %>% View()
 
 
 n_rest <- mem_tab[7, 3] - nrow(tmp)
@@ -710,8 +709,7 @@ tmp <- struggle6 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
     grepl("\\b(colo(r|ur)|paper)\\b", parts) == TRUE ~ "styling and color", 
     
       TRUE ~ '_other'
-      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>% 
-  filter(problems =="defining epochs") %>% View()
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>%   filter(problems =="defining epochs") %>% View()
 
 n_rest <- mem_tab[7, 3] - nrow(tmp)
 
@@ -761,8 +759,7 @@ tmp <- struggle8 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
     grepl("\\b(color(bar)?|paper)\\b", parts) == TRUE ~ "styling and color", 
     
       TRUE ~ '_other'
-      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems))# %>% 
-  filter(problems =="_other") %>% View()
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems))# %>%   filter(problems =="_other") %>% View()
 
 n_rest <- mem_tab[2, 3] - nrow(tmp)
 
@@ -893,8 +890,6 @@ tmp <- struggle2 %>% filter( new_feature != "-") %>% dplyr::select(new_feature) 
       TRUE ~ '_other'
       )) %>% filter(nchar(new_feature) != 0) #%>% View()
 
-#n_rest <- mem_tab[2, 3] - nrow(tmp)
-
 tmp1 <- tmp %>% group_by(group) %>%
       dplyr::summarise(n = n()) %>% 
      # rbind(c("no complains", as.numeric(n_rest))) %>% 
@@ -932,7 +927,6 @@ tmp <- struggle3 %>% filter( new_feature != "-") %>% dplyr::select(new_feature) 
       TRUE ~ '_other'
       )) %>% filter(nchar(new_feature) != 0)# %>% View()
 
-#n_rest <- mem_tab[2, 3] - nrow(tmp)
 
 tmp1 <- tmp %>% group_by(group) %>%
       dplyr::summarise(n = n()) %>% 
