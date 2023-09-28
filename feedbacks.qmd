@@ -10,7 +10,7 @@ format:
 editor: visual
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE} 
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
@@ -40,12 +40,10 @@ library(kableExtra)
 library(stringi)
 library("xlsx")
 library(padr)
-library(janitor)
-library(formattable)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
-data <- read_excel("data/results-survey.xlsx")
+data <- read_excel("data/results-survey3.xlsx")
 data <- data[1:121] %>% 
   filter(.[[18]] !='Yes') # not analysed any EEG method
 
@@ -63,7 +61,7 @@ word_preproc <- function(data, N){
     mutate(words_prep = sapply(words_prep, function(x) paste(x[!x %in% stop_list], collapse = " "))) %>% 
     mutate(words_prep = stri_replace_all_regex(words_prep,
                                   pattern=c(" \\(.*", ", or.*", " across.*", " with.*", " at.*", " by.*", " over.*", #" of.*", 
-  " for.*", " per.*", " across.*", " accross.*", " between.*"),
+                                            " for.*", " per.*", " across.*", " accross.*", " between.*"),
                                   replacement=c(''),
                                   vectorize=FALSE)) %>% 
     mutate(words_prep = str_split(words_prep, "\\s+")) %>%
@@ -123,32 +121,28 @@ mem_tab <- data.frame(rowSums(t(familiar))) %>%  tibble::rownames_to_column(., "
 mem_tab
 ```
 
+
 ## The most common names for each plot
 
 #### 1
 
 ```{r}
-n1 <- word_preproc(data, 69)  %>% #View()
+n1 <- word_preproc(data, 69)  %>%
    mutate(type = case_when(
       grepl("\\b(idea|sure|confus|aware|do not|know|why|remember)\\b", words_prep) == TRUE ~ "bad", 
-      grepl("\\b(average(d)?|averagded)\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\baverage(d)?\\b", words_prep) == TRUE ~ "averaged erp",
+      grepl("\\baverage(d)?\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\baverage(d)?\\b", words_prep) == TRUE ~ "averaged erp",
       grepl("\\bwave(form|forms)?\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\bwave(form|forms)?\\b", words_prep) == TRUE ~ "erp wave(form)s",
-      grepl("\\btime(course|series|domain)?\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\btime(course|series|domain)?\\b", words_prep) == TRUE ~ "erp timecourse/timeseries",
-      grepl("\\b(classic(al)?)\\b", words) == TRUE ~ "classic erp",
-      grepl("\\b(standard)\\b", words) == TRUE ~ "standart erp",
-      grepl("\\b(evoked)\\b", words) == TRUE ~ "evoked potential/reponses",
-      grepl("\\b(erp(s)?|ep|related)\\b", words) == TRUE ~ "erp", 
+      grepl("\\btime(course|series|domain)?\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\btime(course|series|domain)?\\b", words_prep) == TRUE ~ "erp timecourse (timeseries)",
+      grepl("\\b(erp(s)?|ep|related)\\b", words) == TRUE ~ "erp",
       grepl("\\b(time|timeseries)\\b", words) == TRUE ~ "time series",
-  
+      grepl("\\b(response(s)?)\\b", words) == TRUE ~ "response",
       grepl("\\b(line|boundedline)\\b", words) == TRUE ~ "line",
-      grepl("\\b(single|singleplot|singe)\\b", words) == TRUE ~ "single (channel)",
+      grepl("\\b(single|singleplot)\\b", words) == TRUE ~ "single",
       grepl("\\b(waveform(s)?)\\b", words) == TRUE ~ "waveform",
        grepl("\\b(p300)\\b", words) == TRUE ~ "p300",
-      grepl("\\b(average|mean)\\b", words) == TRUE ~ "average/mean",
-      grepl("\\b(amplitude)\\b", words) == TRUE ~ "amplitude",
-  
+      grepl("\\b(average)\\b", words) == TRUE ~ "average",
       TRUE ~ '_other'
-      ))  %>% #filter(type == "erp timecourse/timeseries") %>%  View()
+      ))  %>%# filter(type == "erp") %>%  #View()
    filter(!is.na(type), type != "bad") %>% dplyr::select(type) %>%  table(.) %>% 
   data.frame(.) %>% arrange(desc(Freq))  %>% 
    rename_at(vars(colnames(.)), ~ c("Line plot", "n")) 
@@ -158,18 +152,18 @@ n1
 #### 2
 
 ```{r}
-n2 <- word_preproc(data, 80)  %>% #View()
+n2 <- word_preproc(data, 80)  %>%
   mutate(type = case_when(
-      grepl("\\b(idea|sure|confus|aware|do not|know|why|remember|unsure|confusing|mess)\\b", words) == TRUE ~ "bad", 
-      grepl("\\b(butterfly|bitterfly|buterfly|buttefly)\\b", words) == TRUE ~ "butterfly",
-      grepl("\\b(spaghetti)\\b", words) == TRUE ~ "spaghetti",
-      grepl("\\b(channel|single|singleplot|individual)\\b", words)  == TRUE ~ "single/individual channel erp",
-      grepl("\\b(time|timeseries|timecourse)\\b", words) == TRUE ~ "time series/course",
-      grepl("\\b(channels|multichannel|multeple|multiple|multi|all|muti|electrodes)\\b", words)  == TRUE ~ "multichannel/multielectrode erp",
-      #grepl("\\b(evoked)\\b", words)  == TRUE ~ "evoked responses",
-      grepl("\\b(erp(s)?|eprs|event-related)\\b", words) == TRUE ~ "erp",
+      grepl("\\b(idea|sure|confus|aware|do not|know|why|remember|unsure|confusing|mess)\\b", words_prep) == TRUE ~ "bad", 
+      grepl("\\b(butterfly|bitterfly|buterfly|buttefly)\\b", words_prep) == TRUE ~ "butterfly",
+      grepl("\\b(spaghetti)\\b", words_prep) == TRUE ~ "spaghetti",
+      grepl("\\b(time|timeseries|timecourse)\\b", words_prep) == TRUE ~ "time series",
+      grepl("\\b(channel|single|singleplot|individual)\\b", words_prep)  == TRUE ~ "single or individual channel erp",
+      grepl("\\b(channels|multichannel|multeple|multiple|multi|all|muti|electrodes)\\b", words_prep)  == TRUE ~ "multichannel/electrode erp",
+      grepl("\\b(evoked)\\b", words_prep)  == TRUE ~ "evoked responces",
+      grepl("\\b(erp(s)?|eprs|event-related)\\b", words_prep) == TRUE ~ "erp",
       TRUE ~ '_other'
-      )) %>% #filter(type == "erp") %>%  View()
+      )) %>% #filter(type == "single or individual channel erp") %>%  #View()
   filter(!is.na(type), type != "bad") %>%
   dplyr::select(type) %>%  table(.) %>% 
   data.frame(.) %>% arrange(desc(Freq))  %>% 
@@ -182,20 +176,19 @@ n2
 ```{r}
 n3 <- word_preproc(data, 85)  %>%
   mutate(type = case_when(
-      grepl("\\b(idea|sure|confus|aware|do not|know|why|remember|unsure|confusing|mess)\\b", words) == TRUE ~ "bad", 
-      grepl("\\b(topo|topoplot(s)?)\\b", words) == TRUE ~ "topo", 
-      grepl("\\b(topomap|topomape)\\b", words) == TRUE ~ "topomap",
-      grepl("\\b(topograph(y|ic|ical|ies)|topgraphy|topograbphy)\\b", words) == TRUE ~ "topography",
-      grepl("\\b(heat(map)?)\\b", words) == TRUE ~ "heatmap",
-      grepl("\\b(map)\\b", words) == TRUE ~ "scalpmap",
-      grepl("\\b(distribution)\\b", words) == TRUE ~ "scalp distribution",
+      grepl("\\b(idea|sure|confus|aware|do not|know|why|remember|unsure|confusing|mess)\\b", words_prep) == TRUE ~ "bad", 
+      grepl("\\b(topo|topoplot(s)?)\\b", words_prep) == TRUE ~ "topo(plot)", 
+      grepl("\\b(topomap|topomape)\\b", words_prep) == TRUE ~ "topomap",
+      grepl("\\b(topograph(y|ic|ical|ies)|topgraphy|topograbphy)\\b", words_prep) == TRUE ~ "topography",
+      grepl("\\b(heat(map)?)\\b", words_prep) == TRUE ~ "heatmap",
+      grepl("\\b(map)\\b", words_prep) == TRUE ~ "scalp map",
+      grepl("\\b(distribution)\\b", words_prep) == TRUE ~ "scalp distribution",
       TRUE ~ '_other'
-      )) %>% # filter(type == "_other") %>%  View()
+      )) %>% 
   dplyr::select(type) %>%  table(.) %>% 
   data.frame(.) %>% arrange(desc(Freq))  %>% 
    rename_at(vars(colnames(.)), ~ c("Topoplot", "n")) 
 n3
-write.csv(n3, "topo.csv")
 ```
 
 #### 4
@@ -203,89 +196,92 @@ write.csv(n3, "topo.csv")
 ```{r}
 n4 <- word_preproc(data, 90)  %>%
   mutate(type = case_when(
-      grepl("\\b(idea|sure|confus|aware|do not|know|why|remember|unsure|confusing|mess|\\?|unclear)\\b", words) == TRUE ~ "bad", 
-      grepl("\\btopo(plot|plots)?\\b.*\\btime(course)?\\b|\\btime(course)?\\b.*\\btopo(plot|plots)?|timetopoplot\\b", words) == TRUE ~ "time topo",
-      grepl("\\btopo(plot|plots)?\\b.*\\bseries\\b|\\bseries\\b.*\\btopo(plot|plots)?\\b", words) == TRUE ~ "topo series",
-      grepl("\\b(topo(s)?|topoplot(s)?)\\b", words) == TRUE ~ "topo", 
-      grepl("\\b(topomap(s|e)|topomap)\\b", words) == TRUE ~ "topomap",
-      grepl("\\btopograph(y|ic|ical|ies)\\b.*\\bmap(s)?\\b|\\bmap(s)?\\b.*\\btopograph(y|ic|ical|ies)\\b", words) == TRUE ~ "topographical map",
-      grepl("\\btopograph(y|ic|ical|ies)\\b.*\\btime\\b|\\btime\\b.*\\btopograph(y|ic|ical|ies)\\b", words) == TRUE ~ "time topography",
-      grepl("\\b(topograph(y|ic|ical|ies)|topgraphy|topograhy|topograbphy|topgraphies)\\b", words) == TRUE ~ "topography",
-      grepl("\\b(heat(map)?)\\b", words) == TRUE ~ "heatmap",
-      grepl("\\b(map(s)?)\\b", words) == TRUE ~ "scalp map",
-      grepl("\\b(time(series)?|serie(s)?)\\b", words) == TRUE ~ "time series",
-      grepl("\\b(distribution)\\b", words) == TRUE ~ "scalp distribution",
+      grepl("\\b(idea|sure|confus|aware|do not|know|why|remember|unsure|confusing|mess|\\?|unclear)\\b", words_prep) == TRUE ~ "bad", 
+      grepl("\\btopo(plot|plots)?\\b.*\\btime(course)?\\b|\\btime(course)?\\b.*\\btopo(plot|plots)?|timetopoplot\\b", words_prep) == TRUE ~ "topo(plot) over time",
+      grepl("\\btopo(plot|plots)?\\b.*\\bseries\\b|\\bseries\\b.*\\btopo(plot|plots)?\\b", words_prep) == TRUE ~ "topo series",
+      grepl("\\b(topo(s)?|topoplot(s)?)\\b", words_prep) == TRUE ~ "topo(plot", 
+      grepl("\\b(topomap(s|e)|topomap)\\b", words_prep) == TRUE ~ "topomap",
+      grepl("\\btopograph(y|ic|ical|ies)\\b.*\\bmap(s)?\\b|\\bmap(s)?\\b.*\\btopograph(y|ic|ical|ies)\\b", words_prep) == TRUE ~ "topographical map (over time)",
+      grepl("\\btopograph(y|ic|ical|ies)\\b.*\\btime\\b|\\btime\\b.*\\btopograph(y|ic|ical|ies)\\b", words_prep) == TRUE ~ "topography over time(series/course)",
+      grepl("\\b(topograph(y|ic|ical|ies)|topgraphy|topograhy|topograbphy|topgraphies)\\b", words_prep) == TRUE ~ "topography",
+      grepl("\\b(heat(map)?)\\b", words_prep) == TRUE ~ "heatmap",
+      grepl("\\b(map(s)?)\\b", words_prep) == TRUE ~ "scalp map (over time)",
+      grepl("\\b(time(series)?|serie(s)?)\\b", words_prep) == TRUE ~ "time series",
+      grepl("\\b(distribution)\\b", words_prep) == TRUE ~ "scalp distribution",
       TRUE ~ '_other'
-      )) %>%  #View()
+      )) %>% mutate(type = ifelse(nchar(words) == 1, "bad", type)) %>%  #View()
   dplyr::select(type) %>%  table(.) %>% 
   data.frame(.) %>% arrange(desc(Freq)) %>% filter(type != "bad")  %>% 
    rename_at(vars(colnames(.)), ~ c("Topo map", "n")) 
 n4
+
 ```
 
 #### 5
 
 ```{r}
-n5 <- word_preproc(data, 97)  %>%
+n5 <- word_preproc(data, 97)   %>%
   mutate(type = case_when(
-      grepl("\\b(idea|sure|confus|aware|do not|know|why|remember|unsure|confusing|mess|\\?|unclear|-|ugly|don't|useless)\\b", words) == TRUE ~ "bad", 
-      grepl("\\bwave(form|forms)?\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\bwave(form|forms)?\\b", words_prep) == TRUE ~ "erp wave(form)s",
-      grepl("\\btopograph(y|ic|ical|ies)?|toprgraphic\\b.*\\berp(s)?\\b|\\berp(s)?\\b.*\\btopograph(y|ic|ical|ies)?|toprgraphic\\b", words) == TRUE ~ "topographic erp",
-      grepl("\\b(scalp)\\b", words) == TRUE ~ "scalp (erp)",
-      grepl("\\b(array)\\b", words) == TRUE ~ "(erp) array",
-      grepl("\\btopo(plot|plots)?\\b.*\\berp(s)?\\b|\\berp(s)?\\b.*\\btopo(plot|plots)?\\b", words) == TRUE ~ "topo erp",
-      grepl("\\b(erp(s)?|eprs|event-related)\\b", words) == TRUE ~ "erp",
-      grepl("\\b(multi(plot|channel|ploter|ploterp)|multi)\\b", words) == TRUE ~ "multi or multichannel plot",
-      grepl("\\b(topo(s)?|topoplot(s)?|toposplot)\\b", words) == TRUE ~ "topo", 
-      grepl("\\b(topograph(y|ic|ical|ies)?|topgraphy|topograhy|topograbphy|topgraphies)\\b", words) == TRUE ~ "topography",
-      grepl("\\b(channel(s|plot)?)\\b", words) == TRUE ~ "channel",
-      grepl("\\b(time(series)?|serie(s)?)\\b", words) == TRUE ~ "time series",
-      
-      TRUE ~ '_other'
-      )) %>%  #filter(type=="(erp) array") %>% View()
-  dplyr::select(type) %>%  table(.) %>% 
-  data.frame(.) %>% arrange(desc(Freq)) %>% filter(type != "bad")  %>% 
-   rename_at(vars(colnames(.)), ~ c("Topo array", "n")) 
+    grepl("\\b(idea|sure|confus|aware|do not|know|why|remember|unsure|confusing|mess|unclear|ugly|don't|useless)\\b", words) == TRUE ~ "bad",
+    grepl("\\bwave(form|forms)?\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\bwave(form|forms)?\\b", words_prep) == TRUE ~ "erp wave(form)s",
+    grepl("\\b(multi(plot|channel|ploter|ploterp)?)\\b", words) == TRUE ~ "multi(channel) plot",
+    grepl("\\bchannel(s)?\\b.*\\berp(s)?\\b|\\berp(s)?\\b.*\\bchannel(s)?\\b", words) == TRUE ~ "erp over channels",
+    grepl("\\btopograph(y|ic|ical|ies|logy)|topology\\b.*\\berp(s)\\b|\\berp(s)\\b.*\\btopograph(y|ic|ical|ies|logy)|topology\\b", words) == TRUE ~ "topographic erp",
+    grepl("\\b(scalp)\\b", words) == TRUE ~ "(erp) scalp",
+    grepl("\\b(array)\\b", words) == TRUE ~ "(erp) array",
+    grepl("\\btopo(plot|plots)?\\b.*\\berp(s)?\\b|\\berp(s)?\\b.*\\btopo(plot|plots)?\\b", words) == TRUE ~ "topo erp",
+    grepl("\\b(erp(s)?|eprs|event-related)\\b", words) == TRUE ~ "erp",
+    grepl("\\b(topo(s)?|topoplot(s)?|toposplot)\\b", words) == TRUE ~ "topo",
+    grepl("\\b(channel(s|plot)?)\\b", words) == TRUE ~ "channel (plot)",
+    #grepl("\\b(time(series)?|serie(s)?)\\b", words) == TRUE ~ "time series",
+    TRUE ~ '_other'
+  )) %>%
+  mutate(type = ifelse(nchar(words) == 1, "bad", type)) %>%
+  mutate(type = ifelse(grepl("topographic erp", type) & !grepl("\\berp(s)?|evoked|eeg\\b", words), "topographical plot(s)", type)) %>%
+  #View()
+  dplyr::select(type) %>%  table(.) %>%
+  data.frame(.) %>% arrange(desc(Freq)) %>% filter(type != "bad")  %>%
+  rename_at(vars(colnames(.)), ~ c("Topo array", "n"))
 n5
-
+# write.csv(n5, "topogrid.csv")
 ```
 
 #### 6
 
 ```{r}
 n6 <- word_preproc(data, 102)  %>% #View()
-  mutate(type = case_when(
-      grepl("\\b(idea|sure|confus|aware|do not|know|why|good|remember|unsure|confusing|mess|\\?|\\?\\?|unclear|-|ugly|don't|x|useless)\\b", words) == TRUE ~ "bad", 
-      grepl("\\b(sort(ed)?)\\b", words) == TRUE ~ "sorted erp trials",
-      grepl("\\bimage\\b.*\\berp(s)?\\b|\\berp(s)?\\b.*\\bimage|erpimage|image\\b", words) == TRUE ~ "erp image",
-      grepl("\\bimage\\b.*\\bepoch(s)?\\b|\\bepoch(s)?\\b.*\\bimage\\b", words) == TRUE ~ "epoch image",
-      grepl("\\berp(s)?\\b.*\\btrial(s)?\\b|\\btrial(s)?\\b.*\\berp(s)?\\b", words) == TRUE ~ "erp trials",
-      grepl("\\b(raster(plot)?)\\b", words) == TRUE ~ "raster",
-      grepl("\\b(waterfall)\\b", words) == TRUE ~ "waterfall",
-      grepl("\\b(heat(map)?)\\b", words) == TRUE ~ "heatmap",
-      
-      grepl("\\b(erp(s)?|eprs|ersp|event-related)\\b", words) == TRUE ~ "erp",
-      grepl("\\b(voltage)\\b", words) == TRUE ~ "voltage",
-      grepl("\\b(time(series)?|serie(s)?)\\b", words) == TRUE ~ "time series/frequencies",
-      grepl("\\b(frequency|frecuencia)\\b", words) == TRUE ~ "time series/frequencies",
-      grepl("\\b(trial(s|wise)?|trialplot)\\b", words) == TRUE ~ "trials",
-      grepl("\\b(spectrum|spectral)\\b", words) == TRUE ~ "spectral",
-      TRUE ~ '_other'
-      )) %>%  #filter(type=="_other") %>% View()
-  dplyr::select(type) %>%  table(.) %>%  
-  data.frame(.) %>% arrange(desc(Freq)) %>% filter(type != "bad")  %>% 
-   rename_at(vars(colnames(.)), ~ c("ERP image", "n")) 
+mutate(type = case_when(
+  grepl("\\b(idea|sure|confus|aware|do not|know|why|good|remember|unsure|confusing|mess|\\?\\?|unclear|ugly|don't|useless)\\b", words) == TRUE ~ "bad",
+  grepl("\\b(sort(ed)?)\\b", words) == TRUE ~ "sorted erp trials",
+  grepl("\\bimage\\b.*\\berp(s)?\\b|\\berp(s)?\\b.*\\bimage|erpimage|image\\b", words) == TRUE ~ "erp image",
+  grepl("\\bimage\\b.*\\bepoch(s)?\\b|\\bepoch(s)?\\b.*\\bimage\\b", words) == TRUE ~ "epoch image",
+  grepl("\\berp(s)?\\b.*\\btrial(s)?\\b|\\btrial(s)?\\b.*\\berp(s)?\\b", words) == TRUE ~ "erp trials",
+  grepl("\\b(raster(plot)?)\\b", words) == TRUE ~ "raster",
+  grepl("\\b(waterfall)\\b", words) == TRUE ~ "waterfall",
+  grepl("\\b(heat(map)?)\\b", words) == TRUE ~ "heatmap",
+  grepl("\\b(erp(s)?|eprs|ersp|event-related)\\b", words) == TRUE ~ "erp",
+  grepl("\\b(voltage)\\b", words) == TRUE ~ "voltage (over trial)",
+  grepl("\\b(time(series)?|serie(s)?)\\b", words) == TRUE ~ "time series/frequencies",
+  grepl("\\b(frequency|frecuencia)\\b", words) == TRUE ~ "time series/frequencies",
+  grepl("\\b(trial(s|wise)?|trialplot)\\b", words) == TRUE ~ "trials",
+  grepl("\\b(spectrum|spectral)\\b", words) == TRUE ~ "spectral",
+  TRUE ~ '_other'
+  )) %>%
+  mutate(type = ifelse(nchar(words) == 1, "bad", type)) %>% # View()
+  dplyr::select(type) %>%  table(.) %>%
+  data.frame(.) %>% arrange(desc(Freq)) %>% filter(type != "bad")  %>%
+  rename_at(vars(colnames(.)), ~ c("ERP image", "n"))
 n6
+#write.csv(n6, "erpimage.csv")
 ```
 
 #### 7
 
 ```{r}
-n7 <- word_preproc(data, 107)  %>% #View()
+n7 <- word_preproc(data, 107)  %>%
   mutate(type = case_when(
       grepl("\\b(idea|sure|confus|aware|do not|know|why|good|remember|unsure|confusing|mess|\\?|\\?\\?|unclear|-|ugly|don't|x|useless)\\b", words_prep) == TRUE ~ "bad", 
-      grepl("\\b(amplitude(s)?)\\b", words_prep) == TRUE ~ "(erp) amplitudes",
-      grepl("\\b(parallel)\\b", words_prep) == TRUE ~ "parallel coordinates",
+      grepl("\\b(amplitude(s)?)\\b", words_prep) == TRUE ~ "amplitudes",
       TRUE ~ '_other'
       )) %>% #View()
   dplyr::select(type) %>%  table(.) %>% 
@@ -297,89 +293,37 @@ n7
 #### 8
 
 ```{r}
-n8 <- word_preproc(data, 112)  %>% #View()
+n8 <- word_preproc(data, 112)  %>%
   mutate(type = case_when(
-      grepl("\\b(idea|sure|confus|aware|do not|know|why|good|remember|unsure|confusing|mess|normal|\\?|\\?\\?|unclear|recall|-|ugly|don't|x|useless|nan|clear)\\b", words) == TRUE ~ "bad", 
-      grepl("\\b(sort(ed))\\b", words) == TRUE ~ "sorted channels",
-      #grepl("\\bimage\\b.*\\berp(s)?\\b|\\berp(s)?\\b.*\\bimage|erpimage\\b", words) == TRUE ~ "erp image",
-      grepl("\\bimage\\b.*\\bchannel\\b|\\bchannel\\b.*\\bimage|chanimage|imagesc\\b", words) == TRUE ~ "channel image",
-      grepl("\\b(heat(map)?)\\b", words) == TRUE ~ "(erp) heatmap",
-      grepl("\\b(image)\\b", words) == TRUE ~ "(erp) image",
-      grepl("\\b(raster(plot)?|custer)\\b", words) == TRUE ~ "raster",
-      grepl("\\b(matrix)\\b", words) == TRUE ~ "matrix",
-      grepl("\\b(channel(s|wise)?)\\b", words) == TRUE ~ "(erp) channels",
-      grepl("\\b(erp(s)?|eprs|ersp|event-related)\\b", words) == TRUE ~ "erp",
-      grepl("\\b(voltage)\\b", words) == TRUE ~ "voltage",
+      grepl("\\b(idea|sure|confus|aware|do not|know|why|good|remember|unsure|confusing|mess|normal|\\?|\\?\\?|unclear|recall|-|ugly|don't|x|useless|nan|clear)\\b", words_prep) == TRUE ~ "bad", 
+      grepl("\\bimage\\b.*\\berp(s)?\\b|\\berp(s)?\\b.*\\bimage|erpimage\\b", words_prep) == TRUE ~ "erp image",
+      grepl("\\bimage\\b.*\\bchannel\\b|\\bchannel\\b.*\\bimage|chanimage|imagesc\\b", words_prep) == TRUE ~ "channel image",
+      grepl("\\b(heat(map)?)\\b", words_prep) == TRUE ~ "heatmap",
+      grepl("\\b(image)\\b", words_prep) == TRUE ~ "image",
+      grepl("\\b(raster(plot)?|custer)\\b", words_prep) == TRUE ~ "raster",
+      grepl("\\b(matrix)\\b", words_prep) == TRUE ~ "matrix",
+      grepl("\\b(channel(s|wise)?)\\b", words_prep) == TRUE ~ "channels",
+      grepl("\\b(erp(s)?|eprs|ersp|event-related)\\b", words_prep) == TRUE ~ "erp",
+      grepl("\\b(voltage)\\b", words_prep) == TRUE ~ "voltage",
      # TRUE ~ '_other'
-      )) %>% #filter(type=="image") %>% View()
+      )) %>% #View()
   dplyr::select(type) %>%  table(.) %>% 
   data.frame(.) %>% arrange(desc(Freq)) %>% filter(type != "bad") %>% 
    rename_at(vars(colnames(.)), ~ c("Channel_image", "n")) 
 
 n8
-# n8 %>% ggplot(data = ., aes(y = reorder(Channel_image, n),  x= n, fill = Channel_image)) +
-#     geom_bar(stat="identity") + ylab("Channel plot") +
-#     geom_text(aes(label = n), 
-#     hjust = -0.2) + theme_classic() + theme(legend.position="none")
+n8 %>% ggplot(data = ., aes(y = reorder(Channel_image, n),  x= n, fill = Channel_image)) +
+    geom_bar(stat="identity") + ylab("Channel plot") +
+    geom_text(aes(label = n), 
+    hjust = -0.2) + theme_classic() + theme(legend.position="none")
 
 ```
 
 #### Combined
 
 ```{r}
-plot_names <- c("Line plot", "Butterfly plot", "Topoplot", "Topo map", "Topo array", "ERP image", "Channel image", "Parallel plot")
-
-t <- list(n1, n2, n3, n4, n5, n6, n8, n7) 
-
-create_table <- function(t){
-  tmp <- t[[1]] %>% slice(1:3) %>% mutate(n1, type = plot_names[1]) %>% rename_with(.cols = 1, ~"names") %>% relocate(type, names, )
-  
-  for (i in 2:8){
-    tmp <- t[[i]] %>% slice(1:3) %>% mutate(n1, type = plot_names[i]) %>% rename_with(.cols = 1, ~"names") %>% relocate(type, names) %>%
-      rbind(tmp, .)
-  }
-  tmp <- tmp %>% 
-    group_by( type) %>%
-    dplyr::mutate(groupRow = 1:n()) %>%
-    ungroup() %>%
-    dplyr::mutate(type = ifelse(groupRow == 1, as.character( type), "")) %>%
-    select(-c(groupRow))
-}
-
-
-tab <- create_table(t) %>% data.frame() %>%
-  mutate(names = str_to_sentence(names)) %>% 
-  mutate(names = str_replace(names, "Erp", "ERP")) %>% 
-  mutate(names = str_replace(names, "erp", "ERP")) %>% 
-  dplyr::rename(`Plot types` = type,
-         `Names given by respondents` = names,
-         `Scores` = n) 
-
-tab %>% kable(
-  #format="latex",
-)  %>% kable_minimal(full_width = F,  html_font = "Source Sans Pro")
-
-
-
+list(n1, n2, n3, n4, n5, n6, n8) %>% kable(.) %>% kable_styling("striped", position = "center",) 
 ```
-```{r, eval = FALSE, echo = FALSE}
-library(tables)
-library(kableExtra)
-library(stargazer)
-options(kableExtra.latex.load_packages = TRUE)
-
-set.seed(1206)
-q <- data.frame(p = rep(c("A","B"),each=10,len=30),
- a = rep(c(1,2,3),each=10),id=seq(30),
- b = round(runif(30,10,20)),
- c = round(runif(30,40,70)),
- stringsAsFactors = FALSE)
-tab <- tabular((Factor(p)*Factor(a)+1)  ~ (N = 1) + (b + c)*(mean+sd),data=q)
-toLatex(tab)
-
-
-```
-
 
 ## Struggles with plots
 
@@ -489,7 +433,7 @@ tmp <- struggle2 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
       grepl("\\b(ax(is|es)?|lable(s)?|label(s)?|legend|ticks)\\b", parts) == TRUE ~ "plot components\n(axes, lables, legend)", 
       grepl("\\b(color(s|ing)?|colour(s)?|proportion(s)?|publication|neg|scal(e|ing))\\b", parts) == TRUE ~ "styling and color", 
       grepl("\\btopo\\w*", parts) == TRUE ~ "adding topography", 
-      grepl("\\b(channel(s)?|electrodes(s)?|interpretable|read|remembering)\\b", parts) == TRUE ~ "channel selection"
+      grepl("\\b(channel(s)?|electrodes(s)?|interpretable|read|remembering)\\b", parts) == TRUE ~ "channel selection\n(differentiation, identification)"
       )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) 
 
 n_rest <- mem_tab[1, 3] - nrow(tmp)
@@ -538,7 +482,7 @@ tmp <- struggle3 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
       grepl("\\b(scal(e|ing|es))\\b", parts) == TRUE ~ "scaling", 
       grepl("\\b(interpolat(e|ion)?|edges)\\b", parts) == TRUE ~ "interpolation",
       grepl("\\b(color(s|ing|bar|map)?|colour(s)?|proportion(s)?|publication|limits|neg)\\b", parts) == TRUE ~ "styling and color", 
-      grepl("\\b(channel(s)?|electrode(s)?|sensors|elec)\\b", parts) == TRUE ~ "channel selection",
+      grepl("\\b(channel(s)?|electrode(s)?|sensors|elec)\\b", parts) == TRUE ~ "channel highlighting",
       
       grepl("\\b(ax(is|es)?|lable(s)?|label(s|ing)?|legend|ticks|features|layout)\\b", parts) == TRUE ~ "plot components\n(axes, lables, legend)", 
       grepl("\\b(mean|significan(t|ce)|permutations|p-value(s)?|smoothing|statistical|stats)\\b", parts) == TRUE ~ "statistics",
@@ -586,23 +530,22 @@ struggle4 <- word_preproc_tool_2(data, 92, 10)
 #separated_row <- separate_rows(struggle1[98, ], parts, sep = ",|\\.") %>% dplyr::select(parts)
 
 tmp <- struggle4 %>% filter( parts != "-") %>% dplyr::select(parts) %>% 
-  filter(!grepl("\\b(no|okay|certain|see|same as|\"\"|reaching)\\b", parts)) %>% #View()
+  filter(!grepl("\\b(no|okay)\\b", parts)) %>%
   filter(!row_number() %in% c(17, 51, 12 ))  %>% 
   separate_rows(parts, sep = ";", convert = FALSE) %>% 
 #filter(!row_number() %in% c(59))  %>% 
   #separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
   mutate(problems = case_when(
     grepl("\\b(head|headshape|montage|topographies|topoplots|shape)\\b", parts) == TRUE ~ "head shape and montage",
-    grepl("\\b(time(s|course|points)?|threshold)\\b", parts) == TRUE ~ "time selection",
+    grepl("\\b(time(s|course)?|threshold)\\b", parts) == TRUE ~ "time selection",
       grepl("\\b(ci|se|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", parts) == TRUE ~ "uncertainty",
-      grepl("\\b(channel(s)?|electrode(s)?|sensors|elec)\\b", parts) == TRUE ~ "channel selection",
-      grepl("\\b(color(s|ing|bar|map|scale)?|colour(s)?|proportion(s)?|publication|limits|neg|scal(e|ing|es))\\b", parts) == TRUE ~ "styling and color", 
+      grepl("\\b(channel(s)?|electrode(s)?|sensors|elec)\\b", parts) == TRUE ~ "channel selection\n(differentiation, identification)",
+      grepl("\\b(color(s|ing|bar|map)?|colour(s)?|proportion(s)?|publication|limits|neg|scal(e|ing|es))\\b", parts) == TRUE ~ "styling and color", 
       grepl("\\b(ax(is|es)?|lable(s)?|label(s|ing)?|legend|ticks|features|markers|layout|specifications)\\b", parts) == TRUE ~ "plot components\n(axes, lables, legend)", 
-       grepl("\\b(legible|readable|visible|small|datatype|shape|montage|subplots|size(s)?|resizing|arrange|channel(s)?|electrode(s)?|sensors)|scal(e|ing|es)|references\\b", parts) == TRUE ~ "legibility and scaling",
       grepl("\\b(mean|significan(t|ce)|permutations|p-value(s)?|smoothing|statistical|stats|t-stat)\\b", parts) == TRUE ~ "statistics",
       grepl("\\b(interpolat(e|ion)?|edges)\\b", parts) == TRUE ~ "interpolation",
       TRUE ~ '_other'
-      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>%   filter(problems =="_other") %>% View()
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) 
 
 n_rest <- mem_tab[8, 3] - nrow(tmp)
 
@@ -643,23 +586,22 @@ tmp1 %>%
 struggle5 <- word_preproc_tool_2(data, 99, 10) 
 #separated_row <- separate_rows(struggle1[98, ], parts, sep = ",|\\.") %>% dplyr::select(parts)
 
-tmp <- struggle5 %>% filter( parts != "-") %>% dplyr::select(parts) %>% #View()
-  filter(!grepl("\\b(_|reaching)\\b", parts)) %>%
+tmp <- struggle5 %>% filter( parts != "-") %>% dplyr::select(parts) %>% 
+  #filter(!grepl("\\b(no|okay)\\b", parts)) %>%
   filter(!row_number() %in% c(33 ))  %>% 
   separate_rows(parts, sep = ";", convert = FALSE) %>% #View()
 #filter(!row_number() %in% c(59))  %>% 
   #separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
   mutate(problems = case_when(
     grepl("\\b(selecting|marking|spotting)\\b", parts) == TRUE ~ "channel selection\n(differentiation, identification)",
-    grepl("\\b(legible|readable|visible|small|datatype|shape|montage|subplots|size(s)?|larger|dimensions|channel(s)?|electrode(s)?|sensors)|scal(e|ing|es)|references\\b", parts) == TRUE ~ "legibility and scaling",
+    grepl("\\b(legible|readable|visible|small|datatype|shape|montage|subplots|size(s)?|channel(s)?|electrode(s)?|sensors)|scal(e|ing|es)|references\\b", parts) == TRUE ~ "legibility and scaling",
       grepl("\\b(ci|se|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", parts) == TRUE ~ "uncertainty",
-      grepl("\\b(color(s|ing|bar|map)?|colour(s)?|proportion(s)?|publication|limits|quality|scal(e|ing|es))\\b", parts) == TRUE ~ "styling and color", 
+      grepl("\\b(color(s|ing|bar|map)?|colour(s)?|proportion(s)?|publication|limits|quality|scal(e|ing|es))\\b", parts) == TRUE ~ "publication quality and color", 
       grepl("\\b(ax(is|es)?|lable(s)?|label(s|ing)?|legend|ticks|edit|features|markers|layout|specifications)\\b", parts) == TRUE ~ "plot components\n(axes, lables, legend)", 
       grepl("\\b(preprocessing|extracting|masks)\\b", parts) == TRUE ~ "preprocessing", 
     
       TRUE ~ '_other'
-      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>%   filter(problems =="legibility and scaling") %>% View()
-
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>% View()
 
 n_rest <- mem_tab[7, 3] - nrow(tmp)
 
@@ -697,7 +639,7 @@ struggle6 <- word_preproc_tool_2(data, 104, 10)
 #separated_row <- separate_rows(struggle1[98, ], parts, sep = ",|\\.") %>% dplyr::select(parts)
 
 tmp <- struggle6 %>% filter( parts != "-") %>% dplyr::select(parts) %>% 
-  filter(!grepl("\\b(x|ok|no)\\b", parts)) %>% 
+  filter(!grepl("\\b(x|ok)\\b", parts)) %>% 
  # filter(!row_number() %in% c(33 ))  %>% 
   separate_rows(parts, sep = ";", convert = FALSE) %>% #View()
 #filter(!row_number() %in% c(59))  %>% 
@@ -706,10 +648,10 @@ tmp <- struggle6 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
     grepl("\\b(sort(ing)?|max|correspondance)\\b", parts) == TRUE ~ "sorting", 
     grepl("\\b(smoothing)\\b", parts) == TRUE ~ "smoothing", 
     grepl("\\b(epochs|time)\\b", parts) == TRUE ~ "defining epochs", 
-    grepl("\\b(colo(r|ur)|paper)\\b", parts) == TRUE ~ "styling and color", 
+    grepl("\\b(color|paper)\\b", parts) == TRUE ~ "style", 
     
       TRUE ~ '_other'
-      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>%   filter(problems =="defining epochs") %>% View()
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>% View()
 
 n_rest <- mem_tab[7, 3] - nrow(tmp)
 
@@ -748,18 +690,19 @@ struggle8 <- word_preproc_tool_2(data, 114, 10)
 #separated_row <- separate_rows(struggle1[98, ], parts, sep = ",|\\.") %>% dplyr::select(parts)
 
 tmp <- struggle8 %>% filter( parts != "-") %>% dplyr::select(parts) %>% 
-  filter(!grepl("\\b(n|x|ok|dont)\\b", parts)) %>% #View()
+  filter(!grepl("\\b(n|x|ok|dont)\\b", parts)) %>% 
  # filter(!row_number() %in% c(33 ))  %>% 
   #separate_rows(parts, sep = ";", convert = FALSE) %>% #View()
 #filter(!row_number() %in% c(59))  %>% 
   #separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
   mutate(problems = case_when(
     grepl("\\b(sort(ing)?|order(ing)?|organisation)\\b", parts) == TRUE ~ "order and sorting", 
-    grepl("\\b(scale|visability|interpreting|range)\\b", parts) == TRUE ~ "legibility and scaling", 
-    grepl("\\b(color(bar)?|paper)\\b", parts) == TRUE ~ "styling and color", 
+   # grepl("\\b(smoothing)\\b", parts) == TRUE ~ "smoothing", 
+    #grepl("\\b(epochs|time)\\b", parts) == TRUE ~ "defining epochs", 
+    grepl("\\b(color(bar)?|paper)\\b", parts) == TRUE ~ "style", 
     
       TRUE ~ '_other'
-      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems))# %>%   filter(problems =="_other") %>% View()
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) 
 
 n_rest <- mem_tab[2, 3] - nrow(tmp)
 
@@ -787,7 +730,6 @@ tmp1 %>%
   theme_classic() +
   theme(axis.text = element_text(size = 12), legend.position = "none")
 ```
-
 ## The most common struggles
 
 ```{r}
@@ -807,22 +749,14 @@ problems %>% filter(problems == "no complains") %>%
   theme_classic() +
   theme(axis.text = element_text(size = 12), legend.position = "none")
 ```
-
 ```{r}
 problems %>% filter(problems != "no complains") %>% group_by(name) %>% 
-  arrange(desc(percent1)) %>% slice(1:3) %>% 
-  arrange(index) %>%  dplyr::select(name, problems, percent1) %>%  
-  mutate(name = str_to_sentence(name)) %>% 
-  mutate(name = str_replace(name, "Erp", "ERP")) %>% 
-  mutate(name = str_replace(name, "erp", "ERP")) %>%  
-  group_by(name) %>%
-  dplyr::mutate(groupRow = 1:n()) %>%
-  ungroup() %>%
-  dplyr::mutate(name = ifelse(groupRow == 1, as.character(name), "")) %>%
-  select(-c(groupRow)) %>% 
-  kable(escape = F, booktabs = T, col.names = c("Plot name", "The main problem", "Percent of respondents"))   %>% 
-  kable_minimal(full_width = F,  html_font = "Source Sans Pro") 
+  arrange(desc(percent1)) %>% slice(1) %>% arrange(index) %>%  dplyr::select(name, problems, percent1) %>% 
+  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
+  kable_classic(full_width = F, html_font = "Arial")
+
 ```
+
 
 ## New feature
 
@@ -890,6 +824,8 @@ tmp <- struggle2 %>% filter( new_feature != "-") %>% dplyr::select(new_feature) 
       TRUE ~ '_other'
       )) %>% filter(nchar(new_feature) != 0) #%>% View()
 
+#n_rest <- mem_tab[2, 3] - nrow(tmp)
+
 tmp1 <- tmp %>% group_by(group) %>%
       dplyr::summarise(n = n()) %>% 
      # rbind(c("no complains", as.numeric(n_rest))) %>% 
@@ -927,6 +863,7 @@ tmp <- struggle3 %>% filter( new_feature != "-") %>% dplyr::select(new_feature) 
       TRUE ~ '_other'
       )) %>% filter(nchar(new_feature) != 0)# %>% View()
 
+#n_rest <- mem_tab[2, 3] - nrow(tmp)
 
 tmp1 <- tmp %>% group_by(group) %>%
       dplyr::summarise(n = n()) %>% 
@@ -941,6 +878,8 @@ tmp1 %>%
   kable_classic(full_width = F, html_font = "Arial")
 
 ```
+
+
 
 ## Feedback
 
@@ -969,3 +908,4 @@ terms(lda, 10)
 
 
 ```
+
