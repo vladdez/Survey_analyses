@@ -85,7 +85,7 @@ do_vec <- function(vec_plotted, data, plot_names){
   rownames(t1) <- plot_names 
   return(t1)
 }
-plot_names <- c("line", "butterfly", "topo", "topo_map", "topo_array", "erp_img", "parallel", "channel_img")
+plot_names <- c("erp", "butterfly", "topo", "topo_array", "topo_grid", "erp_img", "parallel", "channel_img")
 
 familiar <-  data[61:68] %>% rename_at(vars(colnames(.)), ~ plot_names) %>% 
   mutate_at(vars(plot_names), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0)))
@@ -126,25 +126,30 @@ mem_tab
 #### 1
 
 ```{r}
-n1 <- word_preproc(data, 69)  %>%
+n1 <- word_preproc(data, 69)  %>% #View()
    mutate(type = case_when(
       grepl("\\b(idea|sure|confus|aware|do not|know|why|remember)\\b", words_prep) == TRUE ~ "bad", 
-      grepl("\\baverage(d)?\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\baverage(d)?\\b", words_prep) == TRUE ~ "averaged erp",
+      grepl("\\b(average(d)?|averagded)\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\baverage(d)?\\b", words_prep) == TRUE ~ "averaged erp",
       grepl("\\bwave(form|forms)?\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\bwave(form|forms)?\\b", words_prep) == TRUE ~ "erp wave(form)s",
-      grepl("\\btime(course|series|domain)?\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\btime(course|series|domain)?\\b", words_prep) == TRUE ~ "erp timecourse (timeseries)",
-      grepl("\\b(erp(s)?|ep|related)\\b", words) == TRUE ~ "erp",
+      grepl("\\btime(course|series|domain)?\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\btime(course|series|domain)?\\b", words_prep) == TRUE ~ "erp timecourse/timeseries",
+      grepl("\\b(classic(al)?)\\b", words) == TRUE ~ "classic erp",
+      grepl("\\b(standard)\\b", words) == TRUE ~ "standart erp",
+      grepl("\\b(evoked)\\b", words) == TRUE ~ "evoked potential/reponses",
+      grepl("\\b(erp(s)?|ep|related)\\b", words) == TRUE ~ "erp", 
       grepl("\\b(time|timeseries)\\b", words) == TRUE ~ "time series",
-      grepl("\\b(response(s)?)\\b", words) == TRUE ~ "response",
+  
       grepl("\\b(line|boundedline)\\b", words) == TRUE ~ "line",
-      grepl("\\b(single|singleplot)\\b", words) == TRUE ~ "single",
+      grepl("\\b(single|singleplot|singe)\\b", words) == TRUE ~ "single (channel)",
       grepl("\\b(waveform(s)?)\\b", words) == TRUE ~ "waveform",
        grepl("\\b(p300)\\b", words) == TRUE ~ "p300",
-      grepl("\\b(average)\\b", words) == TRUE ~ "average",
+      grepl("\\b(average|mean)\\b", words) == TRUE ~ "average/mean",
+      grepl("\\b(amplitude)\\b", words) == TRUE ~ "amplitude",
+  
       TRUE ~ '_other'
-      ))  %>%# filter(type == "erp") %>%  #View()
+      ))  %>% # View()
    filter(!is.na(type), type != "bad") %>% dplyr::select(type) %>%  table(.) %>% 
   data.frame(.) %>% arrange(desc(Freq))  %>% 
-   rename_at(vars(colnames(.)), ~ c("Line plot", "n")) 
+   rename_at(vars(colnames(.)), ~ c("ERP plot", "n")) 
 n1 
 ```
 
@@ -153,14 +158,14 @@ n1
 ```{r}
 n2 <- word_preproc(data, 80)  %>%
   mutate(type = case_when(
-      grepl("\\b(idea|sure|confus|aware|do not|know|why|remember|unsure|confusing|mess)\\b", words_prep) == TRUE ~ "bad", 
-      grepl("\\b(butterfly|bitterfly|buterfly|buttefly)\\b", words_prep) == TRUE ~ "butterfly",
-      grepl("\\b(spaghetti)\\b", words_prep) == TRUE ~ "spaghetti",
-      grepl("\\b(time|timeseries|timecourse)\\b", words_prep) == TRUE ~ "time series",
-      grepl("\\b(channel|single|singleplot|individual)\\b", words_prep)  == TRUE ~ "single or individual channel erp",
-      grepl("\\b(channels|multichannel|multeple|multiple|multi|all|muti|electrodes)\\b", words_prep)  == TRUE ~ "multichannel/electrode erp",
-      grepl("\\b(evoked)\\b", words_prep)  == TRUE ~ "evoked responces",
-      grepl("\\b(erp(s)?|eprs|event-related)\\b", words_prep) == TRUE ~ "erp",
+      grepl("\\b(idea|sure|confus|aware|do not|know|why|remember|unsure|confusing|mess)\\b", words) == TRUE ~ "bad", 
+      grepl("\\b(butterfly|bitterfly|buterfly|buttefly)\\b", words) == TRUE ~ "butterfly",
+      grepl("\\b(spaghetti)\\b", words) == TRUE ~ "spaghetti",
+      grepl("\\b(time|timeseries|timecourse)\\b", words) == TRUE ~ "time series",
+      grepl("\\b(channel|single|singleplot|individual)\\b", words)  == TRUE ~ "single or individual channel erp",
+      grepl("\\b(channels|multichannel|multeple|multiple|multi|all|muti|electrodes)\\b", words)  == TRUE ~ "multichannel/electrode erp",
+      grepl("\\b(evoked)\\b", words)  == TRUE ~ "evoked responces",
+      grepl("\\b(erp(s)?|eprs|event-related)\\b", words) == TRUE ~ "erp",
       TRUE ~ '_other'
       )) %>% #filter(type == "single or individual channel erp") %>%  #View()
   filter(!is.na(type), type != "bad") %>%
@@ -168,6 +173,7 @@ n2 <- word_preproc(data, 80)  %>%
   data.frame(.) %>% arrange(desc(Freq))  %>% 
    rename_at(vars(colnames(.)), ~ c("Butterfly_plot", "n")) 
 n2
+
 ```
 
 #### 3
@@ -175,13 +181,13 @@ n2
 ```{r}
 n3 <- word_preproc(data, 85)  %>%
   mutate(type = case_when(
-      grepl("\\b(idea|sure|confus|aware|do not|know|why|remember|unsure|confusing|mess)\\b", words_prep) == TRUE ~ "bad", 
-      grepl("\\b(topo|topoplot(s)?)\\b", words_prep) == TRUE ~ "topo(plot)", 
-      grepl("\\b(topomap|topomape)\\b", words_prep) == TRUE ~ "topomap",
-      grepl("\\b(topograph(y|ic|ical|ies)|topgraphy|topograbphy)\\b", words_prep) == TRUE ~ "topography",
-      grepl("\\b(heat(map)?)\\b", words_prep) == TRUE ~ "heatmap",
-      grepl("\\b(map)\\b", words_prep) == TRUE ~ "scalp map",
-      grepl("\\b(distribution)\\b", words_prep) == TRUE ~ "scalp distribution",
+      grepl("\\b(idea|sure|confus|aware|do not|know|why|remember|unsure|confusing|mess)\\b", words) == TRUE ~ "bad", 
+      grepl("\\b(topo|topoplot(s)?)\\b", words) == TRUE ~ "topo(plot)", 
+      grepl("\\b(topomap|topomape)\\b", words) == TRUE ~ "topomap",
+      grepl("\\b(topograph(y|ic|ical|ies)|topgraphy|topograbphy)\\b", words) == TRUE ~ "topography",
+      grepl("\\b(heat(map)?)\\b", words) == TRUE ~ "heatmap",
+      grepl("\\b(map)\\b", words) == TRUE ~ "scalp map",
+      grepl("\\b(distribution)\\b", words) == TRUE ~ "scalp distribution",
       TRUE ~ '_other'
       )) %>% 
   dplyr::select(type) %>%  table(.) %>% 
@@ -195,20 +201,24 @@ n3
 ```{r}
 n4 <- word_preproc(data, 90)  %>%
   mutate(type = case_when(
-      grepl("\\b(idea|sure|confus|aware|do not|know|why|remember|unsure|confusing|mess|\\?|unclear)\\b", words_prep) == TRUE ~ "bad", 
-      grepl("\\btopo(plot|plots)?\\b.*\\btime(course)?\\b|\\btime(course)?\\b.*\\btopo(plot|plots)?|timetopoplot\\b", words_prep) == TRUE ~ "topo(plot) over time",
-      grepl("\\btopo(plot|plots)?\\b.*\\bseries\\b|\\bseries\\b.*\\btopo(plot|plots)?\\b", words_prep) == TRUE ~ "topo series",
-      grepl("\\b(topo(s)?|topoplot(s)?)\\b", words_prep) == TRUE ~ "topo(plot", 
+      grepl("\\b(idea|sure|confus|aware|do not|know|why|remember|unsure|confusing|mess|unclear)\\b", words) == TRUE ~ "bad", 
+      grepl("\\btopograph(y|ic|ical|ies)?\\b.*\\btime\\b|\\btime\\b.*\\btopograph(y|ic|ical|ies)?\\b", words) == TRUE ~ "topography over time(series/course)",
+      grepl("\\btopo(plot|plots)?\\b.*\\btime(course|series)?\\b|\\btime(course|series)?\\b.*\\btopo(plot|plots)?|timetopoplot\\b", words_prep) == TRUE ~ "topo(plot) over time",
+      grepl("\\btopo(plot|plots)?\\b.*\\bseries\\b|\\bseries\\b.*\\btopo(plot|plots)?\\b", words) == TRUE ~ "topo series",
+      grepl("\\b(topo(s)?|topoplot(s)?)\\b", words_prep) == TRUE ~ "topo(plot)", 
       grepl("\\b(topomap(s|e)|topomap)\\b", words_prep) == TRUE ~ "topomap",
-      grepl("\\btopograph(y|ic|ical|ies)\\b.*\\bmap(s)?\\b|\\bmap(s)?\\b.*\\btopograph(y|ic|ical|ies)\\b", words_prep) == TRUE ~ "topographical map (over time)",
-      grepl("\\btopograph(y|ic|ical|ies)\\b.*\\btime\\b|\\btime\\b.*\\btopograph(y|ic|ical|ies)\\b", words_prep) == TRUE ~ "topography over time(series/course)",
-      grepl("\\b(topograph(y|ic|ical|ies)|topgraphy|topograhy|topograbphy|topgraphies)\\b", words_prep) == TRUE ~ "topography",
-      grepl("\\b(heat(map)?)\\b", words_prep) == TRUE ~ "heatmap",
-      grepl("\\b(map(s)?)\\b", words_prep) == TRUE ~ "scalp map (over time)",
-      grepl("\\b(time(series)?|serie(s)?)\\b", words_prep) == TRUE ~ "time series",
-      grepl("\\b(distribution)\\b", words_prep) == TRUE ~ "scalp distribution",
+      grepl("\\btopograph(y|ic|ical|ies)\\b.*\\bmap(s)?\\b|\\bmap(s)?\\b.*\\btopograph(y|ic|ical|ies)\\b", words) == TRUE ~ "topographical map (over time)",
+   
+      grepl("\\b(topograph(y|ic|ical|ies)?|topgraphy|topograhy|topograbphy|topgraphies)\\b", words) == TRUE ~ "topography",
+      grepl("\\b(heat(map)?)\\b", words) == TRUE ~ "heatmap",
+      grepl("\\b(map(s)?)\\b", words) == TRUE ~ "scalp map (over time)",
+      grepl("\\b(time(series)?|serie(s)?)\\b", words) == TRUE ~ "time series",
+      grepl("\\b(distribution)\\b", words) == TRUE ~ "scalp distribution",
       TRUE ~ '_other'
-      )) %>% mutate(type = ifelse(nchar(words) == 1, "bad", type)) %>%  #View()
+      )) %>% 
+  mutate(type = ifelse(nchar(words) == 1, "bad", type)) %>% 
+ # mutate(type = ifelse(!grepl("topo(plot) over time", type) & grepl("\\b(topo(s)?|topoplot(s)?)\\b", words_prep), "topo(plot)", type)) %>% 
+  #View()
   dplyr::select(type) %>%  table(.) %>% 
   data.frame(.) %>% arrange(desc(Freq)) %>% filter(type != "bad")  %>% 
    rename_at(vars(colnames(.)), ~ c("Topo map", "n")) 
