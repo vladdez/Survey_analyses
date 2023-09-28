@@ -16,7 +16,7 @@ website:
             file: sample_bio.qmd
           - text: "2. visualisation customs"
             file: customs.qmd
-          - text: "3. linear models"
+          - text: "3. proficiency"
             file: connections.qmd
           - text: "4. feedbacks"
             file: feedbacks.qmd
