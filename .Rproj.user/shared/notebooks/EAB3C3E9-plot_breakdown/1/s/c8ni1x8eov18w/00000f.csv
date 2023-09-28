@@ -1,4 +1,0 @@
-"0","data <- read_excel(""data/results-survey3.xlsx"")"
-"0","data <- data[1:121] %>% "
-"0","  filter(.[[18]] !='Yes') # not analysed any EEG method"
-"0","vec <- names(data[ , grepl( ""How would you "" , names(data))])"
