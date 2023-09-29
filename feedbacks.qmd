@@ -40,6 +40,7 @@ library(kableExtra)
 library(stringi)
 library("xlsx")
 library(padr)
+library(magick)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
@@ -72,6 +73,7 @@ word_preproc <- function(data, N){
 
 ```
 
+## stats 
 ```{r}
 vec_plotted <- names(data[ , grepl( "Have you ever plotted " , names(data))]) 
 vec_named <- names(data[ , grepl( "How would you " , names(data))])
@@ -85,7 +87,7 @@ do_vec <- function(vec_plotted, data, plot_names){
   rownames(t1) <- plot_names 
   return(t1)
 }
-plot_names <- c("erp", "butterfly", "topo", "topo_array", "topo_grid", "erp_img", "parallel", "channel_img")
+plot_names <- c("erp", "butterfly", "topo", "topo_series", "topo_grid", "erp_img", "parallel", "channel_img")
 
 familiar <-  data[61:68] %>% rename_at(vars(colnames(.)), ~ plot_names) %>% 
   mutate_at(vars(plot_names), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0)))
@@ -129,16 +131,16 @@ mem_tab
 n1 <- word_preproc(data, 69)  %>% #View()
    mutate(type = case_when(
       grepl("\\b(idea|sure|confus|aware|do not|know|why|remember)\\b", words) == TRUE ~ "bad", 
-      grepl("\\b(average(d)?|averagded)\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\baverage(d)?\\b", words) == TRUE ~ "averaged erp",
+      grepl("\\b(average(d)?|averagded)\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\baverage(d)?\\b", words) == TRUE ~ "averaged erp (plot)",
       grepl("\\bwave(form|forms)?\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\bwave(form|forms)?\\b", words) == TRUE ~ "erp wave(form)s",
       grepl("\\btime(course|series|domain)?\\b.*\\b(erp(s)?|ep|related)\\b|\\b(erp(s)?|ep|related)\\b.*\\btime(course|series|domain)?\\b", words) == TRUE ~ "erp timecourse/timeseries",
       grepl("\\b(classic(al)?)\\b", words) == TRUE ~ "classic erp",
       grepl("\\b(standard)\\b", words) == TRUE ~ "standart erp",
       grepl("\\b(evoked)\\b", words) == TRUE ~ "evoked potential/reponses",
-      grepl("\\b(erp(s)?|ep|related)\\b", words) == TRUE ~ "erp", 
+      grepl("\\b(erp(s)?|ep|related)\\b", words) == TRUE ~ "erp (plot)", 
       grepl("\\b(time|timeseries)\\b", words) == TRUE ~ "time series",
   
-      grepl("\\b(line|boundedline)\\b", words) == TRUE ~ "line",
+      grepl("\\b(line|boundedline)\\b", words) == TRUE ~ "line (plot)",
       grepl("\\b(single|singleplot|singe)\\b", words) == TRUE ~ "single (channel)",
       grepl("\\b(waveform(s)?)\\b", words) == TRUE ~ "waveform",
        grepl("\\b(p300)\\b", words) == TRUE ~ "p300",
@@ -146,7 +148,7 @@ n1 <- word_preproc(data, 69)  %>% #View()
       grepl("\\b(amplitude)\\b", words) == TRUE ~ "amplitude",
   
       TRUE ~ '_other'
-      ))  %>% # View()
+      ))  %>%  #View()
    filter(!is.na(type), type != "bad") %>% dplyr::select(type) %>%  table(.) %>% 
   data.frame(.) %>% arrange(desc(Freq))  %>% 
    rename_at(vars(colnames(.)), ~ c("ERP plot", "n")) 
@@ -159,19 +161,19 @@ n1
 n2 <- word_preproc(data, 80)  %>%
   mutate(type = case_when(
       grepl("\\b(idea|sure|confus|aware|do not|know|why|remember|unsure|confusing|mess)\\b", words) == TRUE ~ "bad", 
-      grepl("\\b(butterfly|bitterfly|buterfly|buttefly)\\b", words) == TRUE ~ "butterfly",
+      grepl("\\b(butterfly|bitterfly|buterfly|buttefly)\\b", words) == TRUE ~ "butterfly (plot)",
       grepl("\\b(spaghetti)\\b", words) == TRUE ~ "spaghetti",
       grepl("\\b(time|timeseries|timecourse)\\b", words) == TRUE ~ "time series",
-      grepl("\\b(channel|single|singleplot|individual)\\b", words)  == TRUE ~ "single or individual channel erp",
-      grepl("\\b(channels|multichannel|multeple|multiple|multi|all|muti|electrodes)\\b", words)  == TRUE ~ "multichannel/electrode erp",
+      grepl("\\b(channel|single|singleplot|individual)\\b", words)  == TRUE ~ "single or individual channel erp (plot)",
+      grepl("\\b(channels|multichannel|multeple|multiple|multi|all|muti|electrodes)\\b", words)  == TRUE ~ "multichannel/electrode erp (plot)",
       grepl("\\b(evoked)\\b", words)  == TRUE ~ "evoked responces",
-      grepl("\\b(erp(s)?|eprs|event-related)\\b", words) == TRUE ~ "erp",
+      grepl("\\b(erp(s)?|eprs|event-related)\\b", words) == TRUE ~ "erp (plot)",
       TRUE ~ '_other'
-      )) %>% #filter(type == "single or individual channel erp") %>%  #View()
+      ))  %>%  #View()
   filter(!is.na(type), type != "bad") %>%
   dplyr::select(type) %>%  table(.) %>% 
   data.frame(.) %>% arrange(desc(Freq))  %>% 
-   rename_at(vars(colnames(.)), ~ c("Butterfly_plot", "n")) 
+   rename_at(vars(colnames(.)), ~ c("Butterfly plot", "n")) 
 n2
 
 ```
@@ -184,12 +186,12 @@ n3 <- word_preproc(data, 85)  %>%
       grepl("\\b(idea|sure|confus|aware|do not|know|why|remember|unsure|confusing|mess)\\b", words) == TRUE ~ "bad", 
       grepl("\\b(topo|topoplot(s)?)\\b", words) == TRUE ~ "topo(plot)", 
       grepl("\\b(topomap|topomape)\\b", words) == TRUE ~ "topomap",
-      grepl("\\b(topograph(y|ic|ical|ies)|topgraphy|topograbphy)\\b", words) == TRUE ~ "topography",
+      grepl("\\b(topograph(y|ic|ical|ies)|topgraphy|topograbphy)\\b", words) == TRUE ~ "topography (plot)",
       grepl("\\b(heat(map)?)\\b", words) == TRUE ~ "heatmap",
       grepl("\\b(map)\\b", words) == TRUE ~ "scalp map",
       grepl("\\b(distribution)\\b", words) == TRUE ~ "scalp distribution",
       TRUE ~ '_other'
-      )) %>% 
+      )) %>%  #View()
   dplyr::select(type) %>%  table(.) %>% 
   data.frame(.) %>% arrange(desc(Freq))  %>% 
    rename_at(vars(colnames(.)), ~ c("Topoplot", "n")) 
@@ -221,7 +223,7 @@ n4 <- word_preproc(data, 90)  %>%
   #View()
   dplyr::select(type) %>%  table(.) %>% 
   data.frame(.) %>% arrange(desc(Freq)) %>% filter(type != "bad")  %>% 
-   rename_at(vars(colnames(.)), ~ c("Topo array", "n")) 
+   rename_at(vars(colnames(.)), ~ c("Topoplot\ntimeseries", "n")) 
 n4
 
 ```
@@ -246,10 +248,10 @@ n5 <- word_preproc(data, 97)   %>%
   )) %>%
   mutate(type = ifelse(nchar(words) == 1, "bad", type)) %>%
   mutate(type = ifelse(grepl("topographic erp", type) & !grepl("\\berp(s)?|evoked|eeg\\b", words), "topographical plot(s)", type)) %>%
-  #View()
+ # View()
   dplyr::select(type) %>%  table(.) %>%
   data.frame(.) %>% arrange(desc(Freq)) %>% filter(type != "bad")  %>%
-  rename_at(vars(colnames(.)), ~ c("Topo grid", "n"))
+  rename_at(vars(colnames(.)), ~ c("ERP grid", "n"))
 n5
 # write.csv(n5, "topogrid.csv")
 ```
@@ -333,40 +335,48 @@ list(n1, n2, n3, n4, n5, n6, n8) %>% kable(.) %>% kable_styling("striped", posit
 ```
 
 ```{r}
-plot_names <- c("ERP plot", "Butterfly plot", "Topoplot", "Topo array", "Topo grid", "ERP image", "Channel image", "Parallel plot")
+plot_names <- c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot\ntimeseries", "ERP grid", "ERP image", "Channel image", "Parallel plot")
 
 t <- list(n1, n2, n3, n4, n5, n6, n8, n7) 
 
 create_table <- function(t){
-  tmp <- t[[1]] %>% slice(1:3) %>% mutate(n1, type = plot_names[1]) %>% rename_with(.cols = 1, ~"names") %>% relocate(type, names, )
+  tmp <- t[[1]] %>% mutate(total = sum(n)) %>% slice(1:3) %>% mutate(n1, type = plot_names[1]) %>% rename_with(.cols = 1, ~"names") %>% relocate(type, names )
   
   for (i in 2:8){
-    tmp <- t[[i]] %>% slice(1:3) %>% mutate(n1, type = plot_names[i]) %>% rename_with(.cols = 1, ~"names") %>% relocate(type, names) %>%
+    tmp <- t[[i]]  %>% mutate(total = sum(n)) %>% slice(1:3) %>% 
+      mutate(n1, type = plot_names[i]) %>% rename_with(.cols = 1, ~"names") %>% relocate(type, names) %>% 
       rbind(tmp, .)
   }
   tmp <- tmp %>% 
     group_by( type) %>%
     dplyr::mutate(groupRow = 1:n()) %>%
-    ungroup() %>%
-    dplyr::mutate(type = ifelse(groupRow == 1, as.character( type), "")) %>%
+    ungroup() %>% mutate(p = round(as.numeric(n)/as.numeric(total), 2) * 100) %>% 
+    mutate(score = paste(p, total, sep = "% out of ")) %>% 
+    dplyr::mutate(type = ifelse(groupRow == 1, as.character(type), "")) %>%
+    dplyr::mutate(score = ifelse(groupRow == 1, as.character(score), paste(p, "%", sep = ""))) %>%
     select(-c(groupRow))
 }
 
 
-tab <- create_table(t) %>% data.frame() %>%
+create_table(t) %>% data.frame() %>%
   mutate(names = str_to_sentence(names)) %>% 
   mutate(names = str_replace(names, "Erp", "ERP")) %>% 
   mutate(names = str_replace(names, "erp", "ERP")) %>% 
+  
   dplyr::rename(`Plot types` = type,
          `Names given by respondents` = names,
-         `Scores` = n) 
-
-tab %>% kable(
-  #format="latex",
-)  %>% kable_minimal(full_width = F,  html_font = "Source Sans Pro")
+         `Scores` =  score) %>% select(-n, -total, -p)  %>% kable()  %>% 
+  kable_minimal(full_width = F,  html_font = "Source Sans Pro")
 
 ```
 
+### miniatures
+
+```{r}
+
+mins <- image_read_pdf("data/eegvis_icons.pdf", density = 400)
+mins[1]
+```
 
 ## Struggles with plots
 
@@ -423,43 +433,19 @@ tmp <- struggle1 %>% filter( parts != "-") %>% dplyr::select(soft, parts) %>%
       grepl("\\b(mean|significan(t|ce)|permutations|combine)\\b", parts) == TRUE ~ "statistics", 
       )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>% View()
 
-n_rest <- mem_tab[4, 3] - nrow(tmp)
+n_rest <- mem_tab[3, 4] - nrow(tmp)
 
 tmp1 <- tmp  %>% group_by(problems) %>%
       dplyr::summarise(n = n()) %>% 
       rbind(c("no complains", as.numeric(n_rest))) %>% 
       mutate(n = as.numeric(n)) %>% 
-      mutate(percent = round(n / sum(n), 3) * 100 ,percent1 = round(n / sum(n), 2) * 100) 
+      mutate(total = sum(n)) 
 
-problem1 <- tmp1 %>% dplyr::select(problems, percent1) %>% mutate(name = "line plot")
+problem1 <- tmp1 %>%  mutate(name = "ERP plot")
 
-tmp1 %>% 
-  arrange(desc(n)) %>% 
-  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
-  kable_classic(full_width = F, html_font = "Arial")
-# problems: n of problems is higher than number of rows 
+tmp1
 ```
 
-```{r}
-tmp1 %>% 
-  arrange(desc(n)) %>% 
-  ggplot(., aes(y = reorder(problems, percent), x = percent, fill = problems)) +
-  geom_col() +
-  geom_text(aes(label = paste0(percent, "%"), y = problems, x = percent),
-            position = position_stack(vjust = 0.5), color = "black") +
-  labs(x = "Percent", y  = "Problem category") +
-  theme_classic() +
-  theme(axis.text = element_text(size = 12), legend.position = "none")
-```
-
-```{r}
-tmp %>%  mutate(soft1 = case_when(
-      grepl("\\bmne\\w*", soft) == TRUE ~ "mne", 
-      grepl("\\bcustom\\b.*\\bmatlab\\b|\\bmatlab\\b.*\\bcustom\\b", soft) == TRUE ~ "custom matlab",
-
-      TRUE ~ as.character(soft)
-      )) %>% dplyr::rename(initial = parts) %>% View()
-```
 
 #### 2
 
@@ -479,32 +465,17 @@ tmp <- struggle2 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
       grepl("\\b(channel(s)?|electrodes(s)?|interpretable|read|remembering)\\b", parts) == TRUE ~ "channel selection"
       )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) 
 
-n_rest <- mem_tab[1, 3] - nrow(tmp)
+n_rest <- mem_tab[1, 4] - nrow(tmp)
 
-tmp1 <- tmp %>% group_by(problems) %>%
+tmp2 <- tmp %>% group_by(problems) %>%
       dplyr::summarise(n = n()) %>% 
       rbind(c("no complains", as.numeric(n_rest))) %>% 
       mutate(n = as.numeric(n)) %>% 
-      mutate(percent = round(n / sum(n), 3) * 100 ,percent1 = round(n / sum(n), 2) * 100) 
+      mutate(total = sum(n)) 
 
-problem2 <- tmp1 %>% dplyr::select(problems, percent1) %>% mutate(name = "butterfly plot")
+problem2 <- tmp2  %>% mutate(name = "Butterfly plot")
 
-tmp1 %>% 
-  arrange(desc(n)) %>% 
-  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
-  kable_classic(full_width = F, html_font = "Arial")
-```
-
-```{r}
-tmp1 %>% 
-  arrange(desc(n)) %>% 
-  ggplot(., aes(y = reorder(problems, percent), x = percent, fill = problems)) +
-  geom_col() +
-  geom_text(aes(label = paste0(percent, "%"), y = problems, x = percent),
-            position = position_stack(vjust = 0.5), color = "black") +
-  labs(x = "Percent", y  = "Problem category") +
-  theme_classic() +
-  theme(axis.text = element_text(size = 12), legend.position = "none")
+tmp2 
 ```
 
 #### 3
@@ -529,42 +500,25 @@ tmp <- struggle3 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
       
       grepl("\\b(ax(is|es)?|lable(s)?|label(s|ing)?|legend|ticks|features|layout)\\b", parts) == TRUE ~ "plot components\n(axes, lables, legend)", 
       grepl("\\b(mean|significan(t|ce)|permutations|p-value(s)?|smoothing|statistical|stats)\\b", parts) == TRUE ~ "statistics",
-      
-
-     
       )) %>% #View() 
 
 filter(nchar(parts) != 0) %>% filter(!is.na(problems)) 
 
-n_rest <- mem_tab[6, 3] - nrow(tmp)
+n_rest <- mem_tab[6, 4] - nrow(tmp)
 
-tmp1 <- tmp %>% group_by(problems) %>%
+tmp3 <- tmp %>% group_by(problems) %>%
       dplyr::summarise(n = n()) %>% 
       rbind(c("no complains", as.numeric(n_rest))) %>% 
-      mutate(n = as.numeric(n)) %>% 
-      mutate(percent = round(n / sum(n), 3) * 100 ,percent1 = round(n / sum(n), 2) * 100) 
+      mutate(n = as.numeric(n)) %>%       
+  mutate(total = sum(n)) 
 
-problem3 <- tmp1 %>% dplyr::select(problems, percent1) %>% mutate(name = "topoplot")
+problem3 <- tmp3 %>% mutate(name = "Topoplot")
 
-tmp1 %>% 
-  arrange(desc(n)) %>% 
-  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
-  kable_classic(full_width = F, html_font = "Arial")
+tmp3
 
 
 ```
 
-```{r}
-tmp1 %>% 
-  arrange(desc(n)) %>% 
-  ggplot(., aes(y = reorder(problems, percent), x = percent, fill = problems)) +
-  geom_col() + 
-  geom_text(aes(label = paste0(percent, "%"), y = problems, x = percent),
-            position = position_stack(vjust = 0.5), color = "black") +
-  labs(x = "Percent", y  = "Problem category") +
-  theme_classic() +
-  theme(axis.text = element_text(size = 12), legend.position = "none")
-```
 
 #### 4
 
@@ -591,37 +545,16 @@ tmp <- struggle4 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
       TRUE ~ '_other'
       )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>%   filter(problems =="_other") %>% View()
 
-n_rest <- mem_tab[8, 3] - nrow(tmp)
+n_rest <- mem_tab[8, 4] - nrow(tmp)
 
-tmp1 <- tmp %>% group_by(problems) %>%
+tmp4 <- tmp %>% group_by(problems) %>%
       dplyr::summarise(n = n()) %>% 
       rbind(c("no complains", as.numeric(n_rest))) %>% 
       mutate(n = as.numeric(n)) %>% 
-      mutate(percent = round(n / sum(n), 3) * 100 ,percent1 = round(n / sum(n), 2) * 100) 
-problem4 <- tmp1 %>% dplyr::select(problems, percent1) %>% mutate(name = "topomap")
+      mutate(total = sum(n)) 
+problem4 <- tmp4  %>% mutate(name = "Topoplot timeseries")
+tmp4
 
-tmp1 %>% 
-  arrange(desc(n)) %>% 
-  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
-  kable_classic(full_width = F, html_font = "Arial")
-
- # words = ifelse(nchar(words)==0, NA, words),
-#write.xlsx(tmp, "data/struggles.xlsx", sheetName = "line plot", col.names = TRUE, row.names = TRUE, append = FALSE)
-
-# problems: n of problems is higher than number of rows 
-
-```
-
-```{r}
-tmp1 %>% 
-  arrange(desc(n)) %>% 
-  ggplot(., aes(y = reorder(problems, percent), x = percent, fill = problems)) +
-  geom_col() + 
-  geom_text(aes(label = paste0(percent, "%"), y = problems, x = percent),
-            position = position_stack(vjust = 0.5), color = "black") +
-  labs(x = "Percent", y  = "Problem category") +
-  theme_classic() +
-  theme(axis.text = element_text(size = 12), legend.position = "none")
 ```
 
 #### 5
@@ -648,33 +581,17 @@ tmp <- struggle5 %>% filter( parts != "-") %>% dplyr::select(parts) %>% #View()
       )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>%   filter(problems =="legibility and scaling") %>% View()
 
 
-n_rest <- mem_tab[7, 3] - nrow(tmp)
+n_rest <- mem_tab[7, 4] - nrow(tmp)
 
-tmp1 <- tmp %>% group_by(problems) %>%
+tmp5 <- tmp %>% group_by(problems) %>%
       dplyr::summarise(n = n()) %>% 
       rbind(c("no complains", as.numeric(n_rest))) %>% 
       mutate(n = as.numeric(n)) %>% 
-      mutate(percent = round(n / sum(n), 3) * 100 ,percent1 = round(n / sum(n), 2) * 100) 
+      mutate(total = sum(n)) 
 
-problem5 <- tmp1 %>% dplyr::select(problems, percent1) %>% mutate(name = "topo array")
+problem5 <- tmp5 %>% mutate(name = "ERP grid")
+tmp5
 
-tmp1 %>% 
-  arrange(desc(n)) %>% 
-  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
-  kable_classic(full_width = F, html_font = "Arial")
-
-```
-
-```{r}
-tmp1 %>% 
-  arrange(desc(n)) %>% 
-  ggplot(., aes(y = reorder(problems, percent), x = percent, fill = problems)) +
-  geom_col() + 
-  geom_text(aes(label = paste0(percent, "%"), y = problems, x = percent),
-            position = position_stack(vjust = 0.5), color = "black") +
-  labs(x = "Percent", y  = "Problem category") +
-  theme_classic() +
-  theme(axis.text = element_text(size = 12), legend.position = "none")
 ```
 
 #### 6
@@ -698,34 +615,16 @@ tmp <- struggle6 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
       TRUE ~ '_other'
       )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>%   filter(problems =="defining epochs") %>% View()
 
-n_rest <- mem_tab[7, 3] - nrow(tmp)
+n_rest <- mem_tab[4, 4] - nrow(tmp)
 
-tmp1 <- tmp %>% group_by(problems) %>%
+tmp6<- tmp %>% group_by(problems) %>%
       dplyr::summarise(n = n()) %>% 
       rbind(c("no complains", as.numeric(n_rest))) %>% 
       mutate(n = as.numeric(n)) %>% 
-      mutate(percent = round(n / sum(n), 3) * 100 ,percent1 = round(n / sum(n), 2) * 100) 
+            mutate(total = sum(n)) 
 
-
-problem6 <- tmp1 %>% dplyr::select(problems, percent1) %>% mutate(name = "erp image")
-
-tmp1 %>% 
-  arrange(desc(n)) %>% 
-  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
-  kable_classic(full_width = F, html_font = "Arial")
-
-```
-
-```{r}
-tmp1 %>% 
-  arrange(desc(n)) %>% 
-  ggplot(., aes(y = reorder(problems, percent), x = percent, fill = problems)) +
-  geom_col() + 
-  geom_text(aes(label = paste0(percent, "%"), y = problems, x = percent),
-            position = position_stack(vjust = 0.5), color = "black") +
-  labs(x = "Percent", y  = "Problem category") +
-  theme_classic() +
-  theme(axis.text = element_text(size = 12), legend.position = "none")
+problem6 <- tmp6 %>% mutate(name = "ERP image")
+tmp6
 ```
 
 #### 8
@@ -748,34 +647,20 @@ tmp <- struggle8 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
       TRUE ~ '_other'
       )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems))# %>%   filter(problems =="_other") %>% View()
 
-n_rest <- mem_tab[2, 3] - nrow(tmp)
+n_rest <- mem_tab[2, 4] - nrow(tmp)
 
-tmp1 <- tmp %>% group_by(problems) %>%
+tmp8 <- tmp %>% group_by(problems) %>%
       dplyr::summarise(n = n()) %>% 
       rbind(c("no complains", as.numeric(n_rest))) %>% 
       mutate(n = as.numeric(n)) %>% 
-      mutate(percent = round(n / sum(n), 3) * 100 ,percent1 = round(n / sum(n), 2) * 100) 
-problem8 <- tmp1 %>% dplyr::select(problems, percent1) %>% mutate(name = "channel image")
+      mutate(total = sum(n)) 
+problem8 <- tmp8 %>% mutate(name = "Channel image")
 
-tmp1 %>% 
-  arrange(desc(n)) %>% 
-  kable(escape = F, booktabs = T) %>% kable_styling("striped", position = "center",) %>% 
-  kable_classic(full_width = F, html_font = "Arial")
+tmp8
 ```
 
-```{r}
-tmp1 %>% 
-  arrange(desc(n)) %>% 
-  ggplot(., aes(y = reorder(problems, percent), x = percent, fill = problems)) +
-  geom_col() + 
-  geom_text(aes(label = paste0(percent, "%"), y = problems, x = percent),
-            position = position_stack(vjust = 0.5), color = "black") +
-  labs(x = "Percent", y  = "Problem category") +
-  theme_classic() +
-  theme(axis.text = element_text(size = 12), legend.position = "none")
-```
 
-## The most common struggles
+## The least problematic plot
 
 ```{r}
 
@@ -785,30 +670,34 @@ problems <- rbind(problem1, problem2, problem3, problem4, problem5, problem6, pr
 ```
 
 ```{r}
-problems %>% filter(problems == "no complains") %>% 
-  ggplot(., aes(y = reorder(name, percent1), x = percent1, fill = name)) +
-  geom_col() + 
+problems %>% filter(problems == "no complains") %>% mutate(percent1 = round(n / total, 2) * 100) %>% 
+  ggplot(., aes(y = reorder(name, percent1), x = percent1)) +
+  geom_col(fill ="lightblue1", colour ="dodgerblue3") + 
   geom_text(aes(label = paste0(percent1, "%"), y = name, x = percent1),
             position = position_stack(vjust = 0.5), color = "black") +
-  labs(x = "Percent of no complains", y  = "Problem category") +
+  labs(x = "Percent of no complains", y  = "") +
   theme_classic() +
   theme(axis.text = element_text(size = 12), legend.position = "none")
 ```
 
 ```{r}
 problems %>% filter(problems != "no complains") %>% group_by(name) %>% 
-  arrange(desc(percent1)) %>% slice(1:3) %>% 
-  arrange(index) %>%  dplyr::select(name, problems, percent1) %>%  
+  arrange(desc(n)) %>% slice(1:3) %>% 
+  arrange(index) %>%  dplyr::select(name, problems, n, total) %>%  
   mutate(name = str_to_sentence(name)) %>% 
   mutate(name = str_replace(name, "Erp", "ERP")) %>% 
   mutate(name = str_replace(name, "erp", "ERP")) %>%  
   group_by(name) %>%
   dplyr::mutate(groupRow = 1:n()) %>%
   ungroup() %>%
+  mutate(p = round(as.numeric(n)/as.numeric(total), 2) * 100) %>% 
+  mutate(score = paste(p, total, sep = "% out of ")) %>% 
   dplyr::mutate(name = ifelse(groupRow == 1, as.character(name), "")) %>%
-  select(-c(groupRow)) %>% 
-  kable(escape = F, booktabs = T, col.names = c("Plot name", "The main problem", "Percent of respondents"))   %>% 
+  dplyr::mutate(score = ifelse(groupRow == 1, as.character(score), paste(p, "%", sep = ""))) %>%
+  select(-c(groupRow, n, total, p)) %>% 
+  kable(escape = F, booktabs = T, col.names = c("Plot name", "The main problem", "Scores"))   %>% 
   kable_minimal(full_width = F,  html_font = "Source Sans Pro") 
+
 ```
 
 ## New feature
