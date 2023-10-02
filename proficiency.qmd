@@ -115,6 +115,10 @@ cbind(factor_scores[1], data[23]) %>% cbind(., data[24]) %>%  cbind(., n_soft) %
   dplyr::select(type, estimate, p.value, method) %>%
   dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 3)) %>%
   mutate(p.value = cell_spec(p.value, color = ifelse(p.value < 0.05, "green", "black"))) %>% 
+  mutate(type = case_when(
+    type == "n_soft" ~ "Number of softwares used",
+    type == "rate" ~ "Rate of electrodes recorded to analysed"
+  )) %>% 
   kable(escape = F, booktabs = T) %>% 
   kable_classic(full_width = T, html_font = "Arial")
 
@@ -137,8 +141,10 @@ feature %>%
   dplyr::group_by(., type) %>% nest() %>% 
   dplyr::mutate(., model = map(data, cor_fun)) %>% unnest() %>% 
   dplyr::select(type, estimate, p.value, method) %>%
-  dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 3)) %>%
+  dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 3),
+                                                 estimate = round(as.numeric(estimate), 3)) %>%
   mutate(p.value = cell_spec(p.value, color = ifelse(p.value < 0.05, "green", "black"))) %>% 
+  dplyr::rename(`Software feature` = type) %>% 
   kable(escape = F, booktabs = T) %>% 
   kable_classic(full_width = T, html_font = "Arial")
 
@@ -158,9 +164,17 @@ cbind(factor_scores[1], data[79]) %>% cbind(., data[117]) %>%
   gather(type, score, ud:twod_aware) %>% 
   dplyr::group_by(., type) %>% nest() %>% 
   dplyr::mutate(., model = map(data, log_fun)) %>% unnest() %>% 
-  dplyr::select(type, term, estimate, std.error, p.value) %>%
-  dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 3)) %>%
+  dplyr::select(type, estimate, std.error, p.value) %>%
+  dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 3),
+                                                 estimate = round(as.numeric(estimate), 3),
+                                                 std.error = round(as.numeric(std.error), 3)) %>%
   mutate(p.value = cell_spec(p.value, color = ifelse(p.value < 0.05, "green", "black"))) %>% 
+  mutate(type = case_when(
+    type == "ud" ~ "Polaritiy convention: up",
+    type == "jet_aware" ~ "Awareness about colorbar perceptual controvercies: yes",
+    type == "twod_aware" ~ "Awareness about 2D colobars: yes"
+  )) %>% 
+  dplyr::rename(`Visualisation customs` = type) %>% 
   kable(escape = F, booktabs = T) %>% 
   kable_classic(full_width = T, html_font = "Arial")
 ```
@@ -176,9 +190,12 @@ data[25:51] %>%
   gather(type, score, BESA:`Custom scripts`) %>% 
    dplyr::group_by(., type) %>% nest() %>% 
   dplyr::mutate(., model = map(data, log_fun)) %>% unnest() %>% 
-  dplyr::select(type, term, estimate, std.error, p.value) %>%
-  dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 3)) %>%
+  dplyr::select(type, estimate, std.error, p.value) %>%
+  dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 3), 
+                                                 estimate = round(as.numeric(estimate), 3),
+                                                 std.error = round(as.numeric(std.error), 3)) %>%
   mutate(p.value = cell_spec(p.value, color = ifelse(p.value < 0.05, "green", "black"))) %>% 
+  dplyr::rename(`Analytical software` = type) %>% 
   kable(escape = F, booktabs = T) %>% 
   kable_classic(full_width = T, html_font = "Arial")
 ```
