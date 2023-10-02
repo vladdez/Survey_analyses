@@ -1,0 +1,298 @@
+---
+title: "Proficiency"
+format:
+  html:
+    toc: true
+    html-math-method: katex
+    css: styles.css
+    code-fold: true
+    code-summary: "Show the code"
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+
+**Here we assess how proficiency in EEG affects researcher's awareness, preferences and choices.**
+
+
+## Setup
+
+```{r, message= FALSE, warning=FALSE, echo=FALSE}
+library(readxl)
+library(foreach)
+library(stringr)
+library(dplyr)
+library(tokenizers)
+library(data.table)
+library(ggplot2)
+library(plyr)
+library(quanteda)
+library(purrr)
+library(tidytext)
+library(tm)
+library(SnowballC)
+library(Matrix)
+library(text2vec)
+library(tidyr)
+library(janitor)
+library(GGally)
+library(formattable)
+library(kableExtra)
+library(FactoMineR)
+library(psych)
+library(factoextra)
+```
+
+```{r, message= FALSE, warning=FALSE}
+data <- read_excel("data/results-survey.xlsx")
+data <- data[1:121] %>% 
+  filter(.[[18]] !='Yes', .[[20]] < 80) # not analysed any EEG method
+```
+
+## Proficiency factor
+
+```{r, include=FALSE}
+exp_data <- data[c( 19, 20, 12, 21, 22)]
+colnames(exp_data) <- c("n_papers", "years", "position","self_level", "code_contribution")
+exp_data
+
+
+short <- exp_data[c(1:2, 5)] %>% mutate(code_contribution = ifelse(code_contribution=="Yes", 1, 0))
+
+```
+
+```{r, message= FALSE, warning=FALSE}
+m = FAMD(exp_data[1:5], ncp=2, axes=c(1,2))
+
+# pics <- fviz_famd_ind(m, col.ind = "cos2", 
+#              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+#              repel = TRUE)
+
+```
+
+### test
+
+Proxy Proficiency should definitely correlate with years of experience
+
+```{r}
+factor_scores <- as.data.frame(m$ind$coord)
+head(factor_scores)
+
+cbind(data[20], factor_scores[1])  %>% 
+   rename_at(vars(colnames(.)), ~ c("years", "proxy")) %>% 
+  with(cor.test( proxy, years)) %>% 
+  broom::tidy() %>% dplyr::select(estimate, p.value)
+```
+
+## Tiles
+
+### cor.tests
+
+-   **n_soft** - number of software used
+-   **rate** - rate of electrodes recorded to electrodes analysed
+
+```{r}
+vec <- names(data[25:50]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
+
+cor_fun <- function(df) cor.test(df$proxy, df$score, method = "spearman") %>% tidy()
+
+n_soft <- data[25:50] %>%
+  rename_at(vars(colnames(.)), ~ vec) %>% 
+  mutate_at(vars(vec), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0)))%>%
+  rowSums() %>% tibble()
+
+cbind(factor_scores[1], data[23]) %>% cbind(., data[24]) %>%  cbind(., n_soft) %>%
+  rename_at(vars(colnames(.)), ~ c("proxy", "measure", "analyse", "n_soft")) %>%
+  dplyr::filter(analyse < 500) %>% tibble() %>% 
+  mutate(rate = analyse / measure) %>% 
+  dplyr::select(-analyse, -measure) %>% 
+  gather(type, score, rate:n_soft) %>% 
+  dplyr::group_by(., type) %>% nest() %>% 
+  dplyr::mutate(., model = map(data, cor_fun)) %>% unnest() %>% 
+  dplyr::select(type, estimate, p.value, method) %>%
+  dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 3)) %>%
+  mutate(p.value = cell_spec(p.value, color = ifelse(p.value < 0.05, "green", "black"))) %>% 
+  kable(escape = F, booktabs = T) %>% 
+  kable_classic(full_width = T, html_font = "Arial")
+
+
+```
+
+8 features used importanta for visualisation.
+
+```{r}
+feature <- data[52:60] %>% rename_all(., ~str_split_i(colnames(data[52:60]), "\\? \\[", 2) %>% str_sub(., 1, -2) ) %>%  
+  mutate_at(c(colnames(.)), 
+        funs(recode(.,
+        "Very important"= 2, "Important"= 1, "Neutral"= 0,
+        "Low importance"= -1, "Not at all important" = -2 )))  %>% 
+  cbind(., factor_scores[1]) %>%  
+  rename_at(vars(colnames(.)), ~ c("subplot", "attributes", "speed", "publicable", "reproducable", "zooming", "interactive", "gui", "coding", "proxy")) 
+
+feature %>% 
+  gather(type, score, subplot:coding) %>% 
+  dplyr::group_by(., type) %>% nest() %>% 
+  dplyr::mutate(., model = map(data, cor_fun)) %>% unnest() %>% 
+  dplyr::select(type, estimate, p.value, method) %>%
+  dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 3)) %>%
+  mutate(p.value = cell_spec(p.value, color = ifelse(p.value < 0.05, "green", "black"))) %>% 
+  kable(escape = F, booktabs = T) %>% 
+  kable_classic(full_width = T, html_font = "Arial")
+
+```
+
+### log reg
+
+```{r}
+log_fun <- function(df) glm(df$score ~ df$proxy, family = "binomial") %>% tidy() %>% slice(-1)
+
+cbind(factor_scores[1], data[79]) %>% cbind(., data[117]) %>% 
+  cbind(., data[118]) %>% 
+  rename_at(vars(colnames(.)), ~ c("proxy", "ud", "jet_aware", "twod_aware")) %>%
+  mutate(ud = ifelse(ud=="Up", 1, 0), 
+         jet_aware = ifelse(jet_aware =="Yes", 1, 0),
+         twod_aware = ifelse(twod_aware =="Yes", 1, 0)) %>% 
+  gather(type, score, ud:twod_aware) %>% 
+  dplyr::group_by(., type) %>% nest() %>% 
+  dplyr::mutate(., model = map(data, log_fun)) %>% unnest() %>% 
+  dplyr::select(type, term, estimate, std.error, p.value) %>%
+  dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 3)) %>%
+  mutate(p.value = cell_spec(p.value, color = ifelse(p.value < 0.05, "green", "black"))) %>% 
+  kable(escape = F, booktabs = T) %>% 
+  kable_classic(full_width = T, html_font = "Arial")
+```
+
+```{r}
+vec <- names(data[25:51]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
+
+data[25:51] %>%
+  rename_at(vars(colnames(.)), ~ vec) %>% 
+  dplyr::select(-Other) %>% 
+  mutate_at(vars(vec[1:26]), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0))) %>% select_if(colSums(.) > 10) %>% 
+  cbind(factor_scores[1], .) %>% dplyr::rename(proxy = !!names(.)[1]) %>% 
+  gather(type, score, BESA:`Custom scripts`) %>% 
+   dplyr::group_by(., type) %>% nest() %>% 
+  dplyr::mutate(., model = map(data, log_fun)) %>% unnest() %>% 
+  dplyr::select(type, term, estimate, std.error, p.value) %>%
+  dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 3)) %>%
+  mutate(p.value = cell_spec(p.value, color = ifelse(p.value < 0.05, "green", "black"))) %>% 
+  kable(escape = F, booktabs = T) %>% 
+  kable_classic(full_width = T, html_font = "Arial")
+```
+
+## Proficiency and ...
+
+### Tools
+
+```{r}
+cbind(factor_scores[1], data[31]) %>% 
+  rename_at(vars(colnames(.)), ~ c("proxy", "EEGLAB")) %>%
+  mutate(EEGLAB = ifelse(EEGLAB =="Yes", 1, 0)) %>% 
+  ggplot(., aes(x=as.factor(EEGLAB), y = proxy)) + 
+  geom_boxplot() + labs(x = "EEGLAB", y = "Experience") +  
+  theme_classic()
+
+cbind(factor_scores[1], data[35]) %>% 
+  rename_at(vars(colnames(.)), ~ c("proxy", "ERPLAB")) %>%
+  mutate(ERPLAB = ifelse(ERPLAB =="Yes", 1, 0)) %>% 
+  ggplot(., aes(x=as.factor(ERPLAB), y = proxy)) + 
+  geom_boxplot() + labs(x = "ERPLAB", y = "Experience") +  
+  theme_classic()
+
+cbind(factor_scores[1], data[41]) %>% 
+  rename_at(vars(colnames(.)), ~ c("proxy", "Fieldtrip")) %>%
+  mutate(Fieldtrip = ifelse(Fieldtrip =="Yes", 1, 0)) %>% 
+  ggplot(., aes(x=as.factor(Fieldtrip), y = proxy)) + 
+  geom_boxplot() + labs(x = "Fieldtrip", y = "Experience") +  
+  theme_classic()
+
+cbind(factor_scores[1], data[43]) %>% 
+  rename_at(vars(colnames(.)), ~ c("proxy", "LIMO")) %>%
+  mutate(LIMO = ifelse(LIMO =="Yes", 1, 0)) %>% 
+  ggplot(., aes(x=as.factor(LIMO), y = proxy)) + 
+  geom_boxplot() + labs(x = "LIMO", y = "Experience") +  
+  theme_classic()
+```
+
+### Number of used software
+
+```{r}
+vec <- names(data[25:50]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
+
+software <- data[25:50] %>%
+    rename_at(vars(colnames(.)), ~ vec) %>% 
+  mutate_at(vars(vec), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0))) %>% rowSums() %>% tibble()
+
+```
+
+```{r}
+cbind(data.frame(rowSums(software)), factor_scores[1])  %>% 
+   rename_at(vars(colnames(.)), ~ c("n_soft", "experience")) %>% 
+  filter(n_soft > 0) %>% 
+  ggplot(., aes(x=n_soft, y=experience)) + geom_jitter() + geom_smooth()
+```
+
+```{r}
+cbind(data.frame(rowSums(software)), factor_scores[1])  %>% 
+   rename_at(vars(colnames(.)), ~ c("n_soft", "experience")) %>% 
+  filter(n_soft > 0) %>% 
+  lm(data=., n_soft ~ experience) %>% summary(.)
+```
+
+### Channels
+
+```{r}
+data %>% select(23, 24) %>% 
+  cbind(., factor_scores[1]) %>% 
+  rename_at(vars(colnames(.)), ~ c("measure", "analyse", "experience")) %>% 
+  filter(analyse < 500) %>% 
+  mutate(rate = analyse / measure) %>% 
+  ggplot(., aes(x=rate, y=experience)) + 
+  geom_point() +                                      
+  stat_smooth(method = "lm",
+              formula = y ~ x,
+              geom = "smooth") +
+  labs(x ="analyse / measure") +
+  theme_classic()
+```
+
+```{r}
+data %>% select(23, 24) %>% 
+  cbind(., factor_scores[1]) %>% 
+  rename_at(vars(colnames(.)), ~ c("measure", "analyse", "experience")) %>% 
+  filter(analyse < 500) %>% 
+  mutate(rate = analyse / measure) %>%
+  lm(rate ~ experience, .) %>% summary()
+```
+
+### n_plot
+
+```{r}
+n_soft <- data[25:50] %>%
+    rename_at(vars(colnames(.)), ~ vec) %>% 
+  mutate_at(vars(vec), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0))) %>% rowSums() %>% tibble()
+
+cbind(n_soft, factor_scores[1]) %>% 
+  rename_at(vars(colnames(.)), ~ c("n_soft", "experience")) %>% 
+  ggplot(., aes(x=n_soft, y=experience)) + 
+  geom_point() +                                      
+  stat_smooth(method = "lm",
+              formula = y ~ x,
+              geom = "smooth") +
+  labs(x ="n_soft") +
+  theme_classic()
+```
+
+### jet awareness
+
+```{r}
+cbind(factor_scores[1], data[117]) %>% 
+  rename_at(vars(colnames(.)), ~ c("proxy", "jet_aware")) %>%
+  mutate(jet_aware = ifelse(jet_aware =="Yes", 1, 0)) %>% 
+  ggplot(., aes(x=as.factor(jet_aware), y = proxy)) + 
+  geom_boxplot() + labs(x = "Aware or not abour colorbar controvercies", y = "Experience") +  
+  theme_classic()
+```

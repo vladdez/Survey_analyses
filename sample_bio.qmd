@@ -14,6 +14,9 @@ editor: visual
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
+**Here we sho a statistics about our study sample: biographical and experience data**
+
+
 ## Setup
 
 ```{r, message= FALSE, warning=FALSE, echo=FALSE}
@@ -85,6 +88,7 @@ country_fig <- country %>%
 country_fig + 
   labs(caption = sprintf("N of respondents = %d", sum(country$Freq))) 
 ```
+
 ```{r}
 data.frame(table(data[8]))  %>% dplyr::rename(country_work = !!names(.)[1]) %>%
   #mutate(country_work = ifelse(Freq >= 6, as.character(country_work), "Others")) %>%
@@ -161,6 +165,7 @@ position <- pos %>%
 position + 
     labs(caption = sprintf("N of respondents - %d", sum(pos$Freq)))
 ```
+
 ### Methods
 
 ```{r, message= FALSE, warning=FALSE}
@@ -225,8 +230,6 @@ area %>% group_by(words2) %>% dplyr::summarise(Freq = n()) %>%
 
 ```
 
-
-
 ## Experience
 
 #### Years
@@ -254,6 +257,7 @@ years + labs(caption = sprintf("N of respondents - %d, median - %d", nrow(year),
   
 
 ```
+
 #### Papers
 
 ```{r, message= FALSE, warning=FALSE}
@@ -323,10 +327,10 @@ cc <- table(data[22])  %>% data.frame()%>% dplyr::rename(level = !!names(.)[1]) 
 cc +
     labs(caption = sprintf("N of respondents - %d",  sum(sal$Freq))) 
 ```
+
 ## Combination
 
 ### gray
-
 
 ```{r}
 ggarrange(country_fig + theme(axis.text.y = element_text(size = 10), axis.title.x = element_blank(), axis.text.x = element_blank()) + xlim(0, 30), 
@@ -338,7 +342,6 @@ ggarrange(country_fig + theme(axis.text.y = element_text(size = 10), axis.title.
           ncol = 2, nrow = 2, align = 'hv')  
 ```
 
-
 ```{r}
 ggarrange(years + labs(x ="Years of experience", y="") , 
           papers_fig + labs(x ="Number of papers published", y=""), 
@@ -348,8 +351,8 @@ ggarrange(years + labs(x ="Years of experience", y="") ,
           ncol = 2, nrow = 2, align = 'h') 
 
 ```
-### blue
 
+### blue
 
 ```{r}
 ggarrange(country_fig + geom_bar(stat = "identity", fill ="lightblue1", colour ="dodgerblue3",) + theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()) + xlim(0, 30), 
@@ -360,6 +363,7 @@ ggarrange(country_fig + geom_bar(stat = "identity", fill ="lightblue1", colour =
           labels = c("A", "B", "C", "D"),
           ncol = 2, nrow = 2, align = 'hv')  
 ```
+
 ```{r}
 ggarrange(years +  geom_col(position = "identity", bins = 45, fill ="lightblue1", col="dodgerblue3") + 
   geom_vline(xintercept = median(year$years),        # Add line for mean

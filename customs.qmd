@@ -14,6 +14,9 @@ editor: visual
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
+**Here we present researcher's visualization customs and awareness about some methodological problems.**
+
+
 ## Setup
 
 ```{r, message= FALSE, warning=FALSE, echo=FALSE}
@@ -144,7 +147,7 @@ slice(num_named, 1)  %>%
 
 ```{r, message= FALSE, warning=FALSE}
 
-plot_vec <- rev(c("Parallel\nplot", "Channel\nimage", "ERP image", "Butterfly\nplot", "Topo array", "Topomap", "Topoplot", "Lineplot"))
+plot_vec <- rev(c("Parallel\nplot", "Channel\nimage", "ERP image", "Butterfly\nplot", "ERP grid", "Topoplot\ntimeseries", "Topoplot", "ERP plot"))
 
 colorname <- c("#f9a65a", "#599ad3", "#8dc63f")
 
@@ -240,7 +243,6 @@ cv %>%
   theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
 ```
 
-
 ```{r}
 cv <- data %>% select(23, 24) %>% 
   rename_at(vars(colnames(.)), ~ c("measure", "analyse")) %>% 
@@ -258,6 +260,7 @@ cv %>% group_by(rate) %>% dplyr::summarise(n = n()) %>%
   
   labs(caption = sprintf("N of respondents - %d",  nrow(cv))) 
 ```
+
 ```{r}
 cv %>% dplyr::select(rate) %>% group_by(rate) %>% dplyr::summarise(n = n()) %>% 
   mutate(p = round(n / sum(n), 2)) %>% arrange(desc(n))
@@ -369,7 +372,7 @@ colnames(c) <- rownames(c)
 diag.order <- order(diag(c), decreasing = FALSE)
 mat_reordered <- c[diag.order, diag.order]
 
-melt(mat_reordered) %>% ggplot(., aes(x=Var1, y=Var2)) + 
+mat_reordered %>% melt(.) %>% ggplot(., aes(x=Var1, y=Var2)) + 
   geom_tile(aes(fill = value)) + 
   geom_text(aes(label = value)) +
   scale_fill_gradient(low = "white", high = "red") +
@@ -490,10 +493,8 @@ f3 <- feature1 %>% filter(index %in% c(1, 3, 5)) %>%
 f3 
 ```
 
-
- 
 ##### Combination
- 
+
 ```{r}
 
 plot_features <- c(
@@ -586,7 +587,6 @@ comb +  theme(legend.position = "bottom"
 
 ```
 
-
 ```{r, eval = FALSE, echo = FALSE}
 set.seed(42)
 ggplot(Orange, aes(age, circumference, color = Tree)) +
@@ -626,7 +626,6 @@ test +
 
 
 ```
-
 
 ## Up or down
 
@@ -779,6 +778,7 @@ ebd_fig +
     labs(caption = sprintf("N of respondents - %d",  sum(ebd$scores))) 
 
 ```
+
 ### Combination
 
 ```{r}
@@ -787,16 +787,13 @@ ggarrange(eb_fig, ebd_fig,
           ncol = 2, nrow = 2, align = 'h')  
 ```
 
-
-
 ```{r}
 data[76] %>%  filter(!is.na(.)) %>% table()
 ```
 
 ## Baseline
 
-Think about the baseline period (the time before the stimulus onset). How many milliseconds would you recommend to plot?
-Help:	Please, provide the baseline duration for the plot, not the duration for the baseline-correction
+Think about the baseline period (the time before the stimulus onset). How many milliseconds would you recommend to plot? Help: Please, provide the baseline duration for the plot, not the duration for the baseline-correction
 
 #### justification
 
@@ -837,7 +834,6 @@ bl %>%
     theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text.y = element_blank(), axis.text = element_text(size = 10)) +
     labs(caption = sprintf("N of respondents - %d",  sum(bl$Freq)))
 ```
-
 
 ## Colormaps
 
@@ -892,7 +888,6 @@ cb  %>%
     theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 65) +
     labs(caption = sprintf("N of respondents - %d",  sum(cb$scores)))  
 ```
-
 
 ```{r}
 tdc <- table(data[119])  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>%

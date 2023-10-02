@@ -17,7 +17,7 @@ website:
           - text: "2. visualisation customs"
             file: customs.qmd
           - text: "3. proficiency"
-            file: connections.qmd
+            file: proficiency.qmd
           - text: "4. feedbacks"
             file: feedbacks.qmd
 

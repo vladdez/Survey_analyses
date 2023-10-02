@@ -14,6 +14,9 @@ editor: visual
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
+**Here we analyse how participants named presented figures and what kind of struggles their experienced. Also, their feedback on some issues presented**
+
+
 ## Setup
 
 ```{r, message= FALSE, warning=FALSE, echo=FALSE}
@@ -41,6 +44,7 @@ library(stringi)
 library("xlsx")
 library(padr)
 library(magick)
+library(pdftools)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
