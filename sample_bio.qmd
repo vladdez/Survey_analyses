@@ -103,6 +103,18 @@ data.frame(table(data[8]))  %>% dplyr::rename(country_work = !!names(.)[1]) %>%
   arrange(desc(Freq))
 ```
 
+```{r}
+library(countrycode)
+c_df <- data.frame(table(data[8]))  %>% dplyr::rename(country_work = !!names(.)[1]) 
+c_df$continent <- countrycode(sourcevar = c_df[, "country_work"],
+                            origin = "country.name",
+                            destination = "region23")
+c_df %>% group_by(continent) %>% dplyr::summarise(Freq = sum(Freq)) %>%  ungroup() %>% 
+  mutate(Per = round(Freq/ sum(Freq), 2) * 100) %>% 
+  arrange(desc(Freq))
+```
+
+
 ### Field
 
 ```{r}
