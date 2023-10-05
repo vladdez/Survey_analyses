@@ -334,7 +334,6 @@ create_table(t) %>% data.frame() %>%
 #   image_write(mins[i], path = paste0("img/", i, ".png"), format = "png", density = 1000)
 # }
 
-
 ```
 
 ## Plot dimension
@@ -355,26 +354,26 @@ data.frame(plots = c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot timeser
 
 ```{r}
 cm <- dplyr::tibble(
-  image = c("img/1.png", "img/2.png", "img/3.png", "img/4.png", "img/5.png", "img/6.png", "img/7.png", "img/8.png"),
-  plots = c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot timeseries", "ERP grid", "ERP image", "Channel image", "Parallel plot"), 
-  time = c("x", "x", "", "(x)", "x", "x", "x", "x"),
-  channels = c("", "x", "x", "x", "x", "", "x", "x"), 
-  spatial = c("", "", "x", "x", "x", "", "", ""), 
-  conditions = c("x", "", "", "", "", "", "", "x"), 
-  trials = c("", "x", "", "", "", "x", "", "")
+  Plots = c("img/1.png", "img/2.png", "img/3.png", "img/4.png", "img/5.png", "img/6.png", "img/7.png", "img/8.png"),
+  Name = c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot timeseries", "ERP grid", "ERP image", "Channel image", "Parallel plot"), 
+  Time = c("x", "x", "", "(x)", "x", "x", "x", "x"),
+  Channels = c("", "x", "x", "x", "x", "", "x", "x"), 
+  Spatial = c("", "", "x", "x", "x", "", "", ""), 
+  Conditions = c("x", "", "", "", "", "", "", "x"), 
+  Trials = c("", "x", "", "", "", "x", "", "")
 ) 
 
 cm %>% 
   gt()  %>% 
-  cols_align(align = "center", columns = c(time, channels, spatial, conditions, trials)) %>% 
+  cols_align(align = "center", columns = c(Time, Channels, Spatial, Conditions, Trials)) %>% 
   text_transform(
-    locations = cells_body(columns = image),
+    locations = cells_body(columns = Plots),
     fn = function(x) {
       lapply(x, function(x) {
               html(paste(local_image(filename = x)))
       })
     }
-  ) %>%  opt_table_font(stack = "rounded-sans") 
+  ) %>%  opt_table_font(font = "Source Sans Pro")  #,stack = "rounded-sans") 
  
 ```
 
@@ -447,7 +446,7 @@ mem_tab
 
 ```{r}
 vec <- names(data[ , grepl( ".*Which parts of*." , names(data))])
-which(names(data) %in% vec)
+#which(names(data) %in% vec)
 ```
 
 ```{r, warning=FALSE}
@@ -712,7 +711,7 @@ tmp <- struggle8 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
       TRUE ~ '_other'
       )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems))# %>%   filter(problems =="_other") %>% View()
 
-n_rest <- mem_tab %>% filter(plots == "parallel") %>% select(plotted)  - nrow(tmp)
+n_rest <- mem_tab %>% filter(plots == "channel_img") %>% select(plotted)  - nrow(tmp)
 
 tmp8 <- tmp %>% group_by(problems) %>%
       dplyr::summarise(n = n()) %>% 
@@ -725,28 +724,25 @@ tmp8
 ```
 
 
-## The least problematic plot
+## The most problematic plot
 
 ```{r}
 
-problems <- rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem8) %>%
-  group_by(name) %>%  mutate(index = match(name, unique(name))) 
-
-```
-
-```{r}
-problems %>% filter(problems == "no complains") %>% mutate(percent1 = round(n / total, 2) * 100) %>% 
+rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem8) %>%
+  group_by(name) %>%  mutate(index = match(name, unique(name))) %>% filter(problems == "no complains") %>%
+  mutate(percent1 = 100 - (round(n / total, 2) * 100)) %>% 
   ggplot(., aes(y = reorder(name, percent1), x = percent1)) +
   geom_col(fill ="lightblue1", colour ="dodgerblue3") + 
   geom_text(aes(label = paste0(percent1, "%"), y = name, x = percent1),
             position = position_stack(vjust = 0.5), color = "black") +
-  labs(x = "Percent of no complains", y  = "") +
+  labs(x = "Percent of complains", y  = "") +
   theme_classic() +
   theme(axis.text = element_text(size = 12), legend.position = "none")
 ```
 
 ```{r}
-problems %>% filter(problems != "no complains") %>% group_by(name) %>% 
+rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem8) %>%
+  group_by(name) %>%  mutate(index = match(name, unique(name)))  %>% filter(problems != "no complains") %>% 
   arrange(desc(n)) %>% slice(1:3) %>% 
   arrange(index) %>%  dplyr::select(name, problems, n, total) %>%  
   mutate(name = str_to_sentence(name)) %>% 

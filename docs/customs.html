@@ -277,11 +277,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="naming" class="level3">
 <h3 class="anchored" data-anchor-id="naming">Naming</h3>
-<p>Those who named a plot somehow. Bad namings are excluded.</p>
+<p>Those who proposed a name for a plot. Bad names are excluded.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>word_preproc <span class="ot">&lt;-</span> <span class="cf">function</span>(vec){</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>stat_preproc <span class="ot">&lt;-</span> <span class="cf">function</span>(vec){</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#N = 70</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> vec <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(.)) <span class="sc">%&gt;%</span> </span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">words =</span> <span class="sc">!!</span><span class="fu">names</span>(.)[<span class="dv">1</span>]) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">words =</span> <span class="fu">tolower</span>(words)) <span class="sc">%&gt;%</span> </span>
@@ -291,21 +291,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(tmp)</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#word_preproc(data[vec_named[7]]) %&gt;% View()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#stat_preproc(data[vec_named[7]]) %&gt;% View()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>vec_named <span class="ot">&lt;-</span> <span class="fu">names</span>(data[ , <span class="fu">grepl</span>( <span class="st">"How would you "</span> , <span class="fu">names</span>(data))])</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>plot_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"line"</span>, <span class="st">"butterfly"</span>, <span class="st">"topo"</span>, <span class="st">"topo_map"</span>, <span class="st">"topo_array"</span>, <span class="st">"erp_img"</span>, <span class="st">"parallel"</span>, <span class="st">"channel_img"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>plot_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"line"</span>, <span class="st">"butterfly"</span>, <span class="st">"topo"</span>, <span class="st">"topo_series"</span>, <span class="st">"erp_grid"</span>, <span class="st">"erp_img"</span>, <span class="st">"parallel"</span>, <span class="st">"channel_img"</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>na_table <span class="ot">&lt;-</span> <span class="cf">function</span>(data, vec_named, plot_names){</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    temp <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(plot_names)</span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    temp<span class="sc">$</span>n <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>){</span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>      n_part <span class="ot">&lt;-</span> </span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        data[vec_named[i]] <span class="sc">%&gt;%</span>  <span class="fu">word_preproc</span>(.) <span class="sc">%&gt;%</span> <span class="co">#View()</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        data[vec_named[i]] <span class="sc">%&gt;%</span>  <span class="fu">stat_preproc</span>(.) <span class="sc">%&gt;%</span> <span class="co">#View()</span></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(check <span class="sc">!=</span> <span class="st">"bad"</span>) <span class="sc">%&gt;%</span>  </span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>())  </span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>      temp<span class="sc">$</span>n[i] <span class="ot">&lt;-</span> n_part<span class="sc">$</span>n</span>
