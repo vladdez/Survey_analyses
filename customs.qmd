@@ -43,7 +43,6 @@ library(kableExtra)
 library(stringi)
 library(ggpubr)
 library(ggrepel)
-
 ```
 
 ```{r, message= FALSE, warning=FALSE}
@@ -66,8 +65,8 @@ rec <- data.frame(rowSums(t(familiar))) %>%  tibble::rownames_to_column(., "plot
   arrange(., desc(sum_scores))
 
 rec %>% 
-  ggplot(data = ., aes(y = reorder(plot, sum_scores), x= sum_scores, fill = plot)) +
-  geom_bar(stat="identity") + ylab("plot") + theme_classic() + 
+  ggplot(data = ., aes(y = reorder(plot, sum_scores), x= sum_scores)) +
+  geom_col(stat="identity", fill ="lightblue1", col="dodgerblue3") + ylab("plot") + theme_classic() + 
   geom_text(aes(label = sum_scores, group = plot), position = position_dodge(width = .9), hjust = -0.1) +
   theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
   labs(y = "Plot types", x = "Scores") + 
@@ -77,64 +76,52 @@ rec %>%
 
 ```
 
-Those who named a plot somehow and those who failed to do that
-
-```{r, message= FALSE, warning=FALSE}
-
-word_preproc <- function(data, N){
- # N = 69
-  stop_list = c("a", "an", "the", "wise", "like", "s", "plot", "plots")
-  tmp <- data %>% filter(!is.na(.[[N]])) %>% select(., N) %>% 
-    dplyr::rename(words = !!names(.)[1]) %>% mutate(words = tolower(words)) %>% 
-    mutate(words_prep = str_split(words, "\\s+")) %>%
-    mutate(words_prep = sapply(words_prep, function(x) paste(x[!x %in% stop_list], collapse = " "))) %>% 
-    mutate(words_prep = stri_replace_all_regex(words_prep,
-                                  pattern=c(" \\(.*", ", or.*", " across.*", " with.*", " at.*", " by.*", " over.*", #" of.*", 
-                                            " for.*", " per.*", " across.*", " accross.*", " between.*"),
-                                  replacement=c(''),
-                                  vectorize=FALSE)) %>% 
-    mutate(words_prep = str_split(words_prep, "\\s+")) %>%
-    mutate(words_prep = sapply(words_prep, function(x) paste(x[!x %in% stop_list], collapse = " ")))
-     
-  return(tmp)
-}
-
-```
 
 ### Naming
 
+
+Those who proposed a name for a plot. Bad names are excluded.
+
+```{r, message= FALSE, warning=FALSE}
+stat_preproc <- function(vec){
+  #N = 70
+  tmp <- vec %>% filter(!is.na(.)) %>% 
+    dplyr::rename(words = !!names(.)[1]) %>% mutate(words = tolower(words)) %>% 
+    mutate(words = ifelse(nchar(words) < 3, paste(words, "baddd"), words)) %>% 
+    mutate(check = 
+    ifelse(grepl("\\b(baddd|idea|sure|confus|aware|do not|know|why|good|remember|unsure|confusing|mess|unclear|ugly|don't|useless|nan|clear)\\b", words), "bad", "good")) 
+  return(tmp)
+}
+
+#stat_preproc(data[vec_named[7]]) %>% View()
+```
+
 ```{r, message= FALSE, warning=FALSE}
 vec_named <- names(data[ , grepl( "How would you " , names(data))])
-plot_names <- c("line", "butterfly", "topo", "topo_map", "topo_array", "erp_img", "parallel", "channel_img")
+plot_names <- c("line", "butterfly", "topo", "topo_series", "erp_grid", "erp_img", "parallel", "channel_img")
 
-na_table <- function(data, vec){
-    temp <- data.frame(1:10)
-    for (i in vec){
-      temp1 <- word_preproc(data, i)  %>%
-      mutate(words = ifelse(str_detect(words, 'idea|sure|confus|aware|do not|why'), "NA", as.character(words))) %>%
-      mutate(words = ifelse(nchar(words)==0, NA, words)) %>% 
-      table(.) %>% 
-      data.frame(.) %>% filter(words != "NA") %>% 
-      summarise(n = sum(Freq))  
-      temp <- cbind(temp, temp1)
+na_table <- function(data, vec_named, plot_names){
+    temp <- data.frame(plot_names)
+    temp$n <- NA
+    for (i in 1:8){
+      n_part <- 
+        data[vec_named[i]] %>%  stat_preproc(.) %>% #View()
+      filter(check != "bad") %>%  
+      dplyr::summarise(n = n())  
+      temp$n[i] <- n_part$n
     }
-    temp <- temp[2:length(temp)]
-    colnames(temp) <- plot_names
+    #temp <- temp[2:length(temp)]
+    #colnames(temp) <- plot_names
     return(temp)
 }
 
-num_named <- na_table(data, vec_named)
-
-slice(num_named, 1)  %>% 
-  gather(., plots, succeeded, `line`:`channel_img`, factor_key=TRUE) %>% 
-  mutate(failed = nrow(data) - succeeded) %>% 
-  gather(., res, score, succeeded:failed, factor_key=TRUE) %>% 
-
-  ggplot(., aes(x = plots, y = score, fill = res)) +
-    geom_bar(position = "dodge", stat = "identity") +
-    labs(x = "Category", y = "Value", fill = "Group") +
+num_named <- na_table(data, vec_named, plot_names)
+num_named  %>% 
+  ggplot(., aes(x = n, y = reorder(plot_names, n))) +
+  geom_col(stat="identity", fill ="lightblue1", col="dodgerblue3") +
+    labs(x = "Category", y = "Value") +
     theme_classic() + theme(axis.title.x=element_blank(), plot.title = element_text(hjust = 0.5)) +
-  geom_text(aes(label = score, group = res), position = position_dodge(width = .9), vjust = -0.2) +
+  geom_text(aes(label = n), position = position_dodge(width = .9), hjust = -0.1) +
   ggtitle("Plot naming") +
   labs(caption = sprintf("N of respondents - %d",  nrow(familiar))) +
   theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
@@ -146,13 +133,19 @@ slice(num_named, 1)  %>%
 ### Plotting
 
 ```{r, message= FALSE, warning=FALSE}
+familiar <-  data[61:68] %>% rename_at(vars(colnames(.)), ~ plot_names) %>% 
+  mutate_at(vars(plot_names), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0))) %>%
+  t() %>% rowSums(.) %>% data.frame(.) %>%  tibble::rownames_to_column(., "plot") %>% 
+  rename_at(vars(colnames(.)), ~ c("plots", "recognized"))
 
+```
+
+#### combined
+
+```{r}
 plot_vec <- rev(c("Parallel\nplot", "Channel\nimage", "ERP image", "Butterfly\nplot", "ERP grid", "Topoplot\ntimeseries", "Topoplot", "ERP plot"))
 
-colorname <- c("#f9a65a", "#599ad3", "#8dc63f")
-
 vec_plotted <- names(data[ , grepl( "Have you ever plotted " , names(data))]) 
-
 
 do_vec <- function(vec_plotted, data, plot_names){
   t1 <- table(data[vec_plotted[1]])
@@ -160,7 +153,7 @@ do_vec <- function(vec_plotted, data, plot_names){
     t <- table(data[vec_plotted[i]])
     t1 <- rbind(t1, t)
   }
-  rownames(t1) <- plot_names #array(paste0("t_", 1:length(vec_plotted)))
+  rownames(t1) <- plot_names 
   return(t1)
 }
 
@@ -168,18 +161,14 @@ tab <- do_vec(vec_plotted, data, plot_names) %>%  data.frame() %>% tibble::rowna
   gather(., type, plotted, `N.A`:`Yes`, factor_key=TRUE) %>% 
   filter(type == "Yes") %>% dplyr::select(-type) 
 
-named <- slice(num_named, 1)  %>% 
-  gather(., plots, succeeded, `line`:`channel_img`, factor_key=TRUE)%>% 
-  mutate(failed = nrow(data) - succeeded) %>% 
-  dplyr::rename(named = succeeded) %>% 
-  dplyr::select(-failed)
+named <- num_named %>% dplyr::rename(named = n, plots = plot_names)  
+```
 
-familiar <-  data[61:68] %>% rename_at(vars(colnames(.)), ~ plot_names) %>% 
-  mutate_at(vars(plot_names), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0)))
 
-mem_tab <- data.frame(rowSums(t(familiar))) %>%  tibble::rownames_to_column(., "plot") %>% 
+```{r}
+mem_tab <-  familiar %>% 
    rename_at(vars(colnames(.)), ~ c("plots", "recognized")) %>%
-  merge(., named)  %>% left_join(., tab)  
+  left_join(., named)  %>% left_join(., tab)  
 
 mem_tab %>% #filter(plots != "parallel") %>% 
   gather(., type, score,  recognized:plotted, factor_key=TRUE) %>% 
@@ -198,7 +187,6 @@ mem_tab %>% #filter(plots != "parallel") %>%
   labs(caption = sprintf("N of respondents - %d",  nrow(familiar)))
 ```
 
-#### named correctly
 
 ## Channels
 

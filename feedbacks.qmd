@@ -77,55 +77,6 @@ word_preproc <- function(data, N){
 
 ```
 
-## stats 
-```{r}
-vec_plotted <- names(data[ , grepl( "Have you ever plotted " , names(data))]) 
-vec_named <- names(data[ , grepl( "How would you " , names(data))])
-
-do_vec <- function(vec_plotted, data, plot_names){
-  t1 <- table(data[vec_plotted[1]])
-  for (i in 2:length(vec_plotted)) {
-    t <- table(data[vec_plotted[i]])
-    t1 <- rbind(t1, t)
-  }
-  rownames(t1) <- plot_names 
-  return(t1)
-}
-plot_names <- c("erp", "butterfly", "topo", "topo_series", "topo_grid", "erp_img", "parallel", "channel_img")
-
-familiar <-  data[61:68] %>% rename_at(vars(colnames(.)), ~ plot_names) %>% 
-  mutate_at(vars(plot_names), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0)))
-tab <- do_vec(vec_plotted, data, plot_names) %>%  data.frame() %>% tibble::rownames_to_column(., "plots") %>%  
-  gather(., type, plotted, `N.A`:`Yes`, factor_key=TRUE) %>% 
-  filter(type == "Yes") %>% dplyr::select(-type) 
-
-na_table <- function(data, vec){
-    temp <- data.frame(1:10)
-    for (i in vec){
-      temp1 <- word_preproc(data, i)  %>%
-      mutate(words = ifelse(str_detect(words, 'idea|sure|confus|aware|do not|why'), "NA", as.character(words))) %>%
-      mutate(words = ifelse(nchar(words)==0, NA, words)) %>% 
-      table(.) %>% 
-      data.frame(.) %>% filter(words != "NA") %>% 
-      summarise(n = sum(Freq))  
-      temp <- cbind(temp, temp1)
-    }
-    temp <- temp[2:length(temp)]
-    colnames(temp) <- plot_names
-    return(temp)
-}
-num_named <- na_table(data, vec_named)
-named <- slice(num_named, 1)  %>% 
-  gather(., plots, succeeded, `erp`:`channel_img`, factor_key=TRUE)%>% 
-  mutate(failed = nrow(data) - succeeded) %>% 
-  dplyr::rename(named = succeeded) %>% 
-  dplyr::select(-failed)
-
-mem_tab <- data.frame(rowSums(t(familiar))) %>%  tibble::rownames_to_column(., "plot") %>% 
-   rename_at(vars(colnames(.)), ~ c("plots", "recognized")) %>%
-  merge(., named)  %>% left_join(., tab)  
-mem_tab
-```
 
 ## The most common names for each plot
 
@@ -294,7 +245,7 @@ n6
 ```{r}
 n7 <- word_preproc(data, 107)  %>% #View()
   mutate(type = case_when(
-      grepl("\\b(idea|sure|confus|aware|do not|know|why|good|remember|unsure|confusing|mess|\\?|\\?\\?|unclear|-|ugly|don't|x|useless)\\b", words) == TRUE ~ "bad", 
+      grepl("\\b(idea|sure|confus|aware|do not|know|why|good|remember|unsure|confusing|mess|\\?\\?|unclear|-|ugly|don't|x|useless)\\b", words) == TRUE ~ "bad", 
       grepl("\\b(amplitude(s)?)\\b", words) == TRUE ~ "(erp) amplitudes",
       grepl("\\b(parallel)\\b", words) == TRUE ~ "parallel coordinates",
       TRUE ~ '_other'
@@ -431,6 +382,69 @@ cm %>%
 
 ## Struggles with plots
 
+### stats 
+
+```{r, message= FALSE, warning=FALSE}
+stat_preproc <- function(vec){
+  #N = 70
+  tmp <- vec %>% filter(!is.na(.)) %>% 
+    dplyr::rename(words = !!names(.)[1]) %>% mutate(words = tolower(words)) %>% 
+    mutate(words = ifelse(nchar(words) < 3, paste(words, "baddd"), words)) %>% 
+    mutate(check = 
+    ifelse(grepl("\\b(baddd|idea|sure|confus|aware|do not|know|why|good|remember|unsure|confusing|mess|unclear|ugly|don't|useless|nan|clear)\\b", words), "bad", "good")) 
+  return(tmp)
+}
+
+vec_named <- names(data[ , grepl( "How would you " , names(data))])
+plot_names <- c("line", "butterfly", "topo", "topo_series", "erp_grid", "erp_img", "parallel", "channel_img")
+
+na_table <- function(data, vec_named, plot_names){
+    temp <- data.frame(plot_names)
+    temp$n <- NA
+    for (i in 1:8){
+      n_part <- 
+        data[vec_named[i]] %>%  stat_preproc(.) %>% #View()
+      filter(check != "bad") %>%  
+      dplyr::summarise(n = n())  
+      temp$n[i] <- n_part$n
+    }
+    return(temp)
+}
+
+num_named <- na_table(data, vec_named, plot_names)
+
+familiar <-  data[61:68] %>% rename_at(vars(colnames(.)), ~ plot_names) %>% 
+  mutate_at(vars(plot_names), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0))) %>%
+  t() %>% rowSums(.) %>% data.frame(.) %>%  tibble::rownames_to_column(., "plot") %>% 
+  rename_at(vars(colnames(.)), ~ c("plots", "recognized"))
+
+vec_plotted <- names(data[ , grepl( "Have you ever plotted " , names(data))]) 
+
+do_vec <- function(vec_plotted, data, plot_names){
+  t1 <- table(data[vec_plotted[1]])
+  for (i in 2:length(vec_plotted)) {
+    t <- table(data[vec_plotted[i]])
+    t1 <- rbind(t1, t)
+  }
+  rownames(t1) <- plot_names 
+  return(t1)
+}
+
+tab <- do_vec(vec_plotted, data, plot_names) %>%  data.frame() %>% tibble::rownames_to_column(., "plots") %>%  
+  gather(., type, plotted, `N.A`:`Yes`, factor_key=TRUE) %>% 
+  filter(type == "Yes") %>% dplyr::select(-type) 
+
+named <- num_named %>% dplyr::rename(named = n, plots = plot_names)  
+
+mem_tab <-  familiar %>% 
+   rename_at(vars(colnames(.)), ~ c("plots", "recognized")) %>%
+  left_join(., named)  %>% left_join(., tab)  
+mem_tab
+
+```
+
+### struggles
+
 ```{r}
 vec <- names(data[ , grepl( ".*Which parts of*." , names(data))])
 which(names(data) %in% vec)
@@ -484,11 +498,12 @@ tmp <- struggle1 %>% filter( parts != "-") %>% dplyr::select(soft, parts) %>%
       grepl("\\b(mean|significan(t|ce)|permutations|combine)\\b", parts) == TRUE ~ "statistics", 
       )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>% View()
 
-n_rest <- mem_tab[3, 4] - nrow(tmp)
+n_rest <- mem_tab %>% filter(plots == "line") %>% select(plotted)  - nrow(tmp)
+
 
 tmp1 <- tmp  %>% group_by(problems) %>%
       dplyr::summarise(n = n()) %>% 
-      rbind(c("no complains", as.numeric(n_rest))) %>% 
+      rbind(c("no complains", as.numeric(n_rest$plotted))) %>% 
       mutate(n = as.numeric(n)) %>% 
       mutate(total = sum(n)) 
 
@@ -516,11 +531,11 @@ tmp <- struggle2 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
       grepl("\\b(channel(s)?|electrodes(s)?|interpretable|read|remembering)\\b", parts) == TRUE ~ "channel selection"
       )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) 
 
-n_rest <- mem_tab[1, 4] - nrow(tmp)
+n_rest <- mem_tab %>% filter(plots == "butterfly") %>% select(plotted)  - nrow(tmp)
 
 tmp2 <- tmp %>% group_by(problems) %>%
       dplyr::summarise(n = n()) %>% 
-      rbind(c("no complains", as.numeric(n_rest))) %>% 
+      rbind(c("no complains", as.numeric(n_rest$plotted))) %>% 
       mutate(n = as.numeric(n)) %>% 
       mutate(total = sum(n)) 
 
@@ -555,11 +570,11 @@ tmp <- struggle3 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
 
 filter(nchar(parts) != 0) %>% filter(!is.na(problems)) 
 
-n_rest <- mem_tab[6, 4] - nrow(tmp)
+n_rest <- mem_tab %>% filter(plots == "topo") %>% select(plotted)  - nrow(tmp)
 
 tmp3 <- tmp %>% group_by(problems) %>%
       dplyr::summarise(n = n()) %>% 
-      rbind(c("no complains", as.numeric(n_rest))) %>% 
+      rbind(c("no complains", as.numeric(n_rest$plotted))) %>% 
       mutate(n = as.numeric(n)) %>%       
   mutate(total = sum(n)) 
 
@@ -596,11 +611,11 @@ tmp <- struggle4 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
       TRUE ~ '_other'
       )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>%   filter(problems =="_other") %>% View()
 
-n_rest <- mem_tab[8, 4] - nrow(tmp)
+n_rest <- mem_tab %>% filter(plots == "topo_series") %>% select(plotted)  - nrow(tmp)
 
 tmp4 <- tmp %>% group_by(problems) %>%
       dplyr::summarise(n = n()) %>% 
-      rbind(c("no complains", as.numeric(n_rest))) %>% 
+      rbind(c("no complains", as.numeric(n_rest$plotted))) %>% 
       mutate(n = as.numeric(n)) %>% 
       mutate(total = sum(n)) 
 problem4 <- tmp4  %>% mutate(name = "Topoplot timeseries")
@@ -631,12 +646,11 @@ tmp <- struggle5 %>% filter( parts != "-") %>% dplyr::select(parts) %>% #View()
       TRUE ~ '_other'
       )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>%   filter(problems =="legibility and scaling") %>% View()
 
-
-n_rest <- mem_tab[7, 4] - nrow(tmp)
+n_rest <- mem_tab %>% filter(plots == "erp_grid") %>% select(plotted)  - nrow(tmp)
 
 tmp5 <- tmp %>% group_by(problems) %>%
       dplyr::summarise(n = n()) %>% 
-      rbind(c("no complains", as.numeric(n_rest))) %>% 
+      rbind(c("no complains", as.numeric(n_rest$plotted))) %>% 
       mutate(n = as.numeric(n)) %>% 
       mutate(total = sum(n)) 
 
@@ -666,11 +680,11 @@ tmp <- struggle6 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
       TRUE ~ '_other'
       )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>%   filter(problems =="defining epochs") %>% View()
 
-n_rest <- mem_tab[4, 4] - nrow(tmp)
+n_rest <- mem_tab %>% filter(plots == "erp_img") %>% select(plotted)  - nrow(tmp)
 
-tmp6<- tmp %>% group_by(problems) %>%
+tmp6 <- tmp %>% group_by(problems) %>%
       dplyr::summarise(n = n()) %>% 
-      rbind(c("no complains", as.numeric(n_rest))) %>% 
+      rbind(c("no complains", as.numeric(n_rest$plotted))) %>% 
       mutate(n = as.numeric(n)) %>% 
             mutate(total = sum(n)) 
 
@@ -698,11 +712,11 @@ tmp <- struggle8 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
       TRUE ~ '_other'
       )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems))# %>%   filter(problems =="_other") %>% View()
 
-n_rest <- mem_tab[2, 4] - nrow(tmp)
+n_rest <- mem_tab %>% filter(plots == "parallel") %>% select(plotted)  - nrow(tmp)
 
 tmp8 <- tmp %>% group_by(problems) %>%
       dplyr::summarise(n = n()) %>% 
-      rbind(c("no complains", as.numeric(n_rest))) %>% 
+      rbind(c("no complains", as.numeric(n_rest$plotted))) %>% 
       mutate(n = as.numeric(n)) %>% 
       mutate(total = sum(n)) 
 problem8 <- tmp8 %>% mutate(name = "Channel image")
