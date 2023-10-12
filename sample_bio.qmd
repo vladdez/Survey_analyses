@@ -29,15 +29,8 @@ library(tokenizers)
 library(data.table)
 library(ggplot2)
 library(plyr)
-library(quanteda)
-library(SemNetCleaner)
 library(purrr)
 library(tidytext)
-library(tm)
-library(topicmodels)
-library(SnowballC)
-library(Matrix)
-library(text2vec)
 library(tidyr)
 library(kableExtra)
 library(stringr)
@@ -47,7 +40,7 @@ library(ggthemes)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
-data <- read_excel("data/results-survey.xlsx")
+data <- read_excel("data/results_survey.xlsx")
 data <- data[1:121] %>% 
   filter(.[[18]] !='Yes') # not analysed any EEG method
 ```

@@ -28,16 +28,8 @@ library(dplyr)
 library(tokenizers)
 library(data.table)
 library(ggplot2)
-library(plyr)
-library(quanteda)
-library(SemNetCleaner)
 library(purrr)
 library(tidytext)
-library(tm)
-library(topicmodels)
-library(SnowballC)
-library(Matrix)
-library(text2vec)
 library(tidyr)
 library(kableExtra)
 library(stringi)
@@ -46,7 +38,8 @@ library(ggrepel)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
-data <- read_excel("data/results-survey.xlsx")
+data <- read_excel("data/results_survey.xlsx") #change to csv or tab and check will it work
+
 data <- data[1:121] %>% 
   filter(.[[18]] !='Yes') # not analysed any EEG method
 ```
@@ -104,14 +97,11 @@ na_table <- function(data, vec_named, plot_names){
     temp <- data.frame(plot_names)
     temp$n <- NA
     for (i in 1:8){
-      n_part <- 
-        data[vec_named[i]] %>%  stat_preproc(.) %>% #View()
+      n_part <- data[vec_named[i]] %>%  stat_preproc(.) %>% #View()
       filter(check != "bad") %>%  
       dplyr::summarise(n = n())  
       temp$n[i] <- n_part$n
     }
-    #temp <- temp[2:length(temp)]
-    #colnames(temp) <- plot_names
     return(temp)
 }
 
@@ -185,73 +175,6 @@ mem_tab %>% #filter(plots != "parallel") %>%
   theme(plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) +
     scale_y_discrete(labels = plot_vec) #+
   labs(caption = sprintf("N of respondents - %d",  nrow(familiar)))
-```
-
-
-## Channels
-
-How many channels do you typically measure?
-
-```{r, warning=FALSE, message=FALSE}
-chs <- data %>% dplyr::rename(channels = !!names(.)[23]) %>% filter(channels < 10000) 
-
-chs %>% 
-  ggplot(data = ., aes(x = channels)) + ylab("Counts") +
-  geom_histogram(bins=300) +  scale_x_continuous(breaks=seq(0, 300, 30)) +
-    labs(x ="How many channels do you typically measure?") + theme_classic() +
-  labs(caption = sprintf("N of respondents - %d",  nrow(chs))) +
-  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
-```
-
-How many channels do you typically analyse?
-
-```{r, warning=FALSE, message=FALSE}
-chs <- data %>% filter(.[[24]] < 500)
-  
-  chs %>% ggplot(data = ., aes_(as.name(names(data)[24]))) +
-  geom_histogram(bins=300) +  scale_x_continuous(breaks=seq(0, 300, 30))+
-    labs(x ="How many channels of those you measured do you typically analyse?") + theme_classic() +
-  labs(caption = sprintf("N of respondents - %d",  nrow(chs))) +
-  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
-
-```
-
-Combined version
-
-```{r}
-cv <- data %>% select(23, 24) %>% 
-  rename_at(vars(colnames(.)), ~ c("measure", "analyse")) %>%   filter(measure < 10000,analyse < 500) 
-
-cv %>%
-  gather(key=Type, value=Value) %>% 
-  ggplot(aes(x=Value, fill=Type)) + 
-  geom_histogram(bins=300, position="stack") + labs(x ="Number of channels", y = "Count") +
-  theme_classic() +
-  labs(caption = sprintf("N of respondents - %d",  nrow(cv))) +
-  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
-```
-
-```{r}
-cv <- data %>% select(23, 24) %>% 
-  rename_at(vars(colnames(.)), ~ c("measure", "analyse")) %>% 
-  filter(measure < 10000, analyse < 500)  %>% 
-  mutate(rate = round(analyse / measure, 2)) 
-
-cv %>% group_by(rate) %>% dplyr::summarise(n = n()) %>% 
-  mutate(p = round(n / sum(n), 2)) %>% 
-  ggplot(aes(x=rate, y = p)) + 
-  geom_col(position = "identity", bins=300, fill ="lightblue1", colour ="dodgerblue3") + 
-  labs(x ="Ratio of electrodes analysed / measured", y = "") +
-  theme_classic() +
-  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + ylim(0, 0.4) +    
-  scale_x_continuous(labels = scales::percent)  + scale_y_continuous(labels = scales::percent, limits = c(0, 0.4)) +
-  
-  labs(caption = sprintf("N of respondents - %d",  nrow(cv))) 
-```
-
-```{r}
-cv %>% dplyr::select(rate) %>% group_by(rate) %>% dplyr::summarise(n = n()) %>% 
-  mutate(p = round(n / sum(n), 2)) %>% arrange(desc(n))
 ```
 
 ## Software usage
@@ -390,7 +313,7 @@ melt(new_matrix) %>% ggplot(., aes(x=Var1, y=Var2)) +
     theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
 ```
 
-### Important features
+## Important features
 
 ```{r, warning=FALSE}
 feature <- data[52:60] %>% rename_all(., ~str_split_i(colnames(data[52:60]), "\\? \\[", 2) %>% 
@@ -409,21 +332,13 @@ feature %>%
 
 ```
 
-```{r, warning=FALSE}
+```{r}
 feature1 <- feature %>% 
   pivot_longer(cols = everything(), names_to = "name", values_to = "value") %>% 
   mutate(index = as.integer(factor(name))) %>% 
   filter(!is.na(value))
-
-#feature  %>% distinct(., index, name) %>% arrange(., index)
-
-feature1 %>% #filter(index %in% c(2, 6, 7, 4)) %>% 
-  ggplot() + 
-  geom_density(aes(x = value, fill = str_wrap(name)), bw = 0.5) + 
-  labs(x = "score", fill="Features")  + theme_classic()  +
-  theme(legend.position = "none", legend.key.height=unit(2, "cm")) + facet_wrap(~str_wrap(name, 20))
-
 ```
+
 
 ```{r}
 feature1 %>% filter(index %in% c(2, 6, 7, 4)) %>% 
@@ -615,7 +530,58 @@ test +
 
 ```
 
-## Up or down
+## Controvercies
+
+### Channels
+
+How many channels do you typically measure?
+
+```{r, warning=FALSE, message=FALSE}
+chs <- data %>% dplyr::rename(channels = !!names(.)[23]) %>% filter(channels < 10000) 
+
+chs %>% 
+  ggplot(data = ., aes(x = channels)) + ylab("Counts") +
+  geom_histogram(bins=300) +  scale_x_continuous(breaks=seq(0, 300, 30)) +
+    labs(x ="How many channels do you typically measure?") + theme_classic() +
+  labs(caption = sprintf("N of respondents - %d",  nrow(chs))) +
+  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
+```
+
+How many channels do you typically analyse?
+
+```{r, warning=FALSE, message=FALSE}
+chs <- data %>% filter(.[[24]] < 500)
+  
+  chs %>% ggplot(data = ., aes_(as.name(names(data)[24]))) +
+  geom_histogram(bins=300) +  scale_x_continuous(breaks=seq(0, 300, 30))+
+    labs(x ="How many channels of those you measured do you typically analyse?") + theme_classic() +
+  labs(caption = sprintf("N of respondents - %d",  nrow(chs))) +
+  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
+
+```
+
+Combined version
+
+```{r}
+cv <- data %>% select(23, 24) %>% 
+  rename_at(vars(colnames(.)), ~ c("measure", "analyse")) %>% 
+  filter(measure < 10000, analyse < 500)  %>% 
+  mutate(rate = round(analyse / measure, 2)) 
+
+an_me_plot <- cv %>% group_by(rate) %>% dplyr::summarise(n = n()) %>% 
+  mutate(p = round(n / sum(n), 2)) %>% 
+  ggplot(aes(x=rate, y = p)) + 
+  geom_col(position = "identity", bins=300, fill ="lightblue1", colour ="dodgerblue3") + 
+  labs(x ="Ratio of electrodes analysed / measured", y = "") +
+  theme_classic() +
+  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + ylim(0, 0.4) +    
+  scale_x_continuous(labels = scales::percent)  + scale_y_continuous(labels = scales::percent, limits = c(0, 0.4))
+
+an_me_plot +
+  labs(caption = sprintf("N of respondents - %d",  nrow(cv))) 
+```
+
+### Up or down
 
 ```{r}
 t <- foreach(i = 1:nrow(data)) %do% tokenize_words(as.character(data[i, 11]))
@@ -655,7 +621,7 @@ ud <- table(data[79]) %>% data.frame() %>%
   rename_at(vars(colnames(.)), ~ c("position", "scores")) %>%
   mutate(percent_score = round(scores / sum(scores) * 100)) 
 
-ud %>% 
+pol_not_plot1 <- ud %>% 
     ggplot(., aes(y = position, x = percent_score)) + #, fill = as.factor(percent_score))) +
     geom_bar(position = "dodge", stat = "identity", width=0.5, fill ="lightblue1", colour ="dodgerblue3") + 
     theme_classic() +
@@ -668,7 +634,9 @@ ud %>%
             ) +
   ggtitle("In ERP plot, should positive voltages be plotted upwards, or downwards?") +
   scale_fill_manual(values=colours) + xlim(0, 83) +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))  +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))  
+
+pol_not_plot1 +
     labs(caption = sprintf("N of respondents - %d",  sum(ud$scores))) 
 ```
 
@@ -679,7 +647,7 @@ group_by(area) %>%
 filter(n() > 2) %>% group_by(area, ud) %>% dplyr::summarise(n = n()) %>% 
   group_by(area) %>% dplyr::mutate(nn = sum(n)) %>% filter(area != "")
 
-as %>% 
+pol_not_plot2 <- as %>% 
   ggplot(., aes(x = n, y = reorder(area, nn), fill = ud)) +
    geom_col(stat = "identity", width = 0.5) +
   labs(x = "Count", y = "", fill ="Positive:") +
@@ -694,12 +662,83 @@ as %>%
         ) +  
   theme_classic() +
 scale_fill_manual(values=colours)  +
-    theme(legend.position="right", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) #+
+    theme(legend.position="right", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
+
+pol_not_plot2 +
     labs(caption = sprintf("N of respondents - %d",  sum(as$n)))
+```
+
+
+### Baseline
+
+Think about the baseline period (the time before the stimulus onset). How many milliseconds would you recommend to plot? Help: Please, provide the baseline duration for the plot, not the duration for the baseline-correction
+
+#### justification
+
+```{r}
+# If you don't want to provide a number on previous question, please, provide a justification
+# depends on what??
+# manual categorization of depending
+j <- data %>%    
+  dplyr::rename(q = !!names(.)[78]) %>% filter(!is.na(q)) %>% dplyr::select(q) %>% 
+  mutate(q = tolower(q)) %>% mutate(q = gsub('depends in|depending on', 'depends on', q),
+         dependson = ifelse(grepl("depends|depend", q), q, NA)) %>% 
+  separate(dependson, into = c("a","b"), sep = "depends on |depend on ") %>% 
+  dplyr::select(-a) %>% 
+  dplyr::rename(dependson = b) #%>% 
+j %>% filter(!is.na(dependson)) %>% select(dependson)
+j %>% filter(is.na(dependson))  %>% select(-dependson)
+#j %>% write.csv(., "data/justification.csv")
+  #View()
+just <- read.csv("data/justification.csv") %>% dplyr::select(group, num)
+
+just2 <- just %>% filter(is.na(num)) %>% group_by(group) %>% dplyr::summarise(n = n())
 
 ```
 
-## Error bars
+#### periods
+
+```{r}
+bl <- table(abs(just[2] %>% na.omit() %>% rbind(data[77] %>% dplyr::rename(num = !!names(.)[1]) , .))) %>% data.frame() %>%  dplyr::rename(baseline = !!names(.)[1]) %>% 
+  mutate(percent_score = round(Freq / sum(Freq), 2) *100)
+
+periods_plot <- bl %>%
+    ggplot(data = ., aes(x = baseline, y = percent_score)) +
+    geom_bar(stat="identity", fill ="lightblue1", colour ="dodgerblue3") + 
+  labs(x = "Recomended baseline in msec", y = "") +  
+  scale_y_continuous(breaks=seq(0, 60, 5)) + theme_classic() +
+  theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
+  geom_text(aes(label = paste0(percent_score, "%"), group = baseline), position = position_dodge(width = .9), vjust = -0.3)   +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text.y = element_blank(), axis.text = element_text(size = 10))
+
+periods_plot +
+    labs(caption = sprintf("N of respondents - %d",  sum(bl$Freq)))
+```
+```{r}
+bl2 <- table(abs(just[2] %>% na.omit() %>% rbind(data[77] %>% dplyr::rename(num = !!names(.)[1]) , .))) %>% data.frame() %>%  dplyr::rename(baseline = !!names(.)[1]) %>% 
+  mutate(percent_score = round(Freq / sum(Freq), 2) *100) %>% filter(percent_score > 1)
+
+periods_plot2 <- bl2 %>%
+    ggplot(data = ., aes(x = baseline, y = percent_score)) +
+    geom_bar(stat="identity", fill ="lightblue1", colour ="dodgerblue3") + 
+  labs(x = "Recomended baseline in msec", y = "") +  
+  scale_y_continuous(breaks=seq(0, 60, 5)) + theme_classic() +
+  theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
+  geom_text(aes(label = paste0(percent_score, "%"), group = baseline), position = position_dodge(width = .9), vjust = -0.3)   +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text.y = element_blank(), axis.text = element_text(size = 10))
+
+periods_plot2 +
+    labs(caption = sprintf("N of respondents - %d",  sum(bl$Freq)))
+```
+
+### Combined
+
+```{r}
+ggarrange(periods_plot2, an_me_plot, labels = c("A", "B"))
+```
+
+## Awareness
+### Error bars
 
 ```{r}
 table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "Scores"))  %>% 
@@ -767,7 +806,7 @@ ebd_fig +
 
 ```
 
-### Combination
+#### Combination
 
 ```{r}
 ggarrange(eb_fig, ebd_fig, 
@@ -779,51 +818,8 @@ ggarrange(eb_fig, ebd_fig,
 data[76] %>%  filter(!is.na(.)) %>% table()
 ```
 
-## Baseline
 
-Think about the baseline period (the time before the stimulus onset). How many milliseconds would you recommend to plot? Help: Please, provide the baseline duration for the plot, not the duration for the baseline-correction
-
-#### justification
-
-```{r}
-# If you don't want to provide a number on previous question, please, provide a justification
-# depends on what??
-# manual categorization of depending
-j <- data %>%    
-  dplyr::rename(q = !!names(.)[78]) %>% filter(!is.na(q)) %>% dplyr::select(q) %>% 
-  mutate(q = tolower(q)) %>% mutate(q = gsub('depends in|depending on', 'depends on', q),
-         dependson = ifelse(grepl("depends|depend", q), q, NA)) %>% 
-  separate(dependson, into = c("a","b"), sep = "depends on |depend on ") %>% 
-  dplyr::select(-a) %>% 
-  dplyr::rename(dependson = b) #%>% 
-j %>% filter(!is.na(dependson)) %>% select(dependson)
-j %>% filter(is.na(dependson))  %>% select(-dependson)
-#j %>% write.csv(., "data/justification.csv")
-  #View()
-just <- read.csv("data/justification.csv") %>% dplyr::select(group, num)
-
-just2 <- just %>% filter(is.na(num)) %>% group_by(group) %>% dplyr::summarise(n = n())
-
-```
-
-#### periods
-
-```{r}
-bl <- table(abs(just[2] %>% na.omit() %>% rbind(data[77] %>% dplyr::rename(num = !!names(.)[1]) , .))) %>% data.frame() %>%  dplyr::rename(baseline = !!names(.)[1]) %>% 
-  mutate(percent_score = round(Freq / sum(Freq), 2) *100)
-
-bl %>%
-    ggplot(data = ., aes(x = baseline, y = percent_score)) +
-    geom_bar(stat="identity", fill ="lightblue1", colour ="dodgerblue3") + 
-  labs(x = "Recomended baseline in msec", y = "") +  
-  scale_y_continuous(breaks=seq(0, 60, 5)) + theme_classic() +
-  theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
-  geom_text(aes(label = paste0(percent_score, "%"), group = baseline), position = position_dodge(width = .9), vjust = -0.3)   +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text.y = element_blank(), axis.text = element_text(size = 10)) +
-    labs(caption = sprintf("N of respondents - %d",  sum(bl$Freq)))
-```
-
-## Colormaps
+### Colormaps
 
 ```{r}
 cb <- table(data[117]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) 

@@ -22,32 +22,22 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ```{r, message= FALSE, warning=FALSE, echo=FALSE}
 library(readxl)
-library(foreach)
 library(stringr)
 library(dplyr)
-library(tokenizers)
 library(data.table)
 library(ggplot2)
-library(plyr)
-library(quanteda)
 library(purrr)
 library(tidytext)
-library(tm)
-library(SnowballC)
-library(Matrix)
 library(text2vec)
 library(tidyr)
 library(janitor)
-library(GGally)
 library(formattable)
 library(kableExtra)
 library(FactoMineR)
-library(psych)
-library(factoextra)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
-data <- read_excel("data/results-survey.xlsx")
+data <- read_excel("data/results_survey.xlsx")
 data <- data[1:121] %>% 
   filter(.[[18]] !='Yes', .[[20]] < 80) # not analysed any EEG method
 ```

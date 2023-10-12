@@ -28,27 +28,16 @@ library(dplyr)
 library(tokenizers)
 library(data.table)
 library(ggplot2)
-library(quanteda)
-library(SemNetCleaner)
 library(purrr)
 library(tidytext)
-library(tm)
-library(topicmodels)
-library(SnowballC)
-library(Matrix)
-library(text2vec)
-library(tidyr)
 library(kableExtra)
 library(stringi)
-library("xlsx")
-library(padr)
 library(magick)
 library(gt)
-library(pdftools)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
-data <- read_excel("data/results-survey.xlsx")
+data <- read_excel("data/results_survey.xlsx")
 data <- data[1:121] %>% 
   filter(.[[18]] !='Yes') # not analysed any EEG method
 
