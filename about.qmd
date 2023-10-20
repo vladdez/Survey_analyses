@@ -1,6 +1,8 @@
 ---
-title: "About"
+title: "About the project"
 ---
+
+# **The Art of Brainwaves: A Survey on Event-Related Potential Visualization Practices**
 
 Hello! We conducted a survey to find out how researchers use EEG plotting tools in their daily work. Here you can find the analysis of this survey.
 
@@ -16,4 +18,4 @@ Check out these sections on the left panel:
 
 *Study was conducted by Vladimir Mikheev, René Skukies and Benedikt Ehinger and supported by the Transregional Collaborative Research Center 161 (Sonderforschungsbereiche/Transregio 161, SFB-TRR 161) and Deutsche Forschungsgemeinschaft (DFG, German Research Foundation).*
 
-![](images/logos_combined.jpg){width="2171"}
+![](images/logos_combined.jpg){width="1084"}
