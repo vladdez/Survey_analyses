@@ -25,6 +25,7 @@ library(readxl)
 library(foreach)
 library(stringr)
 library(dplyr)
+library(tidyr)
 library(tokenizers)
 library(data.table)
 library(ggplot2)
@@ -43,9 +44,9 @@ data <- data[1:121] %>%
 
 ```
 
-## word_preproc
+### word_preproc
 
-```{r}
+```{r, message= FALSE, warning=FALSE}
 word_preproc <- function(data, N){
  # N = 69
   stop_list = c("a", "an", "the", "wise", "like", "s", "plot", "plots")
@@ -64,6 +65,59 @@ word_preproc <- function(data, N){
   return(tmp)
 }
 
+```
+
+## Plot dimension
+### miniatures
+
+```{r}
+
+# mins <- image_read_pdf("data/eegvis_icons.pdf", density = 1000)  
+# for (i in 1:8){
+#   image_write(mins[i], path = paste0("img/", i, ".png"), format = "png", density = 1000)
+# }
+
+```
+
+### dimensions
+
+```{r}
+dm <- data.frame()
+
+  
+data.frame(plots = c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot timeseries", "ERP grid", "ERP image", "Channel image", "Parallel plot"), 
+           time = c("x", "x", "", "(x)", "x", "x", "x", "x"),
+           channels = c("", "x", "x", "x", "x", "", "x", "x"), 
+           spatial = c("", "", "x", "x", "x", "", "", ""), 
+           conditions = c("x", "", "", "", "", "", "", "x"), 
+           trials = c("", "x", "", "", "", "x", "", "")) %>% kable(align="lcccccc")  %>% 
+  kable_minimal(full_width = F,  html_font = "Source Sans Pro") 
+
+```
+
+```{r}
+cm <- dplyr::tibble(
+  Plots = c("img/1.png", "img/2.png", "img/3.png", "img/4.png", "img/5.png", "img/6.png", "img/7.png", "img/8.png"),
+  Name = c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot timeseries", "ERP grid", "ERP image", "Channel image", "Parallel plot"), 
+  Time = c("x", "x", "", "(x)", "x", "x", "x", "x"),
+  Channels = c("", "x", "x", "x", "x", "", "x", "x"), 
+  Spatial = c("", "", "x", "x", "x", "", "", ""), 
+  Conditions = c("x", "", "", "", "", "", "", "x"), 
+  Trials = c("", "x", "", "", "", "x", "", "")
+) 
+
+cm %>% 
+  gt()  %>% 
+  cols_align(align = "center", columns = c(Time, Channels, Spatial, Conditions, Trials)) %>% 
+  text_transform(
+    locations = cells_body(columns = Plots),
+    fn = function(x) {
+      lapply(x, function(x) {
+              html(paste(local_image(filename = x)))
+      })
+    }
+  ) %>%  opt_table_font(font = "Source Sans Pro")  #,stack = "rounded-sans") 
+ 
 ```
 
 
@@ -313,60 +367,6 @@ create_table(t) %>% data.frame() %>%
   kable_minimal(full_width = F,  html_font = "Source Sans Pro")
 
 ```
-
-### miniatures
-
-```{r}
-
-# mins <- image_read_pdf("data/eegvis_icons.pdf", density = 1000)  
-# for (i in 1:8){
-#   image_write(mins[i], path = paste0("img/", i, ".png"), format = "png", density = 1000)
-# }
-
-```
-
-## Plot dimension
-
-```{r}
-dm <- data.frame()
-
-  
-data.frame(plots = c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot timeseries", "ERP grid", "ERP image", "Channel image", "Parallel plot"), 
-           time = c("x", "x", "", "(x)", "x", "x", "x", "x"),
-           channels = c("", "x", "x", "x", "x", "", "x", "x"), 
-           spatial = c("", "", "x", "x", "x", "", "", ""), 
-           conditions = c("x", "", "", "", "", "", "", "x"), 
-           trials = c("", "x", "", "", "", "x", "", "")) %>% kable(align="lcccccc")  %>% 
-  kable_minimal(full_width = F,  html_font = "Source Sans Pro") 
-
-```
-
-```{r}
-cm <- dplyr::tibble(
-  Plots = c("img/1.png", "img/2.png", "img/3.png", "img/4.png", "img/5.png", "img/6.png", "img/7.png", "img/8.png"),
-  Name = c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot timeseries", "ERP grid", "ERP image", "Channel image", "Parallel plot"), 
-  Time = c("x", "x", "", "(x)", "x", "x", "x", "x"),
-  Channels = c("", "x", "x", "x", "x", "", "x", "x"), 
-  Spatial = c("", "", "x", "x", "x", "", "", ""), 
-  Conditions = c("x", "", "", "", "", "", "", "x"), 
-  Trials = c("", "x", "", "", "", "x", "", "")
-) 
-
-cm %>% 
-  gt()  %>% 
-  cols_align(align = "center", columns = c(Time, Channels, Spatial, Conditions, Trials)) %>% 
-  text_transform(
-    locations = cells_body(columns = Plots),
-    fn = function(x) {
-      lapply(x, function(x) {
-              html(paste(local_image(filename = x)))
-      })
-    }
-  ) %>%  opt_table_font(font = "Source Sans Pro")  #,stack = "rounded-sans") 
- 
-```
-
-
 
 ## Struggles with plots
 
@@ -750,7 +750,7 @@ rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem8) %>%
 
 ```
 
-## New feature
+## New features
 
 #### 1
 

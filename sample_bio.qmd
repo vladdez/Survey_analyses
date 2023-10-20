@@ -45,7 +45,7 @@ data <- data[1:121] %>%
   filter(.[[18]] !='Yes') # not analysed any EEG method
 ```
 
-## Picture
+## Sample overview
 
 ### Country
 
@@ -333,7 +333,7 @@ cc +
     labs(caption = sprintf("N of respondents - %d",  sum(sal$Freq))) 
 ```
 
-## Combination
+## Combined plots
 
 ### gray
 

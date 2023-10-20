@@ -12,13 +12,13 @@ website:
           - about.qmd
       - section: "Analyses"
         contents:
-          - text: "1. sample bio"
+          - text: "1. sample information"
             file: sample_bio.qmd
-          - text: "2. visualisation customs"
+          - text: "2. visualization customs"
             file: customs.qmd
           - text: "3. proficiency"
             file: proficiency.qmd
-          - text: "4. feedbacks"
+          - text: "4. naming and feedback"
             file: feedbacks.qmd
 
 
