@@ -1,20 +1,24 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
 cff-version: 1.2.0
-message: "If you use this page, please cite it as below."
+title: The analysis code for "The Art of Brainwaves"
+message: 'If you use this page, please cite it as below.'
+type: software
 authors:
-- family-names: "Mikheev"
-  given-names: "Vladimir"
-  orcid: "https://orcid.org/0000-0002-4738-6655"
-- family-names: "Skukies"
-  given-names: "René"
-  orcid: "https://orcid.org/0000-0000-0000-0000"
-- family-names: "Skukies"
-  given-names: "René"
-  orcid: "https://orcid.org/0000-0002-4124-4584"
-- family-names: "Ehinger"
-  given-names: "Benedikt"
-  orcid: "https://orcid.org/0000-0002-6276-3332"
-title: "The analysis code for "The Art of Brainwaves""
+  - given-names: Vladimir
+    family-names: Mikheev
+    orcid: 'https://orcid.org/0000-0002-4738-6655'
+  - given-names: René
+    family-names: Skukies
+    orcid: 'https://orcid.org/0000-0002-4124-4584'
+  - given-names: Benedikt
+    family-names: Ehinger
+    orcid: 'https://orcid.org/0000-0002-6276-3332'
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.10033923
+repository-code: 'https://github.com/vladdez/Survey_analyses/tree/main'
+url: 'https://vladdez.github.io/Survey_analyses/about.html'
 version: 0.1.2
-doi: 10.5281/zenodo.10033923
-date-released: 2023-10-23
-url: "https://github.com/vladdez/Survey_analyses"
+date-released: '2023-10-23'
