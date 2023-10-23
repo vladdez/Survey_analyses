@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this page, please cite it as below."
+authors:
+- family-names: "Mikheev"
+  given-names: "Vladimir"
+  orcid: "https://orcid.org/0000-0002-4738-6655"
+- family-names: "Skukies"
+  given-names: "René"
+  orcid: "https://orcid.org/0000-0000-0000-0000"
+- family-names: "Skukies"
+  given-names: "René"
+  orcid: "https://orcid.org/0000-0002-4124-4584"
+- family-names: "Ehinger"
+  given-names: "Benedikt"
+  orcid: "https://orcid.org/0000-0002-6276-3332"
+title: "The analysis code for "The Art of Brainwaves""
+version: 0.1.2
+doi: 10.5281/zenodo.10033923
+date-released: 2023-10-23
+url: "https://github.com/vladdez/Survey_analyses"
