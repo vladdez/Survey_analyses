@@ -14,7 +14,7 @@ editor: visual
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
-**Here we sho a statistics about our study sample: biographical and experience data**
+**Here we show a statistics about our study sample: biographical and experience data**
 
 
 ## Setup
@@ -157,11 +157,11 @@ pos <- data[c(12, 13)] %>% dplyr::rename(position = !!names(.)[1], other = !!nam
       )) %>% dplyr::select(position) %>% na.omit(.) %>% table() %>% as.data.frame()  %>% 
    mutate(position = factor(position, levels = rev(c('Bachelor', 'Master', 'Doctor', 'Postdoc', 'Professor', 'Industry R&D', 'Medical doctor', 'Other')))) %>% mutate(percent_score = round(Freq / sum(Freq) * 100))
 
-italised2 <- rev(c('Bachelor', 'Master', 'Doctor', 'Postdoc', 'Professor', 'Industry R&D', 'Medical doctor', expression(italic('Other'))))
+italised2 <- rev(c('Bachelor', 'Master', 'PhD', 'Postdoc', 'Professor', 'Industry R&D', 'Medical doctor', expression(italic('Other'))))
 position <- pos %>% 
     #ggplot(data = ., aes(y = position, x= Freq, fill = position)) +
     ggplot(data = ., aes(y = position, x= percent_score))+ #, fill = position)) +
-    geom_bar(stat="identity") + labs(y = "Position", x = "Percent") +
+    geom_bar(stat="identity") + labs(y = "Current position", x = "Percent") +
     #geom_text(aes(label = Freq), hjust = -0.1) + 
     geom_text(aes(label = paste0(percent_score, "%")), hjust = -0.1) +
     theme_classic()  +
