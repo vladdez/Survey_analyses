@@ -139,7 +139,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./about.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">About</span></a>
+ <span class="menu-text">About the project</span></a>
   </div>
 </li>
       </ul>
@@ -228,7 +228,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p><strong>Here we sho a statistics about our study sample: biographical and experience data</strong></p>
+<p><strong>Here we show a statistics about our study sample: biographical and experience data</strong></p>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
 <div class="cell">
@@ -399,11 +399,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(position) <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>(.) <span class="sc">%&gt;%</span> <span class="fu">table</span>() <span class="sc">%&gt;%</span> <span class="fu">as.data.frame</span>()  <span class="sc">%&gt;%</span> </span>
 <span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">position =</span> <span class="fu">factor</span>(position, <span class="at">levels =</span> <span class="fu">rev</span>(<span class="fu">c</span>(<span class="st">'Bachelor'</span>, <span class="st">'Master'</span>, <span class="st">'Doctor'</span>, <span class="st">'Postdoc'</span>, <span class="st">'Professor'</span>, <span class="st">'Industry R&amp;D'</span>, <span class="st">'Medical doctor'</span>, <span class="st">'Other'</span>)))) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">percent_score =</span> <span class="fu">round</span>(Freq <span class="sc">/</span> <span class="fu">sum</span>(Freq) <span class="sc">*</span> <span class="dv">100</span>))</span>
 <span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>italised2 <span class="ot">&lt;-</span> <span class="fu">rev</span>(<span class="fu">c</span>(<span class="st">'Bachelor'</span>, <span class="st">'Master'</span>, <span class="st">'Doctor'</span>, <span class="st">'Postdoc'</span>, <span class="st">'Professor'</span>, <span class="st">'Industry R&amp;D'</span>, <span class="st">'Medical doctor'</span>, <span class="fu">expression</span>(<span class="fu">italic</span>(<span class="st">'Other'</span>))))</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>italised2 <span class="ot">&lt;-</span> <span class="fu">rev</span>(<span class="fu">c</span>(<span class="st">'Bachelor'</span>, <span class="st">'Master'</span>, <span class="st">'PhD'</span>, <span class="st">'Postdoc'</span>, <span class="st">'Professor'</span>, <span class="st">'Industry R&amp;D'</span>, <span class="st">'Medical doctor'</span>, <span class="fu">expression</span>(<span class="fu">italic</span>(<span class="st">'Other'</span>))))</span>
 <span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>position <span class="ot">&lt;-</span> pos <span class="sc">%&gt;%</span> </span>
 <span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">#ggplot(data = ., aes(y = position, x= Freq, fill = position)) +</span></span>
 <span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="at">data =</span> ., <span class="fu">aes</span>(<span class="at">y =</span> position, <span class="at">x=</span> percent_score))<span class="sc">+</span> <span class="co">#, fill = position)) +</span></span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Position"</span>, <span class="at">x =</span> <span class="st">"Percent"</span>) <span class="sc">+</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Current position"</span>, <span class="at">x =</span> <span class="st">"Percent"</span>) <span class="sc">+</span></span>
 <span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">#geom_text(aes(label = Freq), hjust = -0.1) + </span></span>
 <span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste0</span>(percent_score, <span class="st">"%"</span>)), <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.1</span>) <span class="sc">+</span></span>
 <span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_classic</span>()  <span class="sc">+</span></span>

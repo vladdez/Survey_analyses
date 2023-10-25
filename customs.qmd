@@ -341,65 +341,6 @@ feature1 <- feature %>%
 
 
 ```{r}
-feature1 %>% filter(index %in% c(2, 6, 7, 4)) %>% 
-  ggplot() + 
-  geom_density(aes(x = value, color = str_wrap(name, 20)), bw = 0.5) + 
-  labs(x = "score", color = "Features")  + theme_classic() +
-  theme(legend.position = "none", 
-        legend.key.height=unit(2, "cm"), 
-        axis.text.x = element_text(size = 12),
-        strip.text = element_text(size = 14)) + 
-  facet_wrap(~str_wrap(name, 20)) + labs(x="Scores on Likert scale", y="Density") 
-```
-
-```{r}
-f1 <- feature1 %>% filter(index %in% c(2, 6, 7, 4)) %>% 
-  ggplot() + 
-  stat_density(aes(x = value, color = str_wrap(name, 20)),
-                  geom="line", position="identity", bw = 0.5, size = 1) +
-  labs(x = "score", color = "Features")  + theme_classic() +
-  theme(
-        legend.key.height=unit(1, "cm"),
-        legend.text = element_text(color = "black"),
-        axis.text = element_text(size = 14),
-        strip.text = element_text(size = 14))  + 
-  labs(x="Scores on Likert scale", y="Density") 
-f1
-```
-
-```{r}
-f2 <- feature1 %>% filter(index %in% c(8, 9)) %>% 
-  ggplot(aes(x = value, color = str_wrap(name, 20))) + 
-   geom_line(stat = "density", bw = 0.5, size = 1) +
-  labs(x = "score", color ="Features")  + theme_classic() +
-  theme(
-        legend.key.height=unit(1, "cm"),
-        legend.text = element_text(color = "black"),
-        axis.text = element_text(size = 14),
-        strip.text = element_text(size = 14))  + 
-  labs(x="Scores on Likert scale", y="Density") 
-f2
-```
-
-```{r}
-f3 <- feature1 %>% filter(index %in% c(1, 3, 5)) %>% 
-  ggplot(aes(x = value, color = str_wrap(name, 20))) + 
-   geom_line(stat = "density", bw = 0.5, size = 1) +
-  labs(x = "score", color ="Features")  + theme_classic() +
-  theme(
-        legend.key.height=unit(1, "cm"),
-        legend.text = element_text(color = "black"),
-        axis.text = element_text(size = 14),
-        strip.text = element_text(size = 14))  + 
-  labs(x="Scores on Likert scale", y="Density") 
-
-f3 
-```
-
-##### Combination
-
-```{r}
-
 plot_features <- c(
   "Combine with a custom plot created outside of the toolbox (as subplot or inset)",
   "Flexible tweaking of plot attributes (colors, linewidths, margins etc.)",
@@ -412,12 +353,7 @@ plot_features <- c(
   "Generating plots by coding"
 )
 
-comb_data <- feature1 %>% 
-    mutate(gr = case_when(
-    index %in% c(1, 3, 5) ~ 'Mixed', 
-    index %in% c(8, 9) ~ 'Moderate',
-    index %in% c(2, 6, 7, 4) ~ 'Favored')) %>% 
-   mutate(name = case_when(
+comb_data <- feature1 %>%  mutate(name = case_when(
   name == "Combine with a custom plot created outside of the toolbox (as subplot or inset)" ~ "Inset",
   name == "Flexible tweaking of plot attributes (colors, linewidths, margins etc.)"~ "Flexible",
   name == "Speed of plotting"~ "Speed",
@@ -427,106 +363,98 @@ comb_data <- feature1 %>%
   name == "Interactive selection of time-ranges or electrodes e.g. via Sliders or Dropdown menus"~ "Interactive",
   name == "Generating plots by clicking (GUI)"~ "GUI",
   name == "Generating plots by coding" ~ "Coding"
-  )) 
+  )) %>% 
+    mutate(gr = case_when(
+      grepl("\\b(Speed|Zooming|GUI|Interactive)\\b", name) == TRUE ~ "Moderate",
+      grepl("\\b(Coding|Flexible|Reproducable|Publicable|Inset)\\b", name) == TRUE ~ "Favored"))
 
-comb <- comb_data %>% 
-  ggplot(aes(x = value, label = name, color = str_wrap(name, 20))) + 
-   geom_line(stat = "density", bw = 0.5, size = 1) +
-  labs(x = "score", color = "Features") +
-  theme_classic() +
-  theme(
-    legend.key.height = unit(1, "cm"),
-    legend.text = element_text(color = "black"),
-    legend.title = element_blank(),
-    legend.position = "none",
-    strip.background = element_blank(), 
-    axis.text = element_text(size = 14),
-    strip.text = element_text(size = 14),
-    panel.grid.major.x = element_blank(),
-        panel.grid.major.y = element_line(linetype = "dashed"),
-        panel.grid.minor.y = element_blank(),
-        panel.grid.minor.x = element_blank(),
-  ) +
-  labs(x = "Scores on Likert scale", y = "Density")  +
-  facet_wrap(~gr)
-```
+test <-  comb_data %>% group_by(name, value) %>% dplyr::summarise(n = n()) %>% 
+    mutate(gr = case_when(
+      grepl("\\b(Speed|Zooming|GUI|Interactive)\\b", name) == TRUE ~ "Moderate",
+      grepl("\\b(Coding|Flexible|Reproducable|Publicable|Inset)\\b", name) == TRUE ~ "Favored"))  %>% 
+  mutate(denymax = case_when(value == 2 ~ n, TRUE ~ NA))
 
-```{r}
-p <- ggplot_build(comb)
-
-# These are the columns of interest    
-#p$data[[1]]$x
-#p$data[[1]]$density
-
-
-test <- aggregate((value) ~ name, data = comb_data, function(x) last(density(x, bw = 0.5)$y)) %>%
-  cbind(., aggregate((value) ~ name, data = comb_data, function(x) max(density(x, bw = 0.5)$x))[,2]) %>% 
-  rename_at(vars(colnames(.)), ~ c("name", "denymax", "denxmax")) %>%
-  mutate(gr = case_when(
-      grepl("\\b(GUI|Interactive|Inset)\\b", name) == TRUE ~ "Mixed", 
-      grepl("\\b(Speed|Zooming)\\b", name) == TRUE ~ "Moderate",
-      grepl("\\b(Coding|Flexible|Reproducable|Publicable)\\b", name) == TRUE ~ "Favored",
-      ))
-```
-
-```{r}
 cbPalette <- c("#e3342f", "#f6993f", "#f1a20b", "#38c172", "#3490dc", "#6574cd", "#9561e2", "#4dc0b5", "#f66d9b")
-comb +  geom_label_repel(data = test, aes(label = name, x = denxmax, y = denymax, group = gr ) ,
-                    nudge = 45) +  scale_color_manual(values=cbPalette) +
-    labs(caption = sprintf("N of respondents - %d",  nrow(feature))) 
+```
 
 
-# comb +  geom_label_repel(aes(label = name, y = round(after_stat(density), 2)),
-#                     stat = 'density', bw = .5,
-#                     n = 1, nudge = 45
-#                     )
+```{r}
+test %>%  
+  ggplot(aes(x = value, y = n, label = name, full = name)) + 
+   geom_col(stat = "identity", bw = 0.5, size = 1) + facet_wrap(~name)
+```
+
+```{r}
+test  %>% 
+  ggplot(aes(x = value, y = n, label = name, color = name)) + 
+   geom_smooth(aes(x = value, y = n),  size = 1) + #facet_wrap(~gr) +  
+  scale_color_manual(values=cbPalette) + theme_classic()  +  
+  theme(legend.position = "none", 
+  strip.background = element_blank(), 
+  strip.text = element_text(size = 14),
+) + labs(x = "Values on Likert scale", y = "Scores") +
+  geom_text_repel(
+    aes(color = name, label = name, x = 2, y = denymax,),
+    family = "Lato",
+    fontface = "bold",
+    size = 4,
+    direction = "y",
+    xlim = c(3, NA),
+    hjust = 0,
+    segment.size = .7,
+    segment.alpha = .5,
+    segment.linetype = "dotted",
+    box.padding = .4,
+    segment.curvature = -0.1,
+    segment.ncp = 3,
+    segment.angle = 20
+  ) +
+  scale_x_continuous(
+    expand = c(0, 0),
+    limits = c(-2, 3), 
+    breaks = seq(-2, 2, by = 1)
+  )
 
 ```
 
 ```{r}
-
-comb +  theme(legend.position = "bottom"
-                    )
-
-```
-
-```{r, eval = FALSE, echo = FALSE}
-set.seed(42)
-ggplot(Orange, aes(age, circumference, color = Tree)) +
-  geom_line() +
-  coord_cartesian(xlim = c(min(Orange$age), max(Orange$age) + 90)) +
-  geom_text_repel(
-    data = subset(Orange, age == max(age)),
-    aes(label = paste("Tree", Tree)),
-    size = 6,
-    nudge_x = 45,
-    segment.color = NA
+library(showtext)
+font_add_google("Lato")
+font_add_google("Roboto")
+theme_set(theme_minimal(base_family = "Lato"))
+test  %>% 
+  ggplot(aes(x = value, y = n, label = name, color = name)) + 
+   geom_smooth( bw = 0.5, size = 1) + facet_grid(gr~ .) +  
+  scale_color_manual(values=cbPalette) + theme_classic()  + 
+  labs(x = "Values on Likert scale", y = "Scores") +  
+  theme(
+    legend.position = "none", 
+    strip.background = element_blank(), 
+    strip.text = element_text(size = 14, family='Roboto'),
+    text=element_text(family="Lato")
   ) +
-  theme_classic(base_size = 16) +
-  theme(legend.position = "none") +
-  labs(title = "Orange Trees", x = "Age (days)", y = "Circumference (mm)")
-```
-
-```{r, eval = FALSE, echo = FALSE}
-set.seed(123)
-
-test <- data.frame(x = rnorm(1000)) |>
-    ggplot(aes(x = x)) +
-    geom_line(stat = 'density', bw = .5)
-
-p2 <- ggplot_build(test)
-
-# These are the columns of interest    
-p2$data[[1]]$x
-p2$data[[1]]$density
-
-test +
-    geom_text_repel(aes(x =max(p2$data[[1]]$x), label = max(p2$data[[1]]$x)),
-                    stat = 'density', bw = .5,
-                    n = 1 ## ten density labels
-                    )
-
-
+  coord_cartesian(clip = "off") +
+  geom_text_repel(
+    aes(color = name, label = name, x = 2, y = denymax,),
+    family = "Lato",
+    fontface = "bold",
+    size = 4,
+    direction = "y",
+    xlim = c(2.4, Inf),
+    hjust = 0,
+    segment.size = .7,
+    segment.alpha = .5,
+    segment.linetype = "dotted",
+    box.padding = .4,
+    segment.curvature = -0.1,
+    segment.ncp = 3,
+    segment.angle = 20
+  ) +
+  scale_x_continuous(
+    expand = c(0, 0),
+    limits = c(-2, 3.5), 
+    breaks = seq(-2, 2, by = 1)
+  )
 
 ```
 
