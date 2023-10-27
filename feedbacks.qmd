@@ -96,6 +96,8 @@ data.frame(plots = c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot timeser
 ```
 
 ```{r}
+#im_vector <- c("img/1.png", "img/2.png", "img/3.png", "img/4.png", "img/5.png", "img/6.png", "img/7.png", "img/8.png")
+
 cm <- dplyr::tibble(
   Plots = c("img/1.png", "img/2.png", "img/3.png", "img/4.png", "img/5.png", "img/6.png", "img/7.png", "img/8.png"),
   Name = c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot timeseries", "ERP grid", "ERP image", "Channel image", "Parallel plot"), 
@@ -109,6 +111,13 @@ cm <- dplyr::tibble(
 cm %>% 
   gt()  %>% 
   cols_align(align = "center", columns = c(Time, Channels, Spatial, Conditions, Trials)) %>% 
+  cols_width(
+    Time ~ px(50),
+    Channels ~ px(50),
+    Spatial ~ px(50),
+    Conditions ~ px(50),
+    Trials ~ px(50),
+  ) %>% 
   text_transform(
     locations = cells_body(columns = Plots),
     fn = function(x) {
@@ -356,17 +365,52 @@ create_table <- function(t){
 }
 
 
-create_table(t) %>% data.frame() %>%
+
+create_table(t) %>% data.frame() %>% 
   mutate(names = str_to_sentence(names)) %>% 
   mutate(names = str_replace(names, "Erp", "ERP")) %>% 
-  mutate(names = str_replace(names, "erp", "ERP")) %>% 
-  
+  mutate(names = str_replace(names, "erp", "ERP")) %>%
   dplyr::rename(`Plot types` = type,
          `Names given by respondents` = names,
          `Scores` =  score) %>% select(-n, -total, -p)  %>% kable()  %>% 
-  kable_minimal(full_width = F,  html_font = "Source Sans Pro")
+  kable_minimal(full_width = F,  html_font = "Source Sans Pro") %>% 
+  row_spec(c(3, 6, 9, 12, 15, 18, 21), extra_css = "border-bottom: 1px dotted gray;")
 
 ```
+
+```{r}
+plots2 <- c("img/1.png", "img/filler.png", "img/filler.png", "img/2.png", "img/filler.png", "img/filler.png", "img/3.png","img/filler.png", "img/filler.png", "img/4.png", "img/filler.png", "img/filler.png", "img/5.png", "img/filler.png", "img/filler.png", "img/6.png", "img/filler.png", "img/filler.png", "img/7.png", "img/filler.png", "img/filler.png", "img/8.png", "img/filler.png")
+
+tab1 <- create_table(t) %>% data.frame() %>% 
+  mutate(names = str_to_sentence(names)) %>% 
+  mutate(names = str_replace(names, "Erp", "ERP")) %>% 
+  mutate(names = str_replace(names, "erp", "ERP")) %>% tibble::add_column(Plots = plots2, .before = "type") %>% 
+  dplyr::rename(`Plot types` = type,
+         `Names given by respondents` = names,
+         `Scores` =  score) %>% select(-n, -total, -p) %>%  gt()  %>% 
+  text_transform(
+    locations = cells_body(columns = Plots),
+    fn = function(x) {
+      lapply(x, function(x) {
+              html(paste(local_image(filename = x)))
+      })
+    }
+  ) %>% opt_table_font(font = "Source Sans Pro") %>%  tab_options(table_body.hlines.color = "transparent") %>% 
+  tab_options(data_row.padding = px(0.1), table.font.size = 14, container.padding.x = 1) %>% 
+   
+  tab_style(
+    style = cell_borders(
+      sides = c("bottom"),
+      color = "gray",
+      weight = px(1.5),
+      style = "dotted"
+    ),
+    locations = cells_body(rows = c(3, 6, 9, 12, 15, 18, 21))) 
+tab1
+gtsave(tab1, "tab1.png")
+ 
+```
+
 
 ## Struggles with plots
 
@@ -713,7 +757,7 @@ tmp8
 ```
 
 
-## The most problematic plot
+### The most problematic plot
 
 ```{r}
 
@@ -728,9 +772,9 @@ rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem8) %>%
   theme_classic() +
   theme(axis.text = element_text(size = 12), legend.position = "none")
 ```
-
+### Combined
 ```{r}
-rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem8) %>%
+prob_comb <- rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem8) %>%
   group_by(name) %>%  mutate(index = match(name, unique(name)))  %>% filter(problems != "no complains") %>% 
   arrange(desc(n)) %>% slice(1:3) %>% 
   arrange(index) %>%  dplyr::select(name, problems, n, total) %>%  
@@ -741,14 +785,51 @@ rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem8) %>%
   dplyr::mutate(groupRow = 1:n()) %>%
   ungroup() %>%
   mutate(p = round(as.numeric(n)/as.numeric(total), 2) * 100) %>% 
+  group_by(name) %>% mutate(mx = max(p)) %>% 
+  arrange(desc(mx), desc(p)) %>% 
   mutate(score = paste(p, total, sep = "% out of ")) %>% 
   dplyr::mutate(name = ifelse(groupRow == 1, as.character(name), "")) %>%
   dplyr::mutate(score = ifelse(groupRow == 1, as.character(score), paste(p, "%", sep = ""))) %>%
-  select(-c(groupRow, n, total, p)) %>% 
-  kable(escape = F, booktabs = T, col.names = c("Plot name", "The main problem", "Scores"))   %>% 
-  kable_minimal(full_width = F,  html_font = "Source Sans Pro") 
+  select(-c(groupRow, n, total, p, mx)) 
 
 ```
+
+```{r}
+library(kableExtra)
+prob_comb %>% 
+  kable(escape = F, booktabs = T, col.names = c("Plot name", "The main problem", "Scores"))   %>% 
+  kable_minimal(full_width = F,  html_font = "Source Sans Pro") %>% 
+  row_spec(c(3, 6, 9, 12, 15, 18), extra_css = "border-bottom: 1px dotted gray;")
+```
+
+```{r}
+plots3 <- c("img/1.png", "img/filler.png", "img/filler.png", "img/5.png", "img/filler.png", "img/filler.png", "img/4.png","img/filler.png", "img/filler.png", "img/7.png", "img/filler.png", "img/filler.png", "img/2.png", "img/filler.png", "img/filler.png", "img/6.png", "img/filler.png", "img/filler.png", "img/3.png", "img/filler.png", "img/filler.png")
+
+tab2 <- prob_comb %>% tibble::add_column(Plots = plots3, .before = "name") %>% dplyr::rename(`Plot name` = name,
+         `The main problem` = problems,
+         `Scores` =  score) %>% ungroup() %>% gt()  %>% 
+  text_transform(
+    locations = cells_body(columns = Plots),
+    fn = function(x) {
+      lapply(x, function(x) {
+              html(paste(local_image(filename = x)))
+      })
+    }
+  ) %>% opt_table_font(font = "Source Sans Pro") %>%  tab_options(table_body.hlines.color = "transparent") %>% 
+  tab_options(data_row.padding = px(0.8)) %>% 
+  tab_style(
+    style = cell_borders(
+      sides = c("bottom"),
+      color = "gray",
+      weight = px(1.5),
+      style = "dotted"
+    ),
+    locations = cells_body(rows = c(3, 6, 9, 12, 15, 18)))
+tab2
+#gtsave(tab2, "tab2.png")
+
+```
+
 
 ## New features
 

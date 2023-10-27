@@ -116,7 +116,7 @@ cbind(factor_scores[1], data[23]) %>% cbind(., data[24]) %>%  cbind(., n_soft) %
 
 ```
 
-8 features used importanta for visualisation.
+Attitudes on 8 features of ERP visualization tools
 
 ```{r}
 feature <- data[52:60] %>% rename_all(., ~str_split_i(colnames(data[52:60]), "\\? \\[", 2) %>% str_sub(., 1, -2) ) %>%  
@@ -182,9 +182,9 @@ data[25:51] %>%
    dplyr::group_by(., type) %>% nest() %>% 
   dplyr::mutate(., model = map(data, log_fun)) %>% unnest() %>% 
   dplyr::select(type, estimate, std.error, p.value) %>%
-  dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 3), 
-                                                 estimate = round(as.numeric(estimate), 3),
-                                                 std.error = round(as.numeric(std.error), 3)) %>%
+  dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 2), 
+                                                 estimate = round(as.numeric(estimate), 2),
+                                                 std.error = round(as.numeric(std.error), 2)) %>%
   mutate(p.value = cell_spec(p.value, bold = ifelse(p.value < 0.05, TRUE, FALSE))) %>% 
   dplyr::rename(`Analytical software` = type) %>% 
   kable(escape = F, booktabs = T) %>% 
