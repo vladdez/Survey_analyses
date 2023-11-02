@@ -177,6 +177,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">4. naming and feedback</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5. software usage</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -545,7 +551,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span><span class="st">"The number of published papers/preprints with EEG, MEG or iEEG analysis?"</span>, <span class="at">y =</span> <span class="st">""</span>) <span class="sc">+</span> <span class="fu">theme_classic</span>()  <span class="sc">+</span></span>
 <span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>, <span class="at">plot.caption =</span> <span class="fu">element_text</span>(<span class="at">hjust=</span><span class="dv">0</span>), </span>
 <span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>)) <span class="sc">+</span> </span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> tmp_med,        <span class="co"># Add line for mean</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> tmp_med <span class="sc">-</span> <span class="dv">1</span>,        <span class="co"># Add line for mean, -1 because starts from zero</span></span>
 <span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>             <span class="at">col =</span> <span class="st">"brown1"</span>, <span class="at">lty=</span><span class="st">'dashed'</span>,</span>
 <span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>             <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
 <span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"median = "</span>, tmp_med), </span>
@@ -674,7 +680,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span><span class="st">"Years of experience"</span>, <span class="at">y=</span><span class="st">""</span>) ,</span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>          papers_fig <span class="sc">+</span> <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">bins =</span> <span class="dv">45</span>, <span class="at">fill =</span><span class="st">"lightblue1"</span>, <span class="at">col=</span><span class="st">"dodgerblue3"</span>) <span class="sc">+</span> </span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> tmp_med,        <span class="co"># Add line for mean</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> tmp_med <span class="sc">-</span> <span class="dv">1</span>,        <span class="co"># Add line for mean</span></span>
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">col =</span> <span class="st">"brown1"</span>, <span class="at">lty=</span><span class="st">'dashed'</span>,</span>
 <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span><span class="st">"Number of papers published"</span>, <span class="at">y=</span><span class="st">""</span>), </span>
 <span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  </span>

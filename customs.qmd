@@ -178,142 +178,6 @@ mem_tab %>% #filter(plots != "parallel") %>%
   labs(caption = sprintf("N of respondents - %d",  nrow(familiar)))
 ```
 
-## Software usage
-
-#### Frequency
-
-```{r}
-na.omit(data[51]) %>% nrow()
- 
-
-other <- c(rep("Custom scripts",each=9), "4DBTi", rep("letswave", 3), "mTRF", "RAGU", "IGOR Pro", "EEGProcessor", "ELAN", "WinEEG") %>% table(.) %>% data.frame(.) %>% rename_at(vars(colnames(.)), ~ c("soft", "sum_scores"))
-```
-
-```{r, warning=FALSE}
-vec <- names(data[25:50]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
-
-software <- data[25:50] %>%
-    rename_at(vars(colnames(.)), ~ vec) %>% 
-  mutate_at(vars(vec), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0))) %>% 
-  cbind(., data[51] %>% rename_at(vars(colnames(.)), ~ c("other"))) %>% mutate(other = case_when(
-      grepl("\\b(letswave)\\b", other, ignore.case = TRUE) == TRUE ~ "Letswave",
-      grepl("\\b(r|matlab|python|ggplot(2)?|own)\\b", other, ignore.case = TRUE) == TRUE ~ "Custom scripts",
-      grepl("\\bnever\\b", other, ignore.case = TRUE) == TRUE ~ NA_character_,
-      TRUE ~ as.character(other)
-      ))  %>%
-  mutate(cs = ifelse(other == "Custom scripts", other, NA_character_),
-         other2 = ifelse(other != "Custom scripts", other, NA_character_)) %>% 
-  mutate(`Custom scripts` = case_when(
-    cs == "Custom scripts" ~ as.numeric(1),
-    TRUE ~ as.numeric(`Custom scripts`)
-  )) %>% 
-  mutate(Letswave = case_when( #gross
-    other2 == "Letswave" ~ as.numeric(1),
-    TRUE ~ as.numeric(0)
-  )) %>% dplyr::select(-cs, -other, -other2) # next time I also will extend other 2 too
-
-
-d <- data.frame(rowSums(t(software))) %>%  tibble::rownames_to_column(., "soft") %>% 
-    rename_at(vars(colnames(.)), ~ c("soft", "sum_scores"))   %>% 
-    filter(sum_scores != 0) %>% 
-      mutate(soft = ifelse(sum_scores > 8, as.character(soft), "Other")) %>% group_by(soft) %>% 
-      dplyr::summarise(sum_scores = sum(sum_scores)) %>% ungroup() %>% 
-      mutate(percent_score = round(sum_scores / nrow(software) * 100))  %>% 
-  mutate(soft = factor(soft, levels = soft[rev(order(sum_scores))]))
-
-
-```
-
-```{r}
-tools <- rev(c("EEGLAB", "FieldTrip", expression(italic("Custom scripts")), "MNE-Python", "ERPLAB", "Brain Vision Analyser",
-           expression(italic("Other")), "Brainstorm", "SPM", "LIMO", "Unfold", "BESA", "Curry", "Cartool"))
-
-d %>% 
-    ggplot(data = ., aes(y = reorder(soft, percent_score),  x= percent_score)) +#, fill = soft)) +
-    geom_bar(stat="identity", fill ="lightblue1", colour ="dodgerblue3") + labs(x= "", y="Analytical tools") +
-    geom_text(aes(label = paste0(percent_score, "%")), 
-            hjust = -0.2, size = 4)  + 
-  theme_classic() + theme(legend.position="none", axis.text.y = element_text(size = 14))  +
-    theme(legend.position="none", plot.caption.position = "plot", 
-          plot.caption = element_text(hjust=0), axis.text.x = element_blank(), axis.text = element_text(size = 10)) + 
-  xlim(0, 68) +
-    scale_y_discrete(labels = tools)#+
-    labs(caption = sprintf("N of respondents - %d",  nrow(software)))
-```
-
-#### Monousers
-
-Soft frequency among thoses who used only one software
-
-```{r}
-ns <- cbind(data.frame(rowSums(software), software)) %>% 
-  filter(rowSums.software. == 1) %>% dplyr::select(-rowSums.software.)
-
-data.frame(rowSums(t(ns))) %>%  
-  tibble::rownames_to_column(., "soft") %>% 
-   rename_at(vars(colnames(.)), ~ c("soft", "sum_scores")) %>% 
-  arrange(., desc(sum_scores)) %>% filter(sum_scores != 0)
-  
-```
-
-#### Number of used tools
-
-```{r}
-nu_med <- data.frame(rowSums(software)) %>%  dplyr::rename(n_soft = rowSums.software.) %>% summarise(median_n_soft = median(n_soft)) %>% as.numeric()
-
-data.frame(rowSums(software)) %>%  dplyr::rename(n_soft = rowSums.software.) %>% #arrange(desc(n_soft))
- ggplot(data = ., aes(n_soft)) +
-  geom_histogram(bins = 45) +  scale_x_continuous(breaks=seq(0, 30, 1)) +
-  labs(x ="Number of software used", y="Count") +
-  theme_classic() + theme(legend.position="none", axis.text.x = element_text(size = 12))  +
-    labs(caption = sprintf("N of respondents - %d, median - %d",  nrow(software), nu_med)) +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
-```
-
-#### Cooccurrence
-
-```{r, warning=FALSE}
-# how to order by diagonal matrix 
-# how to add others
-software <- data[25:50]
-d1 <- foreach(i = colnames(software)) %do% ifelse(software[i]=="Yes", 1, 0)
-c <- crossprod(matrix(unlist(d1), ncol = 26))
-rownames(c) <- colnames(software) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
-colnames(c) <- rownames(c)
-
-diag.order <- order(diag(c), decreasing = FALSE)
-mat_reordered <- c[diag.order, diag.order]
-
-mat_reordered %>% melt(.) %>% ggplot(., aes(x=Var1, y=Var2)) + 
-  geom_tile(aes(fill = value)) + 
-  geom_text(aes(label = value)) +
-  scale_fill_gradient(low = "white", high = "red") +
-  theme(legend.title = element_blank(),
-        axis.title=element_blank(),
-        axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
-    labs(caption = sprintf("N of respondents - %d",  nrow(software))) +
-    theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
-
-```
-
-```{r, message= FALSE, warning=FALSE}
-
-zero_rows <- rowSums(mat_reordered) == 0
-zero_cols <- colSums(mat_reordered) == 0
-
-# Create a new matrix array without the rows and columns consisting only of zeroes
-new_matrix <- mat_reordered[!zero_rows, !zero_cols]
-melt(new_matrix) %>% ggplot(., aes(x=Var1, y=Var2)) + 
-  geom_tile(aes(fill = value)) + 
-  geom_text(aes(label = value)) +
-  scale_fill_gradient(low = "white", high = "red") +
-  theme(legend.title = element_blank(),
-        axis.title=element_blank(),
-        axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
-    labs(caption = sprintf("N of respondents - %d. Zero rows are excluded",  nrow(software))) +
-    theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
-```
-
 ## Important features
 
 ```{r, warning=FALSE}
@@ -699,9 +563,9 @@ tti <-  tti_data %>% ggplot(., aes(y = toposeries_int, x = p)) +
     strip.background = element_blank(), 
     axis.text = element_text(color = "grey40", size = 12),
     axis.ticks = element_line(color = "grey40", size = .5),
-    axis.line.y = element_blank(),
+    #axis.line.y = element_blank(),
     strip.text = element_text(size = 14),
-    axis.title = element_blank(),
+    #axis.title = element_blank(),
     axis.text.x = element_blank(),
     axis.title.x=element_blank(), 
     plot.title = element_text(
@@ -713,7 +577,7 @@ tti <-  tti_data %>% ggplot(., aes(y = toposeries_int, x = p)) +
     plot.title.position = "plot",
   ) +
   geom_text(aes(label = paste0(p, "%"), group = toposeries_int), hjust = -0.2) + 
-  ggtitle("How do you interpret time on topoplot timeseries?")+
+  labs(title = "How do you interpret time on topoplot timeseries?", subtitle = "")+
 scale_fill_manual(values=colours)  +
     theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 70) + labs(y = "") 
 

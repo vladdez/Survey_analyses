@@ -98,7 +98,7 @@ data.frame(plots = c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot timeser
 ```{r}
 #im_vector <- c("img/1.png", "img/2.png", "img/3.png", "img/4.png", "img/5.png", "img/6.png", "img/7.png", "img/8.png")
 
-cm <- dplyr::tibble(
+dim <- dplyr::tibble(
   Plots = c("img/1.png", "img/2.png", "img/3.png", "img/4.png", "img/5.png", "img/6.png", "img/7.png", "img/8.png"),
   Name = c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot timeseries", "ERP grid", "ERP image", "Channel image", "Parallel plot"), 
   Time = c("x", "x", "", "(x)", "x", "x", "x", "x"),
@@ -108,7 +108,7 @@ cm <- dplyr::tibble(
   Trials = c("", "x", "", "", "", "x", "", "")
 ) 
 
-cm %>% 
+dim_plot <- dim %>% 
   gt()  %>% 
   cols_align(align = "center", columns = c(Time, Channels, Spatial, Conditions, Trials)) %>% 
   cols_width(
@@ -126,7 +126,9 @@ cm %>%
       })
     }
   ) %>%  opt_table_font(font = "Source Sans Pro")  #,stack = "rounded-sans") 
- 
+
+dim_plot
+
 ```
 
 
@@ -386,7 +388,7 @@ tab1 <- create_table(t) %>% data.frame() %>%
   mutate(names = str_replace(names, "Erp", "ERP")) %>% 
   mutate(names = str_replace(names, "erp", "ERP")) %>% tibble::add_column(Plots = plots2, .before = "type") %>% 
   dplyr::rename(`Plot types` = type,
-         `Names given by respondents` = names,
+         `Aggregated responses` = names,
          `Scores` =  score) %>% select(-n, -total, -p) %>%  gt()  %>% 
   text_transform(
     locations = cells_body(columns = Plots),
@@ -407,7 +409,7 @@ tab1 <- create_table(t) %>% data.frame() %>%
     ),
     locations = cells_body(rows = c(3, 6, 9, 12, 15, 18, 21))) 
 tab1
-gtsave(tab1, "tab1.png")
+#gtsave(tab1, "tab1.png")
  
 ```
 
@@ -816,7 +818,7 @@ tab2 <- prob_comb %>% tibble::add_column(Plots = plots3, .before = "name") %>% d
       })
     }
   ) %>% opt_table_font(font = "Source Sans Pro") %>%  tab_options(table_body.hlines.color = "transparent") %>% 
-  tab_options(data_row.padding = px(0.8)) %>% 
+  tab_options(data_row.padding = px(0.1), table.font.size = 14, container.padding.x = 1) %>% 
   tab_style(
     style = cell_borders(
       sides = c("bottom"),

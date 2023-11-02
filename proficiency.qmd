@@ -131,9 +131,9 @@ feature %>%
   gather(type, score, subplot:coding) %>% 
   dplyr::group_by(., type) %>% nest() %>% 
   dplyr::mutate(., model = map(data, cor_fun)) %>% unnest() %>% 
-  dplyr::select(type, estimate, p.value) %>%
-  dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 3),
-                                                 estimate = round(as.numeric(estimate), 3)) %>%
+  dplyr::select(type, estimate, p.value) %>% # , method
+  dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 2),
+                                                 estimate = round(as.numeric(estimate), 2)) %>%
   mutate(p.value = cell_spec(p.value, bold = ifelse(p.value < 0.05, TRUE, FALSE))) %>% 
   dplyr::rename(`Software feature` = type) %>% 
   kable(escape = F, booktabs = T) %>% 

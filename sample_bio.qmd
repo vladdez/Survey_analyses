@@ -281,7 +281,7 @@ ggplot(., aes(x = papers, y = p)) +
   labs(x ="The number of published papers/preprints with EEG, MEG or iEEG analysis?", y = "") + theme_classic()  +
   theme(legend.position="none", plot.caption = element_text(hjust=0), 
         axis.text = element_text(size = 10)) + 
-  geom_vline(xintercept = tmp_med,        # Add line for mean
+  geom_vline(xintercept = tmp_med - 1,        # Add line for mean, -1 because starts from zero
              col = "brown1", lty='dashed',
              lwd = 1) +
   geom_text(aes(label = paste0("median = ", tmp_med), 
@@ -376,7 +376,7 @@ ggarrange(years +  geom_col(position = "identity", bins = 45, fill ="lightblue1"
              lwd = 1) + labs(x ="Years of experience", y="") ,
   
           papers_fig + geom_col(position = "identity", bins = 45, fill ="lightblue1", col="dodgerblue3") + 
-  geom_vline(xintercept = tmp_med,        # Add line for mean
+  geom_vline(xintercept = tmp_med - 1,        # Add line for mean
              col = "brown1", lty='dashed',
              lwd = 1) + labs(x ="Number of papers published", y=""), 
   
