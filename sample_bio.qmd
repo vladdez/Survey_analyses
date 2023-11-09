@@ -36,13 +36,17 @@ library(kableExtra)
 library(stringr)
 library(ggpubr)
 library(ggthemes)
-
+library(showtext)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
 data <- read_excel("data/results_survey.xlsx")
 data <- data[1:121] %>% 
   filter(.[[18]] !='Yes') # not analysed any EEG method
+
+font_add_google("Lato")
+showtext_opts(dpi = 200)
+showtext_auto(enable = TRUE)
 ```
 
 ## Sample overview
@@ -66,18 +70,17 @@ italised1 <- rev(c("Germany", expression(italic("Other")), "USA", "UK", "France"
 country_fig <- country %>%
   ggplot(data = ., aes(y = reorder(country_work, percent_score),  x= percent_score)) +#, fill = country_work)) +
   geom_bar(stat = "identity") + 
-  labs(x = "Percent", y = "Country of work") +
+  labs(x = "Percent", y="", title = "Country of work") +
   geom_text(aes(label = paste0(percent_score, "%")), hjust = -0.1,
   size = 4)  + theme_classic()   +
   theme(legend.position="none", 
         plot.caption.position = "plot", 
         plot.caption = element_text(hjust=0), 
-        axis.text.y = element_text(size = 12)
+        axis.text.y = element_text(size = 12),
+        text = element_text(family = "Lato"),
         ) + coord_cartesian(clip = "off") +
     scale_y_discrete(labels = italised1)
 
-#+ scale_fill_grey(start = 0, end = .9)
-#+ scale_fill_colorblind()
 country_fig + 
   labs(caption = sprintf("N of respondents = %d", sum(country$Freq))) 
 ```
@@ -118,15 +121,15 @@ field$Freq[3] <- field$Freq[3] + 1
 
 fieldplot <- field %>% dplyr::rename(area = !!names(.)[1]) %>%
   mutate(percent_score = round(Freq / sum(Freq) * 100)) %>% 
-    ggplot(data = ., aes(y = reorder(area, percent_score),  x = percent_score)) +#, fill = area)) +
-    geom_col(stat="identity", width = 0.95) + labs(y = "Field of research", x ="Percent") +
-    geom_text(aes(label = paste0(percent_score, "%")), hjust = -0.1
-            #position = position_stack(vjust = 0.5), 
-          )  + theme_classic()  +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), 
-          #text = element_text(size = 10),
+    ggplot(data = ., aes(y = reorder(area, percent_score),  x = percent_score)) +
+    geom_col(stat="identity", width = 0.95) + labs(y = "", title="Field of research", x ="Percent") +
+    geom_text(aes(label = paste0(percent_score, "%")), hjust = -0.1)  + 
+  theme_classic()  +
+    theme(legend.position="none", 
+          plot.caption = element_text(hjust=0), 
+          text = element_text(family = "Lato"),
           axis.text.y = element_text(size = 12)) + scale_y_discrete(labels=c("Applied", "Clinical", "Fundamental")) + 
-  coord_cartesian(clip = "off") + scale_fill_grey(start = .9, end = 0) #+ scale_fill_colorblind()
+  coord_cartesian(clip = "off") + scale_fill_grey(start = .9, end = 0)
 fieldplot + 
     labs(caption = sprintf("N of respondents = %d", sum(field$Freq)))
 ```
@@ -159,14 +162,18 @@ pos <- data[c(12, 13)] %>% dplyr::rename(position = !!names(.)[1], other = !!nam
 
 italised2 <- rev(c('Bachelor', 'Master', 'PhD', 'Postdoc', 'Professor', 'Industry R&D', 'Medical doctor', expression(italic('Other'))))
 position <- pos %>% 
-    #ggplot(data = ., aes(y = position, x= Freq, fill = position)) +
-    ggplot(data = ., aes(y = position, x= percent_score))+ #, fill = position)) +
-    geom_bar(stat="identity") + labs(y = "Current position", x = "Percent") +
-    #geom_text(aes(label = Freq), hjust = -0.1) + 
+    ggplot(data = ., aes(y = position, x= percent_score))+ 
+    geom_bar(stat="identity") + labs(title = "Current position", x = "Percent", y="") +
     geom_text(aes(label = paste0(percent_score, "%")), hjust = -0.1) +
     theme_classic()  +
-  theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + coord_cartesian(clip = "off") + scale_fill_grey(start = .9, end = 0) +
+  theme(legend.position="none", 
+        text = element_text(family = "Lato"), 
+        plot.caption.position = "plot", 
+        plot.caption = element_text(hjust=0), 
+        axis.text = element_text(size = 10)) + 
+  coord_cartesian(clip = "off") + scale_fill_grey(start = .9, end = 0) +
     scale_y_discrete(labels = italised2)
+
 position + 
     labs(caption = sprintf("N of respondents - %d", sum(pos$Freq)))
 ```
@@ -182,13 +189,11 @@ methods <- data.frame(rowSums(t(data.frame(foreach(i = colnames(method)) %do% if
     dplyr::rename(method = !!names(.)[1], sum_scores = !!names(.)[2])  %>%  
     mutate(percent_score = round(sum_scores / sum(sum_scores) * 100)) %>% 
   
-    ggplot(., aes(y = reorder(method, percent_score), x = percent_score)) +#, fill = method)) +
-    geom_col(stat = "identity") + labs(y = "Method", x = "Percent", fill = "Method") +
-    geom_text(aes(label = paste0(percent_score, "%")), 
-               hjust = -0.1)+
-            #position = position_stack(vjust = 0.5), size = 5) +
+    ggplot(., aes(y = reorder(method, percent_score), x = percent_score)) + 
+    geom_col(stat = "identity") + labs(y = "", x = "Percent", title = "Method") +
+    geom_text(aes(label = paste0(percent_score, "%")), hjust = -0.1)+
     theme_classic() + theme(legend.position="none")  +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text.y = element_text(size = 14)) +
+    theme(legend.position="none", text = element_text(family = "Lato"), plot.caption = element_text(hjust=0), axis.text.y = element_text(size = 14)) +
     scale_y_discrete(labels=c("OPMs MEG", "Intracranial EEG", "SQUID MEG", "Scalp EEG")) +
   coord_cartesian(clip = "off") + xlim(0, 75) + scale_fill_grey(start = .9, end = 0)
 
@@ -247,7 +252,7 @@ years <- year %>% group_by(years) %>%
   mutate(p = round(n / sum(n), 2))  %>% ggplot(data = ., aes(x=years, y = p)) +
   geom_col(position = "identity", col="grey") +  scale_x_continuous(breaks=seq(0, 30, 5)) +
   labs(x ="Years of experience with EEG, MEG, or iEEG analysis", y="") +
-  theme_classic() + theme(legend.position="none", 
+  theme_classic() + theme(legend.position="none", text = element_text(family = "Lato"),
                           axis.text = element_text(size = 10)) +
   theme(legend.position="none", plot.caption = element_text(hjust=0), 
         axis.text = element_text(size = 10)) + 
@@ -255,7 +260,7 @@ years <- year %>% group_by(years) %>%
              col = "brown1", lty='dashed',
              lwd = 1) +
   geom_text(aes(label = paste0("median = ", median(year$years)), col = "brown1",
-                x = median(year$years)*1.9, 
+                x = median(year$years)*1.9, family = "Lato",
                 y  = 0.11)) + scale_y_continuous(labels = scales::percent)
 
 years + labs(caption = sprintf("N of respondents - %d, median - %d", nrow(year), median(year$years)))  
@@ -278,14 +283,14 @@ papers_fig <- papers %>%
 
 ggplot(., aes(x = papers, y = p)) +
   geom_col(position = "identity", bins = 45, col="grey") +
-  labs(x ="The number of published papers/preprints with EEG, MEG or iEEG analysis?", y = "") + theme_classic()  +
-  theme(legend.position="none", plot.caption = element_text(hjust=0), 
+  labs(x ="The number of published papers/preprints with EEG, MEG or iEEG analysis", y = "") + theme_classic()  +
+  theme(legend.position="none", plot.caption = element_text(hjust=0), text = element_text(family = "Lato"),
         axis.text = element_text(size = 10)) + 
   geom_vline(xintercept = tmp_med - 1,        # Add line for mean, -1 because starts from zero
              col = "brown1", lty='dashed',
              lwd = 1) +
   geom_text(aes(label = paste0("median = ", tmp_med), 
-                x = tmp_med*6, col = "brown1",
+                x = tmp_med*6, col = "brown1", family = "Lato",
                 y  = 0.15)) + scale_y_continuous(labels = scales::percent)
 papers_fig +
   labs(caption = sprintf("N of respondents - %d, median - %s", nrow(papers), as.character(tmp_med)))
@@ -300,15 +305,12 @@ sal <- table(data[21]) %>% data.frame() %>% dplyr::rename(level = !!names(.)[1])
     mutate(level = factor(level, levels = rev(c("Beginner", "Intermediate", "Expert"))))
 
 sall <- sal %>% 
-    ggplot(data = ., aes(y = level, x = percent_score)) + #, fill = level)) +
-    geom_bar(stat="identity") + labs(x = "Percent", y = "Self-assessed\nlevel") +
+    ggplot(data = ., aes(y = level, x = percent_score)) +  
+    geom_bar(stat="identity") + labs(x = "Percent", y = "", title="Self-assessed level") +
     geom_text(aes(label = paste0(percent_score, "%")), hjust = -0.2
-            #position = position_stack(vjust = 0.5), 
           )  + theme_classic() +
-  #scale_fill_manual(values=colorsal) +
-  #scale_fill_grey(start = .9, end = 0) +
-    theme(legend.position="none", axis.text.x = element_text(size = 12)) +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
+    theme(legend.position="none", axis.text.x = element_text(size = 12), text = element_text(family = "Lato"),
+          plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
 sall +
     labs(caption = sprintf("N of respondents - %d",  sum(sal$Freq))) + xlim(0, 50)
 ```
@@ -318,16 +320,12 @@ sall +
 ```{r}
 cc <- table(data[22])  %>% data.frame()%>% dplyr::rename(level = !!names(.)[1]) %>%
     mutate(percent_score = round(Freq / sum(Freq) * 100)) %>% 
-    ggplot(data = ., aes(y = reorder(level, Freq),  x = percent_score))  +#, fill = level)) +
-    geom_bar(stat="identity", width = 0.5) + #, fill ="lightblue1", colour ="dodgerblue3",
-
-    geom_text(aes(label = paste0(percent_score, "%")), hjust = -0.2
-              #position = position_stack(vjust = 0.5), 
-              )  +
+    ggplot(data = ., aes(y = reorder(level, Freq),  x = percent_score))  +
+    geom_bar(stat="identity", width = 0.5) + 
+    geom_text(aes(label = paste0(percent_score, "%")), hjust = -0.2)  +
   theme_classic() +
-  theme(legend.position="none", axis.text.x = element_text(size = 12)) +
-  labs(y = "Code\ncontribution", x="Percent")  +
-  #scale_fill_grey(start = .9, end = 0) +
+  theme(legend.position="none", axis.text.x = element_text(size = 12), text = element_text(family = "Lato")) +
+  labs(title = "Code contribution", x="Percent", y="")  +
     theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 64)
 cc +
     labs(caption = sprintf("N of respondents - %d",  sum(sal$Freq))) 
@@ -341,7 +339,7 @@ cc +
 ggarrange(country_fig + theme(axis.text.y = element_text(size = 10), axis.title.x = element_blank(), axis.text.x = element_blank()) + xlim(0, 30), 
           position + xlim(0, 80) + theme(axis.text.y = element_text(size = 10), axis.title.x = element_blank(), axis.text.x = element_blank()),  #+ scale_fill_brewer(palette = "Paired") , 
           fieldplot + xlim(0, 100) + theme(axis.text.y = element_text(size = 10), axis.title.x = element_blank(), axis.text.x = element_blank()), #+ scale_fill_brewer(palette = "Paired"), 
-          methods  + scale_y_discrete(labels=c("OPMs", "iEEG", "MEG", "Scalp EEG")) + #+ scale_fill_brewer(palette = "Paired") 
+          methods  + scale_y_discrete(labels=c("OPMs", "iEEG", "MEG", "Scalp EEG")) + xlim(0, 80) +  
             theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()), 
           labels = c("A", "B", "C", "D"),
           ncol = 2, nrow = 2, align = 'hv')  
@@ -363,7 +361,7 @@ ggarrange(years + labs(x ="Years of experience", y="") ,
 ggarrange(country_fig + geom_bar(stat = "identity", fill ="lightblue1", colour ="dodgerblue3",) + theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()) + xlim(0, 30), 
           position + xlim(0, 80) + geom_bar(stat = "identity", fill ="lightblue1", colour ="dodgerblue3",) + theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()),  
           fieldplot + xlim(0, 100) + geom_bar(stat = "identity", fill ="lightblue1", colour ="dodgerblue3",) + theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()), 
-          methods  + geom_bar(stat = "identity", fill ="lightblue1", colour ="dodgerblue3",) +  scale_y_discrete(labels=c("OPMs", "iEEG", "MEG", "Scalp EEG")) +  
+          methods  + geom_bar(stat = "identity", fill ="lightblue1", colour ="dodgerblue3",) +  scale_y_discrete(labels=c("OPMs", "iEEG", "MEG", "Scalp EEG")) + xlim(0, 80) +  
             theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()), 
           labels = c("A", "B", "C", "D"),
           ncol = 2, nrow = 2, align = 'hv')  
@@ -373,12 +371,12 @@ ggarrange(country_fig + geom_bar(stat = "identity", fill ="lightblue1", colour =
 ggarrange(years +  geom_col(position = "identity", bins = 45, fill ="lightblue1", col="dodgerblue3") + 
   geom_vline(xintercept = median(year$years),        # Add line for mean
              col = "brown1", lty='dashed',
-             lwd = 1) + labs(x ="Years of experience", y="") ,
+             lwd = 1) + labs(title ="Years of experience", y="", x="") ,
   
           papers_fig + geom_col(position = "identity", bins = 45, fill ="lightblue1", col="dodgerblue3") + 
   geom_vline(xintercept = tmp_med - 1,        # Add line for mean
              col = "brown1", lty='dashed',
-             lwd = 1) + labs(x ="Number of papers published", y=""), 
+             lwd = 1) + labs(title ="Number of papers published", y="", x=""), 
   
           cc +  geom_bar(stat = "identity", fill ="lightblue1", colour ="dodgerblue3",) + xlim(0, 73) + theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()), 
   

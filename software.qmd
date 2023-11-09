@@ -46,10 +46,10 @@ data <- data[1:121] %>%
 ```
 
 ```{r}
-cit1 <- read.table(file = "data/cit/eeglab.txt", header = TRUE, fill = TRUE)[1:2] %>% mutate(name = "eeglab")
-cit2 <- read.table(file = "data/cit/mne.txt", header = TRUE, fill = TRUE)[1:2]%>% mutate(name = "mne")
-cit3 <- read.table(file = "data/cit/erplab.txt", header = TRUE, fill = TRUE)[1:2]%>% mutate(name = "erplab")
-cit4 <- read.table(file = "data/cit/fieldtrip.txt", header = TRUE, fill = TRUE)[1:2]%>% mutate(name = "fieldtrip")
+cit1 <- read.table(file = "data/cit/eeglab.txt", header = TRUE, fill = TRUE)[1:2] %>% mutate(name = "EEGLAB")
+cit2 <- read.table(file = "data/cit/mne.txt", header = TRUE, fill = TRUE)[1:2]%>% mutate(name = "MNE")
+cit3 <- read.table(file = "data/cit/erplab.txt", header = TRUE, fill = TRUE)[1:2]%>% mutate(name = "ERPLAB")
+cit4 <- read.table(file = "data/cit/fieldtrip.txt", header = TRUE, fill = TRUE)[1:2]%>% mutate(name = "FieldTrip")
 
 cit_data <- rbind(cit1, cit2, cit3, cit4) %>% rename_at(vars(colnames(.)), ~ c("year", "citations", "name"))
 ```
@@ -106,7 +106,6 @@ tools <- rev(c("EEGLAB", "FieldTrip", expression(italic("Custom scripts")), "MNE
            expression(italic("Other")), "Brainstorm", "SPM", "LIMO", "Unfold", "BESA", "Curry", "Cartool"))
 
 font_add_google("Lato")
-#font_add_google("Roboto")
 showtext_opts(dpi = 200)
 showtext_auto(enable = TRUE)
 chart <- d %>% 
@@ -200,10 +199,55 @@ melt(new_matrix) %>% ggplot(., aes(x=Var1, y=Var2)) +
         axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
     labs(caption = sprintf("N of respondents - %d. Zero rows are excluded",  nrow(software))) +
     theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
+
 ```
 
 ## Software usage based on citations
+
 ```{r}
-cit_data %>% ggplot(., aes(x = year, y=citations, color = name)) + geom_line() + theme_classic()
+cbPalette <- c("#e3342f", "#f6993f", "#38c172", "#3490dc", "#6574cd", "#9561e2", "#4dc0b5", "#f66d9b")
+#font_add_google("Lato")
+
+showtext_opts(dpi = 200)
+showtext_auto(enable = TRUE)
+
+cit_data %>% filter(year < 2023) %>% group_by(year) %>% 
+  mutate(ylast = case_when(year == 2022 ~ citations, TRUE ~ NA)) %>% 
+  ggplot(., aes(x = year, y = citations, color = name, label = name)) + geom_line() +
+  geom_point(shape = 21, fill = 'white', size=2, stroke=1) + 
+  scale_color_manual(values=cbPalette) + 
+  theme_classic() + theme(legend.position = "none",
+                          text = element_text(family = "Lato"),
+                          plot.title = element_text(color = "grey10", size = 16, face = "bold", margin = margin(t = 15)),
+                          plot.title.position = "plot",)+
+ coord_cartesian(clip = "off") +
+  geom_text_repel(
+    aes(color = name, label = name, x = 2022, y = ylast,),
+    family = "Lato",
+    fontface = "bold",
+    size = 4,
+    direction = "y",
+    xlim = c(2022.3, Inf),
+    hjust = 0,
+    segment.size = .7,
+    segment.alpha = .5,
+    segment.linetype = "dotted",
+    box.padding = .4,
+    segment.curvature = -0.1,
+    segment.ncp = 3,
+    segment.angle = 20
+  ) +  scale_x_continuous(
+    expand = c(0, 0),
+    limits = c(2003.8, 2026), 
+    breaks = seq(2004, 2023, by = 3)
+  ) + labs(
+    title = "Citations per year for the most popular EEG tools", subtitle = "", x = "Years", y = "Yearly citations"
+  ) +
+  scale_y_continuous(
+    expand = c(0.04, 0),
+    breaks = seq(0, 1800, by = 200)
+  )
+  
+  
 ```
 

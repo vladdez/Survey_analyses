@@ -36,6 +36,7 @@ library(stringi)
 library(ggpubr)
 library(ggrepel)
 library(showtext)
+library(ggExtra)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
@@ -161,21 +162,28 @@ mem_tab <-  familiar %>%
    rename_at(vars(colnames(.)), ~ c("plots", "recognized")) %>%
   left_join(., named)  %>% left_join(., tab)  
 
-mem_tab %>% #filter(plots != "parallel") %>% 
+mem_tab_fig <- mem_tab %>% 
   gather(., type, score,  recognized:plotted, factor_key=TRUE) %>% 
   ggplot(., aes(x = score, y = reorder(plots, -score), fill = reorder(type, score))) +
     geom_bar(position = "dodge", stat = "identity") +
-    labs(y = "", x = "Number of users", fill = "Level of\nfamiliarity\nwith plot") +
+    labs(y = "", x = "Number of users", title = "Level of familiarity with a plot") +
     theme_classic() + 
   geom_text(aes(label = score, group = reorder(type, score)), position = position_dodge(width = .9), hjust = -0.2, size = 3) +  
-  theme(plot.title = element_text(hjust = 0.5)) +
-  #ggtitle("Familiarity with plots")  +  
-  xlim(0, 210) + #scale_fill_grey(start = 0.8, end = 0.2) +
+  xlim(0, 210) + 
   scale_fill_brewer(palette = "Blues") +
-   guides(fill = guide_legend(reverse=T)) +
-  theme(plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) +
-    scale_y_discrete(labels = plot_vec) #+
-  labs(caption = sprintf("N of respondents - %d",  nrow(familiar)))
+  guides(fill = guide_legend(reverse=T)) +
+  scale_y_discrete(labels = plot_vec) +
+  theme(plot.caption = element_text(hjust=0), 
+        axis.text = element_text(size = 10), 
+        text = element_text(family = "Lato"), 
+        legend.title = element_blank(),
+        legend.position = c(0.8, 0.9),
+        plot.title = element_text(hjust = 0.5),
+        axis.title = element_text(size = 12),
+        plot.title.position = "plot") 
+
+mem_tab_fig +
+  labs(caption = sprintf("N of respondents - %d",  nrow(data[61:68])))
 ```
 
 ## Important features
@@ -388,13 +396,22 @@ an_me_plot <- cv %>%
   geom_col(position = "identity", bins=300, fill ="lightblue1", colour ="dodgerblue3") + 
   labs(x ="Ratio of electrodes analysed / measured", y = "") +
   theme_classic() +
-  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + ylim(0, 0.4) +    
+  theme(legend.position="none", plot.caption = element_text(hjust=0), text = element_text(family = "Lato"), axis.text = element_text(size = 10)) + 
+  ylim(0, 0.4) +    
   scale_x_continuous(labels = scales::percent)  + scale_y_continuous(labels = scales::percent, limits = c(0, 0.4))
 
 an_me_plot +
   labs(caption = sprintf("N of respondents - %d",  sum(cv$n))) 
 ```
 
+```{r}
+marg <- data %>% select(23, 24) %>% 
+  rename_at(vars(colnames(.)), ~ c("Recorded", "Analysed")) %>% 
+  filter(Recorded < 10000, Analysed < 500)   %>%  
+  ggplot(., aes(y=Analysed, x = Recorded)) + geom_point() +
+      theme(legend.position="none") + theme_classic() + labs(x = "Electrodes recorded", y = "Electrodes aanlysed")
+ggMarginal(marg, type="histogram")
+```
 
 
 ### Up or down
@@ -407,7 +424,7 @@ area1 <- data.frame(matrix(tt)) %>% dplyr::rename(words = !!names(.)[1]) %>%
   mutate(words = ifelse(str_detect(.[[1]], 'emot|empathy'), "affective neuroscience", words)) %>%  
   mutate(words =ifelse(str_detect(.[[1]], 'memory'), "memory", words)) %>% 
   mutate(words =ifelse(str_detect(.[[1]], 'hearing|audit'), "auditory", words)) %>% 
-  mutate(words =ifelse(str_detect(.[[1]], 'cognitive load|selective attention|attention|cognition|consciousness|meditation|cognitive control|self|executive functions'), "cognitive control and attention", words)) %>% 
+  mutate(words =ifelse(str_detect(.[[1]], 'cognitive load|selective attention|attention|cognition|consciousness|meditation|cognitive control|self|executive functions'), "attention", words)) %>% 
   mutate(words =ifelse(str_detect(.[[1]], 'dbs'), "deep brain stimulation", words)) %>% 
   mutate(words =ifelse(str_detect(.[[1]], 'decision making|reward'), "decision making", words)) %>%
   mutate(words =ifelse(str_detect(.[[1]], 'ageing'), "ageing", words)) %>% 
@@ -465,20 +482,25 @@ filter(n() > 2) %>% group_by(area, ud) %>% dplyr::summarise(n = n()) %>%
 
 pol_not_plot2 <- as %>% 
   ggplot(., aes(x = n, y = reorder(area, nn), fill = ud)) +
-   geom_col(stat = "identity", width = 0.5) +
-  labs(x = "Count", y = "", fill ="Positive:") +
-  geom_text(aes(label = n, #paste0(n, "%"), 
-                group = ud), 
-            position = position_stack(vjust = 0.5)) +
-   theme(plot.title = element_text(hjust = 0.5),
-        axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"),
+  geom_col(stat = "identity", width = 0.7) +
+  labs(x = "", y = "", fill ="Positive:", title = "In ERP plot, should positive voltages\nbe plotted upwards, or downwards?") +
+  theme_classic()+
+  geom_text(aes(label = n, group = ud), 
+            position = position_stack(vjust = 0.5), size = 4)  +
+  coord_cartesian(clip = "off") +
+  theme(axis.text = element_text(size = 12),
+        text = element_text(family = "Lato"),
+        axis.title = element_text(size = 12),
+        axis.title.y=element_blank(),
+        
         legend.title = element_blank(),
-        axis.title.y=element_blank()
+        legend.direction = "horizontal",
+        legend.position = c(0.8, 0.2),
+        
+        plot.title.position = "plot",
+        plot.caption.position = "plot",
         ) +  
-  theme_classic() +
-scale_fill_manual(values=colours)  +
-    theme(legend.position="right", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
+  scale_fill_manual(values=colours, limits = c("Up", "Down")) 
 
 pol_not_plot2 +
     labs(caption = sprintf("N of respondents - %d",  sum(as$n)))
@@ -523,7 +545,7 @@ periods_plot <- bl %>%
     geom_bar(stat="identity", fill ="lightblue1", colour ="dodgerblue3") + 
   labs(x = "Recomended baseline in msec", y = "") +  
   scale_y_continuous(breaks=seq(0, 60, 5)) + theme_classic() +
-  theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
+  theme(legend.position="none", plot.title = element_text(hjust = 0.5), text = element_text(family = "Lato")) +
   geom_text(aes(label = paste0(percent_score, "%"), group = baseline), position = position_dodge(width = .9), vjust = -0.3)   +
     theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text.y = element_blank(), axis.text = element_text(size = 10))
 
@@ -552,34 +574,27 @@ periods_plot2 +
 tti_data <- data[95] %>% rename_at(vars(colnames(.)), ~ c("toposeries_int")) %>% filter(!is.na(.), toposeries_int != "Other") %>%
   group_by(toposeries_int) %>% summarise(n = n()) %>% mutate(toposeries_int = case_when(
   toposeries_int == "The instantaneous time slices (single time points)" ~ "Time point",
-  toposeries_int == "The mean value of time bin, centered around the labelled time (average over multiple time points)"~ "Average over\ntime points"
+  toposeries_int == "The mean value of time bin, centered around the labelled time (average over multiple time points)"~ "Average\nover\ntime points"
   )) %>% mutate(p = round(n / sum(n) * 100)) 
 
 tti <-  tti_data %>% ggplot(., aes(y = toposeries_int, x = p)) + 
     geom_bar(stat = "identity", width=0.5, position = "dodge", fill ="lightblue1", colour ="dodgerblue3") + theme_classic() +
     theme(
-    text = element_text(family = "Lato"),
-    legend.position="none", 
-    strip.background = element_blank(), 
-    axis.text = element_text(color = "grey40", size = 12),
-    axis.ticks = element_line(color = "grey40", size = .5),
-    #axis.line.y = element_blank(),
-    strip.text = element_text(size = 14),
-    #axis.title = element_blank(),
-    axis.text.x = element_blank(),
-    axis.title.x=element_blank(), 
-    plot.title = element_text(
-    color = "grey10", 
-    size = 16, 
-    face = "bold",
-    margin = margin(t = 15)
-  ),
-    plot.title.position = "plot",
-  ) +
-  geom_text(aes(label = paste0(p, "%"), group = toposeries_int), hjust = -0.2) + 
-  labs(title = "How do you interpret time on topoplot timeseries?", subtitle = "")+
-scale_fill_manual(values=colours)  +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 70) + labs(y = "") 
+      text = element_text(family = "Lato"),
+      legend.position="none", 
+      strip.background = element_blank(), 
+      axis.ticks = element_line(color = "grey40", size = .5),
+      axis.text.x = element_blank(),
+      axis.text.y =  element_text(color = "grey10", size = 16),
+      axis.title.x=element_blank(), 
+      plot.title = element_text(color = "grey10", size = 18, face = "bold", margin = margin(t = 15)),
+      plot.title.position = "plot",
+      plot.caption = element_text(hjust=0), 
+    ) +
+  geom_text(aes(label = paste0(p, "%"), group = toposeries_int), hjust = -0.2, size = 5, family = "Lato") + 
+  labs(title = "How do you interpret time\non topoplot timeseries?", subtitle = "", y = "")+
+  scale_fill_manual(values=colours)  +
+  xlim(0, 70)
 
 tti  +
     labs(caption = sprintf("N of respondents - %d",  sum(tti_data$n))) # change
@@ -594,6 +609,12 @@ data[96] %>% filter(!is.na(.))
 ```{r}
 ggarrange(periods_plot2, an_me_plot, labels = c("A", "B"))
 ```
+
+```{r}
+ggarrange(pol_not_plot2, tti, labels = c("A", "B"))
+
+```
+
 
 ## Awareness
 ### Error bars
@@ -628,6 +649,7 @@ eb_fig <- eb %>%
     geom_bar(stat = "identity", width=0.5, position = "dodge", fill ="lightblue1", colour ="dodgerblue3") + theme_classic() +
   theme(axis.title.x=element_blank(), axis.text.x = element_blank(),
         legend.position="none", 
+        text = element_text(family = "Lato"),
         axis.text = element_text(size = 12),
         plot.title = element_text(hjust = 0.5)) +
   geom_text(aes(label = paste0(percent_score, "%"), group = Position),  #position = position_stack(vjust = 0.5), 
@@ -648,23 +670,23 @@ ebd <- data[75] %>%  filter(!is.na(.)) %>% table()  %>% data.frame() %>% rename_
 ebd_fig <- ebd %>% 
     ggplot(., aes(y = position, x = percent_score)) + #, fill = as.factor(percent_score))) +
     geom_bar(position = "dodge", stat = "identity", width=0.5, fill ="lightblue1", colour ="dodgerblue3") + theme_classic() +
-   theme(axis.title.x=element_blank(), axis.text.x = element_blank(),
+   theme(axis.title.x=element_blank(), axis.text.x = element_blank(), text = element_text(family = "Lato"),
         legend.position="none", 
         plot.title = element_text(hjust = 0.5)) + ylab("") +
      
   geom_text(aes(label = paste0(percent_score, "%"), group = position),  hjust = -0.2) + 
             #position = position_stack(vjust = 0.5), 
             #size = 6
-  ggtitle("In your figure,\nwhat did the error bars represent?")+
+  ggtitle("In your figure, what\ndid the error bars represent?")+
     scale_fill_manual(values=colours) + scale_y_discrete(labels = c("Standard error\nof the mean", "Confidence\ninterval")) +
-    theme(plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 80) 
+    theme(plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 85) 
 
 ebd_fig +
     labs(caption = sprintf("N of respondents - %d",  sum(ebd$scores))) 
 
 ```
 
-#### Combination
+#### Combined
 
 ```{r}
 ggarrange(eb_fig, ebd_fig, 
