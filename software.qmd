@@ -110,7 +110,7 @@ showtext_opts(dpi = 200)
 showtext_auto(enable = TRUE)
 chart <- d %>% 
     ggplot(data = ., aes(y = reorder(soft, percent_score),  x= percent_score)) +
-    geom_bar(stat="identity", fill ="lightblue1", colour ="dodgerblue3") + 
+    geom_bar(stat="identity", fill ="#6BAED6") + 
     labs(x= "", y="",# subtitle="", 
          title="Which EEG, MEG, or iEEG analysis platform\nhave you used for ERP plotting?") +
     geom_text(aes(label = paste0(percent_score, "%")), 
