@@ -55,7 +55,7 @@ showtext_auto(enable = TRUE)
 
 ```{r}
 country <- data.frame(table(data[8]))  %>% dplyr::rename(country_work = !!names(.)[1]) %>%
-  mutate(country_work = ifelse(Freq >= 6, as.character(country_work), "Others")) %>% group_by(country_work) %>% 
+  mutate(country_work = ifelse(Freq >= 6, as.character(country_work), "Other")) %>% group_by(country_work) %>% 
   mutate(country_work = case_when(
     country_work == "United Kingdom" ~ "UK",
     TRUE ~ as.character(country_work)  
@@ -371,13 +371,13 @@ ggarrange(country_fig + geom_col(stat = "identity", width = 0.8, fill ="lightblu
 ```
 ```{r}
 ggarrange(country_fig + geom_col(stat = "identity", width = 0.8, fill ="#6BAED6") + 
-            theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()) + xlim(0, 30), 
-          position + xlim(0, 80) + geom_col(stat = "identity", fill ="#6BAED6") + 
+            theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()) + xlim(0, 100), 
+          position + xlim(0, 100) + geom_col(stat = "identity", fill ="#6BAED6") + 
             theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()),  
           fieldplot + xlim(0, 100) + geom_col(stat = "identity", width = 0.7, fill ="#6BAED6") + 
             theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()), 
           methods  + geom_col(stat = "identity", width = 0.7, fill ="#6BAED6") +  
-            scale_y_discrete(labels=c("OPMs", "iEEG", "MEG", "Scalp EEG")) + xlim(0, 80) +  
+            scale_y_discrete(labels=c("OPMs", "iEEG", "MEG", "Scalp EEG")) + xlim(0, 100) +  
             theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()), 
           labels = c("A", "B", "C", "D"),
           ncol = 2, nrow = 2, align = 'hv')  
@@ -397,9 +397,9 @@ ggarrange(years +  geom_col(position = "identity", bins = 45, fill ="#6BAED6") +
              col = "#FC9272", lty='dashed',
              lwd = 1) + labs(title ="Number of papers published", y="", x=""), 
   
-          cc +  geom_col(stat = "identity",  width = 0.5, fill ="#6BAED6") + xlim(0, 73) + theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()), 
+          cc +  geom_col(stat = "identity",  width = 0.5, fill ="#6BAED6") + xlim(0, 100) + theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()), 
   
-          sall + geom_col(stat = "identity",  width = 0.5, fill ="#6BAED6") + xlim(0, 53) + theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()), 
+          sall + geom_col(stat = "identity",  width = 0.5, fill ="#6BAED6") + xlim(0, 100) + theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()), 
           labels = c("A", "B", "C", "D"),
           ncol = 2, nrow = 2, align = 'h') 
 

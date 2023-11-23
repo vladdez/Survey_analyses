@@ -35,12 +35,16 @@ library(kableExtra)
 library(stringi)
 library(magick)
 library(gt)
+library(flextable)
+library(officer)
+library(gdtools)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
 data <- read_excel("data/results_survey.xlsx")
 data <- data[1:121] %>% 
   filter(.[[18]] !='Yes') # not analysed any EEG method
+register_gfont("Lato")
 
 ```
 
@@ -104,8 +108,8 @@ dim <- dplyr::tibble(
   Time = c("x", "x", "", "(x)", "x", "x", "x", "x"),
   Channels = c("", "x", "x", "x", "x", "", "x", "x"), 
   Spatial = c("", "", "x", "x", "x", "", "", ""), 
-  Conditions = c("x", "", "", "", "", "", "", "x"), 
-  Trials = c("", "x", "", "", "", "x", "", "")
+  Conditions = c("x", "", "", "", "(x)", "", "", "x"), 
+  Trials = c("", "", "", "", "", "x", "", "")
 ) 
 
 dim_plot <- dim %>% 
@@ -125,7 +129,9 @@ dim_plot <- dim %>%
               html(paste(local_image(filename = x)))
       })
     }
-  ) %>%  opt_table_font(font = "Source Sans Pro")  #,stack = "rounded-sans") 
+  ) %>%  opt_table_font(font = "Source Sans Pro")  %>% 
+tab_options(data_row.padding = px(0.1), table.font.size = 14, container.padding.x = 1,  column_labels.border.bottom.color = "black",column_labels.border.top.color = "white",
+    column_labels.border.top.width = px(3),)
 
 dim_plot
 
@@ -163,6 +169,13 @@ n1 <- word_preproc(data, 69)  %>% #View()
    rename_at(vars(colnames(.)), ~ c("ERP plot", "n")) 
 n1 
 ```
+```{r}
+
+n1 %>% 
+  mutate(total = sum(n)) %>% slice(1:11) %>% 
+  mutate(p = round(as.numeric(n)/as.numeric(total), 2) * 100) 
+```
+
 
 #### 2
 
@@ -323,11 +336,11 @@ n8 <- word_preproc(data, 112)  %>%
       grepl("\\b(image)\\b", words) == TRUE ~ "image",
       grepl("\\b(raster(plot)?|custer)\\b", words) == TRUE ~ "raster (plot)",
       grepl("\\b(matrix)\\b", words) == TRUE ~ "(erp) matrix",
-      grepl("\\b(channel(s|wise)?)\\b", words) == TRUE ~ "channels (erp)",
+      grepl("\\b(channel(s|wise)?)\\b", words) == TRUE ~ "channel(s) (erp)",
       grepl("\\b(erp(s)?|eprs|ersp|event-related)\\b", words) == TRUE ~ "erp",
       grepl("\\b(voltage)\\b", words) == TRUE ~ "voltage",
       TRUE ~ '_other'
-      )) %>%
+      )) %>% 
   mutate(type = ifelse(nchar(words) == 1, "bad", type)) %>%  #View()
   dplyr::select(type) %>%  table(.) %>% 
   data.frame(.) %>% arrange(desc(Freq)) %>% filter(type != "bad") %>% 
@@ -411,6 +424,43 @@ tab1 <- create_table(t) %>% data.frame() %>%
 tab1
 #gtsave(tab1, "tab1.png")
  
+```
+
+
+```{r}
+plotnames <- create_table(t) %>% data.frame() %>% 
+  mutate(names = str_to_sentence(names)) %>% 
+  mutate(names = str_replace(names, "Erp", "ERP")) %>% 
+  mutate(names = str_replace(names, "erp", "ERP")) %>% tibble::add_column(Plots = plots2, .before = "type") %>% 
+ # mutate(type = str_replace(type, "Topoplot\ntimeseries", "Topoplot timeseries")) %>% 
+  dplyr::rename(`Plot types` = type,
+         `Aggregated responses` = names,
+         `Scores` =  score) %>% select(-n, -total, -p) 
+
+plotnames_pic <- plotnames %>% flextable() %>% 
+  merge_at(j= 1, i = 1:3) %>% merge_at(j= 1, i = 4:6) %>% 
+  merge_at(j= 1, i = 7:9) %>% merge_at(j= 1, i = 10:12) %>%
+  merge_at(j= 1, i = 13:15) %>% merge_at(j= 1, i = 16:18) %>%
+  merge_at(j= 1, i = 19:21) %>% merge_at(j= 1, i = 22:23) %>%
+  
+  merge_at(j= 2, i = 1:3) %>% merge_at(j= 2, i = 4:6) %>% 
+  merge_at(j= 2, i = 7:9) %>% merge_at(j= 2, i = 10:12) %>%
+  merge_at(j= 2, i = 13:15) %>% merge_at(j= 2, i = 16:18) %>%
+  merge_at(j= 2, i = 19:21) %>% merge_at(j= 2, i = 22:23)  %>% 
+  valign(j = 2, valign = "center", part = "all") %>%
+  compose(j = 'Plots', value = as_paragraph(as_image(Plots, width = 1, height = 0.6))) %>%
+   padding(padding = 1, part = "all") %>% 
+  autofit() %>% valign(valign = "top") %>% 
+  height_all(0.01, part = "all", unit = "cm") %>% 
+  surround(
+    i = c(3, 6, 9, 12, 15, 18, 21),
+    j = 1:4,
+    border.bottom = fp_border(color = "gray", style = "dashed"),
+    part = "body"
+  ) %>%   font(fontname = "Lato", part="all") %>% 
+  hline_bottom(part = "body", border = fp_border(color = "white", width = 3)) 
+plotnames_pic
+   
 ```
 
 
@@ -524,9 +574,10 @@ tmp <- struggle1 %>% filter( parts != "-") %>% dplyr::select(soft, parts) %>%
   separate_rows(parts, sep = "2\\)", convert = FALSE) %>% 
   separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
   mutate(problems = case_when(
-      grepl("\\b(ci|se|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", parts) == TRUE ~ "uncertainty", 
-      grepl("\\b(axes|lable(s)?|label(s)?|legend|ticks)\\b", parts) == TRUE ~ "plot components\n(axes, lables, legend)", 
-      grepl("\\b(color(s)?|colour(s)?|proportion(s)?|publication|scal(e|ing))\\b", parts) == TRUE ~ "styling and color", 
+      grepl("\\b(ci|se|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency|publication)\\b", parts) == TRUE ~ "uncertainty", 
+      grepl("\\b(axes|lable(s)?|label(s)?|legend|ticks)\\b", parts) == TRUE ~ "customization", 
+      grepl("\\b(proportion(s)?|scal(e|ing|es))\\b", parts) == TRUE ~ "scaling", 
+      grepl("\\b(color(s)?|colour(s)?)\\b", parts) == TRUE ~ "color", 
       grepl("\\b(preprocessing|extracting|datatype)\\b", parts) == TRUE ~ "preprocessing", 
       grepl("\\b(syncronisation|organizing|groups)\\b", parts) == TRUE ~ "subplotting", 
       grepl("\\b(mean|significan(t|ce)|permutations|combine)\\b", parts) == TRUE ~ "statistics", 
@@ -559,11 +610,12 @@ tmp <- struggle2 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
   #separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
   mutate(problems = case_when(
       grepl("\\b(ci|se|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", parts) == TRUE ~ "uncertainty", 
-      grepl("\\b(ax(is|es)?|lable(s)?|label(s)?|legend|ticks)\\b", parts) == TRUE ~ "plot components\n(axes, lables, legend)", 
-      grepl("\\b(color(s|ing)?|colour(s)?|proportion(s)?|publication|neg|scal(e|ing))\\b", parts) == TRUE ~ "styling and color", 
+      grepl("\\b(publication|ax(is|es)?|lable(s)?|label(s)?|legend|ticks|neg)\\b", parts) == TRUE ~ "customization", 
+      grepl("\\b(color(s|ing)?|colour(s)?)\\b", parts) == TRUE ~ "color", 
+      grepl("\\b(proportion(s)?|scal(e|ing|es))\\b", parts) == TRUE ~ "scaling", 
       grepl("\\btopo\\w*", parts) == TRUE ~ "adding topography", 
       grepl("\\b(channel(s)?|electrodes(s)?|interpretable|read|remembering)\\b", parts) == TRUE ~ "channel selection"
-      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) 
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>% View()
 
 n_rest <- mem_tab %>% filter(plots == "butterfly") %>% select(plotted)  - nrow(tmp)
 
@@ -591,18 +643,17 @@ tmp <- struggle3 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
   #separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
   mutate(problems = case_when(
     grepl("\\b(head|headshape|montage|topographies)\\b", parts) == TRUE ~ "head shape and montage",
-    grepl("\\b(time|threshold)\\b", parts) == TRUE ~ "time selection",
+    grepl("\\b(time|threshold)\\b", parts) == TRUE ~ "time range selection",
       grepl("\\b(ci|se|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", parts) == TRUE ~ "uncertainty",
-      grepl("\\b(scal(e|ing|es))\\b", parts) == TRUE ~ "scaling", 
+      grepl("\\b(scal(e|ing|es)|limits|proportion(s)?)\\b", parts) == TRUE ~ "scaling", 
       grepl("\\b(interpolat(e|ion)?|edges)\\b", parts) == TRUE ~ "interpolation",
-      grepl("\\b(color(s|ing|bar|map)?|colour(s)?|proportion(s)?|publication|limits|neg)\\b", parts) == TRUE ~ "styling and color", 
+      grepl("\\b(color(s|ing|bar|map)?|colour(s)?)\\b", parts) == TRUE ~ "color", 
       grepl("\\b(channel(s)?|electrode(s)?|sensors|elec)\\b", parts) == TRUE ~ "channel selection",
       
-      grepl("\\b(ax(is|es)?|lable(s)?|label(s|ing)?|legend|ticks|features|layout)\\b", parts) == TRUE ~ "plot components\n(axes, lables, legend)", 
+      grepl("\\b(publication|ax(is|es)?|lable(s)?|label(s|ing)?|legend|ticks|features|layout)\\b", parts) == TRUE ~ "customization", 
       grepl("\\b(mean|significan(t|ce)|permutations|p-value(s)?|smoothing|statistical|stats)\\b", parts) == TRUE ~ "statistics",
-      )) %>% #View() 
-
-filter(nchar(parts) != 0) %>% filter(!is.na(problems)) 
+      ))  %>% 
+  filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>% View()
 
 n_rest <- mem_tab %>% filter(plots == "topo") %>% select(plotted)  - nrow(tmp)
 
@@ -634,16 +685,15 @@ tmp <- struggle4 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
   #separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
   mutate(problems = case_when(
     grepl("\\b(head|headshape|montage|topographies|topoplots|shape)\\b", parts) == TRUE ~ "head shape and montage",
-    grepl("\\b(time(s|course|points)?|threshold)\\b", parts) == TRUE ~ "time selection",
-      grepl("\\b(ci|se|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", parts) == TRUE ~ "uncertainty",
-      grepl("\\b(channel(s)?|electrode(s)?|sensors|elec)\\b", parts) == TRUE ~ "channel selection",
-      grepl("\\b(color(s|ing|bar|map|scale)?|colour(s)?|proportion(s)?|publication|limits|neg|scal(e|ing|es))\\b", parts) == TRUE ~ "styling and color", 
-      grepl("\\b(ax(is|es)?|lable(s)?|label(s|ing)?|legend|ticks|features|markers|layout|specifications)\\b", parts) == TRUE ~ "plot components\n(axes, lables, legend)", 
-       grepl("\\b(legible|readable|visible|small|datatype|shape|montage|subplots|size(s)?|resizing|arrange|channel(s)?|electrode(s)?|sensors)|scal(e|ing|es)|references\\b", parts) == TRUE ~ "legibility and scaling",
-      grepl("\\b(mean|significan(t|ce)|permutations|p-value(s)?|smoothing|statistical|stats|t-stat)\\b", parts) == TRUE ~ "statistics",
-      grepl("\\b(interpolat(e|ion)?|edges)\\b", parts) == TRUE ~ "interpolation",
+    grepl("\\b(time(s|course|points)?|threshold)\\b", parts) == TRUE ~ "time specification",
+    grepl("\\b(channel(s)?|electrode(s)?|sensors|elec)\\b", parts) == TRUE ~ "channel selection",
+    grepl("\\b(color(s|ing|bar|map|scale)?|colour(s)?|color)\\b", parts) == TRUE ~ "color", 
+    grepl("\\b(ax(is|es)?|lable(s)?|label(s|ing)?|features|markers|layout|specifications|publication|handle)\\b", parts) == TRUE ~ "customization", 
+     grepl("\\b(visible|subplots|size(s)?|resizing|arrange|scal(e|ing|es)|references|limits)\\b", parts) == TRUE ~ "scaling",
+    grepl("\\b(mean|significan(t|ce)|permutations|smoothing|statistical|stats|t-stat)\\b", parts) == TRUE ~ "statistics",
+    grepl("\\b(interpolat(e|ion)?|edges)\\b", parts) == TRUE ~ "interpolation",
       TRUE ~ '_other'
-      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>%   filter(problems =="_other") %>% View()
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>% View()
 
 n_rest <- mem_tab %>% filter(plots == "topo_series") %>% select(plotted)  - nrow(tmp)
 
@@ -670,15 +720,17 @@ tmp <- struggle5 %>% filter( parts != "-") %>% dplyr::select(parts) %>% #View()
 #filter(!row_number() %in% c(59))  %>% 
   #separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
   mutate(problems = case_when(
-    grepl("\\b(selecting|marking|spotting)\\b", parts) == TRUE ~ "channel selection\n(differentiation, identification)",
-    grepl("\\b(legible|readable|visible|small|datatype|shape|montage|subplots|size(s)?|larger|dimensions|channel(s)?|electrode(s)?|sensors)|scal(e|ing|es)|references\\b", parts) == TRUE ~ "legibility and scaling",
+    grepl("\\b(selecting|marking|spotting)\\b", parts) == TRUE ~ "channel selection",
+    grepl("\\b(legible|readable|visible|small|shape|montage|subplots|size(s)?|larger|dimensions|channel(s)?|electrode(s)?|sensors)|scal(e|ing|es)|references\\b", parts) == TRUE ~ "legibility and scaling",
       grepl("\\b(ci|se|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", parts) == TRUE ~ "uncertainty",
-      grepl("\\b(color(s|ing|bar|map)?|colour(s)?|proportion(s)?|publication|limits|quality|scal(e|ing|es))\\b", parts) == TRUE ~ "styling and color", 
-      grepl("\\b(ax(is|es)?|lable(s)?|label(s|ing)?|legend|ticks|edit|features|markers|layout|specifications)\\b", parts) == TRUE ~ "plot components\n(axes, lables, legend)", 
+      grepl("\\b(color(s|ing|bar|map)?|colour(s)?|publication|quality)\\b", parts) == TRUE ~ "color", 
+      grepl("\\b(ax(is|es)?|lable(s)?|label(s|ing)?|legend|ticks|edit|features|markers|layout)\\b", parts) == TRUE ~ "customization", 
       grepl("\\b(preprocessing|extracting|masks)\\b", parts) == TRUE ~ "preprocessing", 
     
       TRUE ~ '_other'
-      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>%   filter(problems =="legibility and scaling") %>% View()
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>% View()
+  #filter(problems =="legibility and scaling") %>%
+  
 
 n_rest <- mem_tab %>% filter(plots == "erp_grid") %>% select(plotted)  - nrow(tmp)
 
@@ -775,6 +827,7 @@ rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem8) %>%
   theme(axis.text = element_text(size = 12), legend.position = "none")
 ```
 ### Combined
+
 ```{r}
 prob_comb <- rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem8) %>%
   group_by(name) %>%  mutate(index = match(name, unique(name)))  %>% filter(problems != "no complains") %>% 
@@ -797,7 +850,6 @@ prob_comb <- rbind(problem1, problem2, problem3, problem4, problem5, problem6, p
 ```
 
 ```{r}
-library(kableExtra)
 prob_comb %>% 
   kable(escape = F, booktabs = T, col.names = c("Plot name", "The main problem", "Scores"))   %>% 
   kable_minimal(full_width = F,  html_font = "Source Sans Pro") %>% 
@@ -818,8 +870,6 @@ tab2 <- prob_comb %>% tibble::add_column(Plots = plots3, .before = "name") %>% d
       })
     }
   ) %>% opt_table_font(font = "Source Sans Pro") %>%  tab_options(table_body.hlines.color = "transparent") %>% 
-  tab_options(data_row.padding = px(0.1), table.font.size = 14, container.padding.x = 1,  column_labels.border.bottom.color = "black",column_labels.border.top.color = "white",
-    column_labels.border.top.width = px(3),) %>% 
   tab_style(
     style = cell_borders(
       sides = c("bottom"),
@@ -827,10 +877,43 @@ tab2 <- prob_comb %>% tibble::add_column(Plots = plots3, .before = "name") %>% d
       weight = px(1.5),
       style = "dotted"
     ),
-    locations = cells_body(rows = c(3, 6, 9, 12, 15, 18)))
+    locations = cells_body(rows = c(3, 6, 9, 12, 15, 18))) %>% 
+  tab_options(data_row.padding = px(0.1), table.font.size = 14, container.padding.x = 1,  column_labels.border.bottom.color = "black",column_labels.border.top.color = "white",
+    column_labels.border.top.width = px(3),)
 tab2
 #gtsave(tab2, "tab2.png")
 
+```
+
+```{r}
+
+probs <- prob_comb %>% tibble::add_column(Plots = plots3, .before = "name") %>% dplyr::rename(`Plot name` = name,
+         `The main problem` = problems,
+         `Scores` =  score) %>% ungroup() 
+
+probs_pic <- probs %>% flextable() %>% 
+  merge_at(j= 1, i = 1:3) %>% merge_at(j= 1, i = 4:6) %>% 
+  merge_at(j= 1, i = 7:9) %>% merge_at(j= 1, i = 10:12) %>%
+  merge_at(j= 1, i = 13:15) %>% merge_at(j= 1, i = 16:18) %>% 
+  merge_at(j= 1, i = 19:21) %>%
+  merge_at(j= 2, i = 1:3) %>% merge_at(j= 2, i = 4:6) %>% 
+  merge_at(j= 2, i = 7:9) %>% merge_at(j= 2, i = 10:12) %>%
+  merge_at(j= 2, i = 13:15) %>% merge_at(j= 2, i = 16:18) %>%
+  merge_at(j= 2, i = 19:21) %>% 
+  padding(padding = 1, part = "all") %>% 
+  valign(j = 2, valign = "center", part = "all") %>%
+  compose(j = 'Plots', value = as_paragraph(as_image(Plots, width = 1, height = 0.6))) %>%
+  autofit() %>%
+  height_all(0.01, part = "all", unit = "cm") %>% 
+  surround(
+    i = c(3, 6, 9, 12, 15, 18, 21),
+    j = 1:4,
+    border.bottom = fp_border(color = "gray", style = "dashed"),
+    part = "body"
+  ) %>% 
+  hline_bottom(part = "body", border = fp_border(color = "white", width = 3)) %>% 
+  font(fontname = "Lato", part="all") #%>% save_as_image("probs.png")
+probs_pic
 ```
 
 

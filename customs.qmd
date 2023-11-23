@@ -228,7 +228,7 @@ plot_features <- c(
 
 comb_data <- feature1 %>%  mutate(name = case_when(
   name == "Combine with a custom plot created outside of the toolbox (as subplot or inset)" ~ "Inset",
-  name == "Flexible tweaking of plot attributes (colors, linewidths, margins etc.)"~ "Flexible",
+  name == "Flexible tweaking of plot attributes (colors, linewidths, margins etc.)"~ "Customizable",
   name == "Speed of plotting"~ "Speed",
   name == "Presentation/publication ready figures"~ "Publicable",
   name == "Reproducibility of interactively generated or modified plots"~ "Reproducable",
@@ -239,12 +239,12 @@ comb_data <- feature1 %>%  mutate(name = case_when(
   )) %>% 
     mutate(gr = case_when(
       grepl("\\b(Speed|Zooming|GUI|Interactive)\\b", name) == TRUE ~ "Moderate",
-      grepl("\\b(Coding|Flexible|Reproducable|Publicable|Inset)\\b", name) == TRUE ~ "Favored"))
+      grepl("\\b(Coding|Customizable|Reproducable|Publicable|Inset)\\b", name) == TRUE ~ "Favored"))
 
 test <-  comb_data %>% group_by(name, value) %>% dplyr::summarise(n = n()) %>% 
     mutate(gr = case_when(
       grepl("\\b(Speed|Zooming|GUI|Interactive|Inset)\\b", name) == TRUE ~ "Moderate",
-      grepl("\\b(Coding|Flexible|Reproducable|Publicable)\\b", name) == TRUE ~ "Favored"))  %>% 
+      grepl("\\b(Coding|Customizable|Reproducable|Publicable)\\b", name) == TRUE ~ "Favored"))  %>% 
   mutate(denymax = case_when(value == 2 ~ n, TRUE ~ NA))
 
 cbPalette <- c("#e3342f", "#f6993f", "#f1a20b", "#38c172", "#3490dc", "#6574cd", "#9561e2", "#4dc0b5", "#f66d9b")
@@ -554,14 +554,16 @@ periods_plot +
 ```
 ```{r}
 bl2 <- table(abs(just[2] %>% na.omit() %>% rbind(data[77] %>% dplyr::rename(num = !!names(.)[1]) , .))) %>% data.frame() %>%  dplyr::rename(baseline = !!names(.)[1]) %>% 
-  mutate(percent_score = round(Freq / sum(Freq), 2) *100) %>% filter(percent_score > 1)
+  mutate(baseline = ifelse(Freq > 2, as.character(baseline), "Other")) %>%
+  group_by(baseline) %>% summarise(Freq = sum(Freq)) %>% 
+  mutate(percent_score = round(Freq / sum(Freq), 2) *100) 
 
 periods_plot2 <- bl2 %>%
     ggplot(data = ., aes(x = baseline, y = percent_score)) +
     geom_bar(stat="identity", fill ="#6BAED6") + 
   labs(x = "Recomended baseline in msec", y = "") +  
   scale_y_continuous(breaks=seq(0, 60, 5)) + theme_classic() +
-  theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
+  theme(legend.position="none", plot.title = element_text(hjust = 0.5), text = element_text(family = "Lato")) +
   geom_text(aes(label = paste0(percent_score, "%"), group = baseline), position = position_dodge(width = .9), vjust = -0.3)   +
     theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text.y = element_blank(), axis.text = element_text(size = 10))
 
@@ -574,7 +576,7 @@ periods_plot2 +
 tti_data <- data[95] %>% rename_at(vars(colnames(.)), ~ c("toposeries_int")) %>% filter(!is.na(.), toposeries_int != "Other") %>%
   group_by(toposeries_int) %>% summarise(n = n()) %>% mutate(toposeries_int = case_when(
   toposeries_int == "The instantaneous time slices (single time points)" ~ "Time point",
-  toposeries_int == "The mean value of time bin, centered around the labelled time (average over multiple time points)"~ "Average\nover\ntime points"
+  toposeries_int == "The mean value of time bin, centered around the labelled time (average over multiple time points)"~ "Average over\ntime points"
   )) %>% mutate(p = round(n / sum(n) * 100)) 
 
 tti <-  tti_data %>% ggplot(., aes(y = toposeries_int, x = p)) + 
@@ -592,9 +594,9 @@ tti <-  tti_data %>% ggplot(., aes(y = toposeries_int, x = p)) +
       plot.caption = element_text(hjust=0), 
     ) +
   geom_text(aes(label = paste0(p, "%"), group = toposeries_int), hjust = -0.2, size = 5, family = "Lato") + 
-  labs(title = "How do you interpret time\non topoplot timeseries?", subtitle = "", y = "")+
+  labs(title = "How do you interpret time in topoplot timeseries?", subtitle = "", y = "")+
   scale_fill_manual(values=colours)  +
-  xlim(0, 70)
+  xlim(0, 100)
 
 tti  +
     labs(caption = sprintf("N of respondents - %d",  sum(tti_data$n))) # change
@@ -647,7 +649,9 @@ eb <- table(data[74]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("Pos
 eb_fig <- eb %>% 
     ggplot(., aes(y = Position, x = percent_score)) + #, fill = as.factor(percent_score))) +
     geom_bar(stat = "identity", width=0.5, position = "dodge", fill ="#6BAED6") + theme_classic() +
-  theme(axis.title.x=element_blank(), axis.text.x = element_blank(),
+  theme(axis.title.x=element_blank(), 
+        axis.text.x = element_blank(),
+        axis.title.y = element_blank(),
         legend.position="none", 
         text = element_text(family = "Lato"),
         axis.text = element_text(size = 12),
@@ -656,7 +660,8 @@ eb_fig <- eb %>%
             hjust = -0.2) + 
   ggtitle("In your paper, have you published\nan ERP plot with error bars?")+
 scale_fill_manual(values=colours)  +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 70) + labs(y = "")
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + 
+  xlim(0, 100) + labs(y = "")
 
 eb_fig  +
     labs(caption = sprintf("N of respondents - %d",  sum(eb$Scores)))
@@ -672,14 +677,15 @@ ebd_fig <- ebd %>%
     geom_bar(position = "dodge", stat = "identity", width=0.5, fill ="#6BAED6") + theme_classic() +
    theme(axis.title.x=element_blank(), axis.text.x = element_blank(), text = element_text(family = "Lato"),
         legend.position="none", 
-        plot.title = element_text(hjust = 0.5)) + ylab("") +
+        axis.title.y = element_blank(),
+        plot.title = element_text(hjust = 0.5)) + 
      
   geom_text(aes(label = paste0(percent_score, "%"), group = position),  hjust = -0.2) + 
             #position = position_stack(vjust = 0.5), 
             #size = 6
   ggtitle("In your figure, what\ndid the error bars represent?")+
     scale_fill_manual(values=colours) + scale_y_discrete(labels = c("Standard error\nof the mean", "Confidence\ninterval")) +
-    theme(plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 85) 
+    theme(plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 100) 
 
 ebd_fig +
     labs(caption = sprintf("N of respondents - %d",  sum(ebd$scores))) 

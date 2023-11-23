@@ -63,7 +63,7 @@ cit_data <- rbind(cit1, cit2, cit3, cit4) %>% rename_at(vars(colnames(.)), ~ c("
 na.omit(data[51]) %>% nrow()
  
 
-other <- c(rep("Custom scripts",each=9), "4DBTi", rep("letswave", 3), "mTRF", "RAGU", "IGOR Pro", "EEGProcessor", "ELAN", "WinEEG") %>% table(.) %>% data.frame(.) %>% rename_at(vars(colnames(.)), ~ c("soft", "sum_scores"))
+other <- c(rep("Custom scripts", each=9), "4DBTi", rep("letswave", 3), "mTRF", "RAGU", "IGOR Pro", "EEGProcessor", "ELAN", "WinEEG") %>% table(.) %>% data.frame(.) %>% rename_at(vars(colnames(.)), ~ c("soft", "sum_scores"))
 ```
 
 ```{r, warning=FALSE}
@@ -111,21 +111,47 @@ showtext_auto(enable = TRUE)
 chart <- d %>% 
     ggplot(data = ., aes(y = reorder(soft, percent_score),  x= percent_score)) +
     geom_bar(stat="identity", fill ="#6BAED6") + 
-    labs(x= "", y="",# subtitle="", 
-         title="Which EEG, MEG, or iEEG analysis platform\nhave you used for ERP plotting?") +
+    labs(x="",title="Which EEG, MEG, or iEEG analysis platform\nhave you used for ERP plotting?") +
     geom_text(aes(label = paste0(percent_score, "%")), 
             hjust = -0.2, size = 4)  + 
-    theme_classic() + theme(legend.position="none", axis.text.y = element_text(size = 14))  +
-    theme(legend.position="none", plot.caption.position = "plot", 
-          plot.caption = element_text(hjust=0), 
-          text = element_text(family = "Lato"),
-          axis.text.x = element_blank(), axis.text = element_text(size = 10),  
-          plot.title = element_text(color = "grey10", size = 16, face = "bold", margin = margin(t = 15)),
-          plot.title.position = "plot") + 
-  xlim(0, 68) +
+    theme_classic() + theme(
+      axis.text.y = element_text(size = 14),
+      legend.position="none", plot.caption.position = "plot", 
+      plot.caption = element_text(hjust=0), 
+      text = element_text(family = "Lato"),
+      axis.text.x = element_blank(), axis.text = element_text(size = 10),  
+      plot.title = element_text(color = "grey10", size = 16, face = "bold"),
+      axis.title.y = element_blank(),
+      #axis.title.x = element_blank(),
+      plot.title.position = "plot"
+      ) + 
+    xlim(0, 100) +
     scale_y_discrete(labels = tools)
+
 chart +
     labs(caption = sprintf("N of respondents - %d",  nrow(software)))
+```
+Matlab users
+
+```{r}
+data.frame(rowSums(t(software))) %>%  tibble::rownames_to_column(., "soft") %>% 
+    rename_at(vars(colnames(.)), ~ c("soft", "sum_scores"))   %>% 
+    filter(sum_scores != 0) %>% 
+   mutate(soft = case_when(
+      grepl("\\b(EEGLAB|FieldTrip|ERPLAB|Brainstorm)\\b", soft) == TRUE ~ "MATLAB-based tools", 
+      TRUE ~ soft
+      )) %>% 
+      #mutate(soft = ifelse(sum_scores > 8, as.character(soft), "Other")) %>% 
+  group_by(soft) %>% 
+      dplyr::summarise(sum_scores = sum(sum_scores)) %>% ungroup() %>% 
+      mutate(percent_score = round(sum_scores / nrow(software) * 100))  %>% 
+  mutate(soft = factor(soft, levels = soft[rev(order(sum_scores))])) %>% 
+  arrange(desc(sum_scores)) %>% head(5)
+```
+```{r}
+software %>% select(EEGLAB, FieldTrip, ERPLAB, Brainstorm) %>% mutate(sum = rowSums(across(where(is.numeric)))) %>% 
+    filter(sum != 0) %>% summarise(n = n())
+  
 ```
 
 #### Monousers
@@ -211,7 +237,7 @@ cbPalette <- c("#e3342f", "#f6993f", "#38c172", "#3490dc", "#6574cd", "#9561e2",
 showtext_opts(dpi = 200)
 showtext_auto(enable = TRUE)
 
-cit_data %>% filter(year < 2023) %>% group_by(year) %>% 
+cit_plot <- cit_data %>% filter(year < 2023) %>% group_by(year) %>% 
   mutate(ylast = case_when(year == 2022 ~ citations, TRUE ~ NA)) %>% 
   ggplot(., aes(x = year, y = citations, color = name, label = name)) + geom_line() +
   geom_point(shape = 21, fill = 'white', size=2, stroke=1) + 
@@ -247,7 +273,21 @@ cit_data %>% filter(year < 2023) %>% group_by(year) %>%
     expand = c(0.04, 0),
     breaks = seq(0, 1800, by = 200)
   )
+cit_plot
   
-  
+```
+
+## Comb
+
+```{r}
+cbPalette2 <- c("#e3342f", "#38c172", "grey10", "#3490dc", "#f6993f", rep("grey10", 9) )
+ggarrange(chart + labs(title="Which EEG, MEG, or iEEG\nanalysis platform\nhave you used for ERP plotting?")+
+            theme( axis.text.y = element_text(color = rev(cbPalette2)),
+              plot.title = element_text(color = "grey10", size = 14, margin = margin(t = 15))), 
+          
+          cit_plot + labs(title = "Citations per year for\nthe most popular EEG tools") +
+            theme(plot.title = element_text(color = "grey10", size = 14, margin = margin(t = 15)))+
+            scale_x_continuous(limits = c(2003.8, 2027), breaks = seq(2004, 2023, by = 3)), 
+          labels = c("A", "B"), align = 'h') 
 ```
 
