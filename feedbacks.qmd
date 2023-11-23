@@ -723,8 +723,8 @@ tmp <- struggle5 %>% filter( parts != "-") %>% dplyr::select(parts) %>% #View()
     grepl("\\b(selecting|marking|spotting)\\b", parts) == TRUE ~ "channel selection",
     grepl("\\b(legible|readable|visible|small|shape|montage|subplots|size(s)?|larger|dimensions|channel(s)?|electrode(s)?|sensors)|scal(e|ing|es)|references\\b", parts) == TRUE ~ "legibility and scaling",
       grepl("\\b(ci|se|sem|errorbar(s)?|sme|sd|uncertainty|error(s)?|confidence|variance|deviation(s)?|shading|shaded|bars|transparency)\\b", parts) == TRUE ~ "uncertainty",
-      grepl("\\b(color(s|ing|bar|map)?|colour(s)?|publication|quality)\\b", parts) == TRUE ~ "color", 
-      grepl("\\b(ax(is|es)?|lable(s)?|label(s|ing)?|legend|ticks|edit|features|markers|layout)\\b", parts) == TRUE ~ "customization", 
+      grepl("\\b(color(s|ing|bar|map)?|colour(s)?)\\b", parts) == TRUE ~ "color", 
+      grepl("\\b(publication|quality|ax(is|es)?|lable(s)?|label(s|ing)?|legend|ticks|edit|features|markers|layout)\\b", parts) == TRUE ~ "customization", 
       grepl("\\b(preprocessing|extracting|masks)\\b", parts) == TRUE ~ "preprocessing", 
     
       TRUE ~ '_other'
@@ -758,13 +758,14 @@ tmp <- struggle6 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
 #filter(!row_number() %in% c(59))  %>% 
   #separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
   mutate(problems = case_when(
+    grepl("\\b(axes|paper)\\b", parts) == TRUE ~ "customization", 
+    grepl("\\b(preprocessing|making sense|correspondance)\\b", parts) == TRUE ~ "preprocessing",
     grepl("\\b(sort(ing)?|max|correspondance)\\b", parts) == TRUE ~ "sorting", 
     grepl("\\b(smoothing)\\b", parts) == TRUE ~ "smoothing", 
-    grepl("\\b(epochs|time)\\b", parts) == TRUE ~ "defining epochs", 
-    grepl("\\b(colo(r|ur)|paper)\\b", parts) == TRUE ~ "styling and color", 
-    
+    grepl("\\b(epochs|time)\\b", parts) == TRUE ~ "time specification", 
+    grepl("\\b(colo(r|ur)|paper)\\b", parts) == TRUE ~ "color", 
       TRUE ~ '_other'
-      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>%   filter(problems =="defining epochs") %>% View()
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>% View() #%>%   filter(problems =="defining epochs") 
 
 n_rest <- mem_tab %>% filter(plots == "erp_img") %>% select(plotted)  - nrow(tmp)
 
@@ -791,12 +792,13 @@ tmp <- struggle8 %>% filter( parts != "-") %>% dplyr::select(parts) %>%
 #filter(!row_number() %in% c(59))  %>% 
   #separate_rows(parts, sep = "\\\r\\\n", convert = FALSE) %>%  rbind(., separated_row) %>%
   mutate(problems = case_when(
-    grepl("\\b(sort(ing)?|order(ing)?|organisation)\\b", parts) == TRUE ~ "order and sorting", 
-    grepl("\\b(scale|visability|interpreting|range)\\b", parts) == TRUE ~ "legibility and scaling", 
-    grepl("\\b(color(bar)?|paper)\\b", parts) == TRUE ~ "styling and color", 
+    grepl("\\b(sort(ing)?|order(ing)?|organisation)\\b", parts) == TRUE ~ "sorting", 
+    grepl("\\b(smoothing)\\b", parts) == TRUE ~ "smoothing", 
+    grepl("\\b(scale|visibility|visability|interpreting|range)\\b", parts) == TRUE ~ "legibility and scaling", 
+    grepl("\\b(color(bar)?|paper)\\b", parts) == TRUE ~ "color", 
     
       TRUE ~ '_other'
-      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems))# %>%   filter(problems =="_other") %>% View()
+      )) %>% filter(nchar(parts) != 0) %>% filter(!is.na(problems)) #%>% View()# %>%   filter(problems =="_other") 
 
 n_rest <- mem_tab %>% filter(plots == "channel_img") %>% select(plotted)  - nrow(tmp)
 
@@ -810,26 +812,11 @@ problem8 <- tmp8 %>% mutate(name = "Channel image")
 tmp8
 ```
 
-
-### The most problematic plot
-
-```{r}
-
-rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem8) %>%
-  group_by(name) %>%  mutate(index = match(name, unique(name))) %>% filter(problems == "no complains") %>%
-  mutate(percent1 = 100 - (round(n / total, 2) * 100)) %>% 
-  ggplot(., aes(y = reorder(name, percent1), x = percent1)) +
-  geom_col(fill ="lightblue1", colour ="dodgerblue3") + 
-  geom_text(aes(label = paste0(percent1, "%"), y = name, x = percent1),
-            position = position_stack(vjust = 0.5), color = "black") +
-  labs(x = "Percent of complains", y  = "") +
-  theme_classic() +
-  theme(axis.text = element_text(size = 12), legend.position = "none")
-```
 ### Combined
 
 ```{r}
-prob_comb <- rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem8) %>%
+prob_comb <- 
+  rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem8) %>%
   group_by(name) %>%  mutate(index = match(name, unique(name)))  %>% filter(problems != "no complains") %>% 
   arrange(desc(n)) %>% slice(1:3) %>% 
   arrange(index) %>%  dplyr::select(name, problems, n, total) %>%  
@@ -840,52 +827,17 @@ prob_comb <- rbind(problem1, problem2, problem3, problem4, problem5, problem6, p
   dplyr::mutate(groupRow = 1:n()) %>%
   ungroup() %>%
   mutate(p = round(as.numeric(n)/as.numeric(total), 2) * 100) %>% 
-  group_by(name) %>% mutate(mx = max(p)) %>% 
+  dplyr::group_by(name) %>%   mutate(mx = max(p)) %>% 
   arrange(desc(mx), desc(p)) %>% 
   mutate(score = paste(p, total, sep = "% out of ")) %>% 
   dplyr::mutate(name = ifelse(groupRow == 1, as.character(name), "")) %>%
   dplyr::mutate(score = ifelse(groupRow == 1, as.character(score), paste(p, "%", sep = ""))) %>%
   select(-c(groupRow, n, total, p, mx)) 
-
-```
-
-```{r}
-prob_comb %>% 
-  kable(escape = F, booktabs = T, col.names = c("Plot name", "The main problem", "Scores"))   %>% 
-  kable_minimal(full_width = F,  html_font = "Source Sans Pro") %>% 
-  row_spec(c(3, 6, 9, 12, 15, 18), extra_css = "border-bottom: 1px dotted gray;")
+prob_comb
 ```
 
 ```{r}
 plots3 <- c("img/1.png", "img/filler.png", "img/filler.png", "img/5.png", "img/filler.png", "img/filler.png", "img/4.png","img/filler.png", "img/filler.png", "img/7.png", "img/filler.png", "img/filler.png", "img/2.png", "img/filler.png", "img/filler.png", "img/6.png", "img/filler.png", "img/filler.png", "img/3.png", "img/filler.png", "img/filler.png")
-
-tab2 <- prob_comb %>% tibble::add_column(Plots = plots3, .before = "name") %>% dplyr::rename(`Plot name` = name,
-         `The main problem` = problems,
-         `Scores` =  score) %>% ungroup() %>% gt()  %>% 
-  text_transform(
-    locations = cells_body(columns = Plots),
-    fn = function(x) {
-      lapply(x, function(x) {
-              html(paste(local_image(filename = x)))
-      })
-    }
-  ) %>% opt_table_font(font = "Source Sans Pro") %>%  tab_options(table_body.hlines.color = "transparent") %>% 
-  tab_style(
-    style = cell_borders(
-      sides = c("bottom"),
-      color = "gray",
-      weight = px(1.5),
-      style = "dotted"
-    ),
-    locations = cells_body(rows = c(3, 6, 9, 12, 15, 18))) %>% 
-  tab_options(data_row.padding = px(0.1), table.font.size = 14, container.padding.x = 1,  column_labels.border.bottom.color = "black",column_labels.border.top.color = "white",
-    column_labels.border.top.width = px(3),)
-tab2
-#gtsave(tab2, "tab2.png")
-
-```
-
-```{r}
 
 probs <- prob_comb %>% tibble::add_column(Plots = plots3, .before = "name") %>% dplyr::rename(`Plot name` = name,
          `The main problem` = problems,
@@ -916,6 +868,22 @@ probs_pic <- probs %>% flextable() %>%
 probs_pic
 ```
 
+
+### The most problematic plot
+
+```{r}
+
+rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem8) %>%
+  group_by(name) %>%  mutate(index = match(name, unique(name))) %>% filter(problems == "no complains") %>%
+  mutate(percent1 = 100 - (round(n / total, 2) * 100)) %>% 
+  ggplot(., aes(y = reorder(name, percent1), x = percent1)) +
+  geom_col(fill ="lightblue1", colour ="dodgerblue3") + 
+  geom_text(aes(label = paste0(percent1, "%"), y = name, x = percent1),
+            position = position_stack(vjust = 0.5), color = "black") +
+  labs(x = "Percent of complains", y  = "") +
+  theme_classic() +
+  theme(axis.text = element_text(size = 12), legend.position = "none")
+```
 
 ## New features
 
