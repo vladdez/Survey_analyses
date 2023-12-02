@@ -37,6 +37,7 @@ library(ggpubr)
 library(ggrepel)
 library(showtext)
 library(ggExtra)
+library(ggthemes)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
@@ -44,6 +45,10 @@ data <- read_excel("data/results_survey.xlsx") #change to csv or tab and check w
 
 data <- data[1:121] %>% 
   filter(.[[18]] !='Yes') # not analysed any EEG method
+
+font_add_google("Lato")
+showtext_opts(dpi = 200)
+showtext_auto(enable = TRUE)
 ```
 
 ## Familiarity with plots
@@ -291,42 +296,54 @@ test  %>%
 ```
 
 ```{r}
-font_add_google("Lato")
-#font_add_google("Roboto")
-showtext_opts(dpi = 200)
-showtext_auto(enable = TRUE)
-  
-test  %>% 
+
+#core <- 
+  test  %>% mutate(value = value + 3) %>% 
   ggplot(aes(x = value, y = n, label = name, color = name)) + 
-  geom_line( bw = 0.5, size = 1) + 
+  geom_line(bw = 0.5, size = 1) + 
   geom_point(shape = 21, fill = 'white', size=2, stroke=1) + 
-  facet_grid(gr~ ., scales = "free_y",) +  
-  scale_color_manual(values=cbPalette) + theme_classic()  + 
-  labs(x = "Values on the Likert scale", y = "Scores") +  
+  facet_grid(gr~ ., scales = "free_y") +  
+  scale_color_manual(values = cbPalette) + 
+  labs(x = "Values on the Likert scale", y = "Scores")  +  geom_rangeframe(color = "black") +
   theme(
+    panel.background = element_blank(), panel.border = element_blank(), 
+
     legend.position = "none", 
     text = element_text(family = "Lato"),
     strip.background = element_blank(), 
+    #axis.line.x =  element_blank(),
     axis.text = element_text(color = "grey40"),
     axis.ticks = element_line(color = "grey40", size = .5),
     strip.text = element_text(size = 14),
     axis.title = element_blank(),
     plot.title = element_text(
-    color = "grey10", 
-    size = 16, 
-    face = "bold",
-    margin = margin(t = 15)
-  ),
+      color = "grey10", 
+      size = 16, 
+      face = "bold",
+      #margin = margin(t = 15)
+      ),
     plot.title.position = "plot",
+  )  + 
+  scale_x_continuous(
+    expand = c(0.01, 0),
+    limits = c(0.9, 5), 
+    breaks = seq(1, 5, by = 1),
+    labels = c("Not important", "", "Neutral", "", "Very important")
   ) +
-  coord_cartesian(clip = "off") +
+  scale_y_continuous(
+    expand = c(0.04, 0),
+    limits = c(0, NA),
+    breaks = seq(0, 150, by = 20)
+  ) +
+  labs(title = "When using an EEG, MEG, or iEEG visualization tool\nwhich features are important to you?")   +
+  coord_cartesian(xlim = c(1, 6.5), clip = "off") +
   geom_text_repel(
-    aes(color = name, label = name, x = 2, y = denymax,),
+    aes(color = name, label = name, x = 5, y = denymax,),
     family = "Lato",
     fontface = "bold",
     size = 4,
     direction = "y",
-    xlim = c(2.4, Inf),
+    xlim = c(5.5, NA),
     hjust = 0,
     segment.size = .7,
     segment.alpha = .5,
@@ -335,19 +352,118 @@ test  %>%
     segment.curvature = -0.1,
     segment.ncp = 3,
     segment.angle = 20
-  ) +
+  )
+```
+```{r}
+
+cbPalette1 <- c("#e3342f", "#6574cd", "#f6993f",  "#38c172" )
+
+cbPalette2 <- c("white", "#3490dc","#f1a20b", "#9561e2", "#4dc0b5", "#f66d9b")
+test1 <- test %>% filter(gr == "Favored") %>% mutate(value = value + 3) %>% 
+  ggplot(aes(x = value, y = n, label = name, color = name)) + 
+  geom_line(bw = 0.5, size = 1) + 
+  geom_point(shape = 21, fill = 'white', size=2, stroke=1) + 
+  scale_color_manual(values = cbPalette1) + 
+  labs(x = "Values on the Likert scale", y = "Scores")  +  geom_rangeframe(color = "black") +
+  theme(
+    panel.background = element_blank(), panel.border = element_blank(), 
+    legend.position = "none", 
+    text = element_text(family = "Lato"),
+    strip.background = element_blank(), 
+    axis.text = element_text(color = "grey40"),
+    axis.ticks = element_line(color = "grey40", size = .5),
+    strip.text = element_text(size = 14),
+    axis.title = element_blank(),
+    axis.text.x=element_blank(),
+    plot.title = element_text(
+      color = "grey10", 
+      size = 16, 
+      face = "bold",
+      ),
+    plot.title.position = "plot",
+  )  + 
   scale_x_continuous(
-    expand = c(0, 0),
-    limits = c(-2.1, 3.5), 
-    breaks = seq(-2, 2, by = 1)
-  )+
+    expand = c(0.01, 0),
+    limits = c(0.9, 5), 
+    breaks = seq(1, 5, by = 1)
+  ) +
   scale_y_continuous(
     expand = c(0.04, 0),
-    breaks = seq(0, 150, by = 20)
+    limits = c(0, NA),
+    breaks = seq(0, 150, by = 30)
   ) +
-  labs(
-    title = "When using an EEG, MEG, or iEEG visualization tool\nwhich features are important to you?"
+  labs(title = "When using an EEG, MEG, or iEEG visualization tool\nwhich features are important to you?")   +
+  coord_cartesian(xlim = c(1, 6.5), clip = "off") +
+  geom_text_repel(
+    aes(color = name, label = name, x = 5, y = denymax,),
+    family = "Lato",
+    fontface = "bold",
+    size = 4,
+    direction = "y",
+    xlim = c(5.5, NA),
+    hjust = 0,
+    segment.size = .7,
+    segment.alpha = .5,
+    segment.linetype = "dotted",
+    box.padding = .4,
+    segment.curvature = -0.1,
+    segment.ncp = 3,
+    segment.angle = 20
   )
+
+test2 <- test %>% filter(gr != "Favored") %>% mutate(value = value + 3) %>% ungroup() %>% 
+  tibble::add_row(name = "void", value = 1, n = 0, gr = "a", denymax=0) %>% 
+  # line above is just to extend yaxis to zero
+  ggplot(aes(x = value, y = n, label = name, color = name)) + 
+  geom_line(bw = 0.5, size = 1) + 
+  geom_point(shape = 21, fill = 'white', size=2, stroke=1) + 
+  scale_color_manual(values = cbPalette2) + 
+  labs(x = "Values on the Likert scale", y = "Scores")  +  geom_rangeframe(color = "black") +
+  theme(
+    panel.background = element_blank(), panel.border = element_blank(), 
+    legend.position = "none", 
+    text = element_text(family = "Lato"),
+    strip.background = element_blank(), 
+    axis.text = element_text(color = "grey40"),
+    axis.ticks = element_line(color = "grey40", size = .5),
+    strip.text = element_text(size = 14),
+    axis.title = element_blank(),
+    plot.title = element_text(
+      color = "grey10", 
+      size = 16, 
+      face = "bold",
+      ),
+    plot.title.position = "plot",
+  )  + 
+  scale_x_continuous(
+    expand = c(0.01, 0),
+    limits = c(0.9, 5), 
+    breaks = seq(1, 5, by = 1),
+    labels = c("Not important", "", "Neutral", "", "Very important")
+  ) +
+  scale_y_continuous(
+    expand = c(0.04, 0),
+    limits = c(0, NA),
+    breaks = seq(0, 72, by = 15)
+  ) +
+  coord_cartesian(xlim = c(1, 6.5), clip = "off") +
+  geom_text_repel(
+    aes(color = name, label = name, x = 5, y = denymax,),
+    family = "Lato",
+    fontface = "bold",
+    size = 4,
+    direction = "y",
+    xlim = c(5.5, NA),
+    hjust = 0,
+    segment.size = .7,
+    segment.alpha = .5,
+    segment.linetype = "dotted",
+    box.padding = .4,
+    segment.curvature = -0.1,
+    segment.ncp = 3,
+    segment.angle = 20
+  )
+ggarrange(test1, test2, align = 'v', nrow = 2) 
 ```
 
 
@@ -355,33 +471,7 @@ test  %>%
 
 ### Channels
 
-How many channels do you typically measure?
-
-```{r, warning=FALSE, message=FALSE}
-chs <- data %>% dplyr::rename(channels = !!names(.)[23]) %>% filter(channels < 10000) 
-
-chs %>% 
-  ggplot(data = ., aes(x = channels)) + ylab("Counts") +
-  geom_histogram(bins=300) +  scale_x_continuous(breaks=seq(0, 300, 30)) +
-    labs(x ="How many channels do you typically measure?") + theme_classic() +
-  labs(caption = sprintf("N of respondents - %d",  nrow(chs))) +
-  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
-```
-
-How many channels do you typically analyse?
-
-```{r, warning=FALSE, message=FALSE}
-chs <- data %>% filter(.[[24]] < 500)
-  
-  chs %>% ggplot(data = ., aes_(as.name(names(data)[24]))) +
-  geom_histogram(bins=300) +  scale_x_continuous(breaks=seq(0, 300, 30))+
-    labs(x ="How many channels of those you measured do you typically analyse?") + theme_classic() +
-  labs(caption = sprintf("N of respondents - %d",  nrow(chs))) +
-  theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
-
-```
-
-Combined version
+How many channels do you typically analyse and measure?
 
 ```{r}
 cv <- data %>% select(23, 24) %>% 
@@ -394,10 +484,10 @@ cv <- data %>% select(23, 24) %>%
 an_me_plot <- cv %>%  
   ggplot(aes(x=rate, y = p)) + 
   geom_col(position = "identity", bins=300, fill ="#6BAED6") + 
-  labs(x ="Ratio of electrodes analysed / measured", y = "") +
+  labs(x ="Ratio of electrodes\nanalysed / measured", y = "") +
   theme_classic() +
   theme(legend.position="none", plot.caption = element_text(hjust=0), text = element_text(family = "Lato"), axis.text = element_text(size = 10)) + 
-  ylim(0, 0.4) +    
+  #ylim(0, 0.1) + 
   scale_x_continuous(labels = scales::percent)  + scale_y_continuous(labels = scales::percent, limits = c(0, 0.4))
 
 an_me_plot +
@@ -554,14 +644,17 @@ periods_plot +
 ```
 ```{r}
 bl2 <- table(abs(just[2] %>% na.omit() %>% rbind(data[77] %>% dplyr::rename(num = !!names(.)[1]) , .))) %>% data.frame() %>%  dplyr::rename(baseline = !!names(.)[1]) %>% 
-  mutate(baseline = ifelse(Freq > 2, as.character(baseline), "Other")) %>%
+ # mutate(baseline = as.numeric(baseline) * -1) %>% 
+  mutate(baseline = ifelse(Freq > 2, paste0("-", as.character(baseline)), "Other")) %>%
   group_by(baseline) %>% summarise(Freq = sum(Freq)) %>% 
-  mutate(percent_score = round(Freq / sum(Freq), 2) *100) 
+  mutate(percent_score = round(Freq / sum(Freq), 2) *100) %>% arrange(desc(baseline)) %>% 
+  mutate(baseline = factor(baseline, 
+  levels = c("-500", "-300", "-250", "-200", "-100", "Other")))
 
 periods_plot2 <- bl2 %>%
     ggplot(data = ., aes(x = baseline, y = percent_score)) +
-    geom_bar(stat="identity", fill ="#6BAED6") + 
-  labs(x = "Recomended baseline in msec", y = "") +  
+    geom_bar(stat="identity", fill ="#6BAED6", width = 0.6) + 
+  labs(x = "Recomended baseline\n(msec)", y = "") +  
   scale_y_continuous(breaks=seq(0, 60, 5)) + theme_classic() +
   theme(legend.position="none", plot.title = element_text(hjust = 0.5), text = element_text(family = "Lato")) +
   geom_text(aes(label = paste0(percent_score, "%"), group = baseline), position = position_dodge(width = .9), vjust = -0.3)   +
@@ -609,7 +702,7 @@ data[96] %>% filter(!is.na(.))
 ### Combined
 
 ```{r}
-ggarrange(periods_plot2, an_me_plot, labels = c("A", "B"))
+ggarrange(periods_plot2, an_me_plot, labels = c("A", "B")) 
 ```
 
 ```{r}

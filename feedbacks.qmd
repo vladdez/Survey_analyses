@@ -105,20 +105,20 @@ data.frame(plots = c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot timeser
 dim <- dplyr::tibble(
   Plots = c("img/1.png", "img/2.png", "img/3.png", "img/4.png", "img/5.png", "img/6.png", "img/7.png", "img/8.png"),
   Name = c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot timeseries", "ERP grid", "ERP image", "Channel image", "Parallel plot"), 
-  Time = c("x", "x", "", "(x)", "x", "x", "x", "x"),
+  Time = c("x", "x", "", "(x)", "x", "x", "x", "(x)"),
   Channels = c("", "x", "x", "x", "x", "", "x", "x"), 
-  Spatial = c("", "", "x", "x", "x", "", "", ""), 
+  Layout = c("", "", "x", "x", "x", "", "", ""), 
   Conditions = c("x", "", "", "", "(x)", "", "", "x"), 
-  Trials = c("", "", "", "", "", "x", "", "")
+  Trials = c("", "", "", "", "", "x", "", "(x)")
 ) 
 
 dim_plot <- dim %>% 
   gt()  %>% 
-  cols_align(align = "center", columns = c(Time, Channels, Spatial, Conditions, Trials)) %>% 
+  cols_align(align = "center", columns = c(Time, Channels, Layout, Conditions, Trials)) %>% 
   cols_width(
     Time ~ px(50),
     Channels ~ px(50),
-    Spatial ~ px(50),
+    Layout ~ px(50),
     Conditions ~ px(50),
     Trials ~ px(50),
   ) %>% 
@@ -131,7 +131,11 @@ dim_plot <- dim %>%
     }
   ) %>%  opt_table_font(font = "Source Sans Pro")  %>% 
 tab_options(data_row.padding = px(0.1), table.font.size = 14, container.padding.x = 1,  column_labels.border.bottom.color = "black",column_labels.border.top.color = "white",
-    column_labels.border.top.width = px(3),)
+    column_labels.border.top.width = px(3),) %>% 
+  tab_footnote(
+  footnote = "x - full dimension, (x) - partial dimension",
+  placement = "right"
+)
 
 dim_plot
 
