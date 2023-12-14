@@ -235,8 +235,8 @@ comb_data <- feature1 %>%  mutate(name = case_when(
   name == "Combine with a custom plot created outside of the toolbox (as subplot or inset)" ~ "Inset",
   name == "Flexible tweaking of plot attributes (colors, linewidths, margins etc.)"~ "Customizable",
   name == "Speed of plotting"~ "Speed",
-  name == "Presentation/publication ready figures"~ "Publicable",
-  name == "Reproducibility of interactively generated or modified plots"~ "Reproducable",
+  name == "Presentation/publication ready figures"~ "Publishable",
+  name == "Reproducibility of interactively generated or modified plots"~ "Reproducible",
   name == "Zooming or panning within a plot"~ "Zooming",
   name == "Interactive selection of time-ranges or electrodes e.g. via Sliders or Dropdown menus"~ "Interactive",
   name == "Generating plots by clicking (GUI)"~ "GUI",
@@ -244,12 +244,12 @@ comb_data <- feature1 %>%  mutate(name = case_when(
   )) %>% 
     mutate(gr = case_when(
       grepl("\\b(Speed|Zooming|GUI|Interactive)\\b", name) == TRUE ~ "Moderate",
-      grepl("\\b(Coding|Customizable|Reproducable|Publicable|Inset)\\b", name) == TRUE ~ "Favored"))
+      grepl("\\b(Coding|Customizable|Reproducible|Publishable|Inset)\\b", name) == TRUE ~ "Favored"))
 
 test <-  comb_data %>% group_by(name, value) %>% dplyr::summarise(n = n()) %>% 
     mutate(gr = case_when(
       grepl("\\b(Speed|Zooming|GUI|Interactive|Inset)\\b", name) == TRUE ~ "Moderate",
-      grepl("\\b(Coding|Customizable|Reproducable|Publicable)\\b", name) == TRUE ~ "Favored"))  %>% 
+      grepl("\\b(Coding|Customizable|Reproducible|Publishable)\\b", name) == TRUE ~ "Favored"))  %>% 
   mutate(denymax = case_when(value == 2 ~ n, TRUE ~ NA))
 
 cbPalette <- c("#e3342f", "#f6993f", "#f1a20b", "#38c172", "#3490dc", "#6574cd", "#9561e2", "#4dc0b5", "#f66d9b")
@@ -358,7 +358,7 @@ test  %>%
 
 cbPalette1 <- c("#e3342f", "#6574cd", "#f6993f",  "#38c172" )
 
-cbPalette2 <- c("white", "#3490dc","#f1a20b", "#9561e2", "#4dc0b5", "#f66d9b")
+cbPalette2 <- c("#4dc0b5", "#3490dc","#f1a20b", "#9561e2", "white", "#f66d9b")
 test1 <- test %>% filter(gr == "Favored") %>% mutate(value = value + 3) %>% 
   ggplot(aes(x = value, y = n, label = name, color = name)) + 
   geom_line(bw = 0.5, size = 1) + 

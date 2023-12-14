@@ -150,7 +150,7 @@ data.frame(rowSums(t(software))) %>%  tibble::rownames_to_column(., "soft") %>%
 ```
 ```{r}
 software %>% select(EEGLAB, FieldTrip, ERPLAB, Brainstorm) %>% mutate(sum = rowSums(across(where(is.numeric)))) %>% 
-    filter(sum != 0) %>% summarise(n = n())
+    filter(sum != 0) %>% summarise(n = n()/ nrow(software) * 100)
   
 ```
 

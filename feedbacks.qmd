@@ -841,7 +841,7 @@ prob_comb
 ```
 
 ```{r}
-plots3 <- c("img/1.png", "img/filler.png", "img/filler.png", "img/5.png", "img/filler.png", "img/filler.png", "img/4.png","img/filler.png", "img/filler.png", "img/7.png", "img/filler.png", "img/filler.png", "img/2.png", "img/filler.png", "img/filler.png", "img/6.png", "img/filler.png", "img/filler.png", "img/3.png", "img/filler.png", "img/filler.png")
+plots3 <- c("img/1.png", "img/filler.png", "img/filler.png", "img/5.png", "img/filler.png", "img/filler.png", "img/4.png","img/filler.png", "img/filler.png", "img/7.png", "img/filler.png", "img/filler.png", "img/2.png", "img/filler.png", "img/filler.png", "img/3.png", "img/filler.png", "img/filler.png", "img/6.png", "img/filler.png", "img/filler.png")
 
 probs <- prob_comb %>% tibble::add_column(Plots = plots3, .before = "name") %>% dplyr::rename(`Plot name` = name,
          `The main problem` = problems,
