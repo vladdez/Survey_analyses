@@ -176,7 +176,8 @@ vec <- names(data[25:51]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2
 data[25:51] %>%
   rename_at(vars(colnames(.)), ~ vec) %>% 
   dplyr::select(-Other) %>% 
-  mutate_at(vars(vec[1:26]), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0))) %>% select_if(colSums(.) > 10) %>% 
+  mutate_at(vars(vec[1:26]), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0))) %>%
+  select_if(colSums(.) > 10) %>% 
   cbind(factor_scores[1], .) %>% dplyr::rename(proxy = !!names(.)[1]) %>% 
   gather(type, score, BESA:`Custom scripts`) %>% 
    dplyr::group_by(., type) %>% nest() %>% 

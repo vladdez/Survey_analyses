@@ -1,0 +1,26 @@
+"","soft","plot_type","struggles","new_feature"
+"1","1) eegutils 2) erplab","ERP plot","1) getting confidence intervals right 2) the default plots are nowhere near publication standard","1) - 2) easier ways to scale this to many more conditions than just two conditions"
+"2","eeglab, erplab","ERP plot","little control over the plot features","better control possibilities"
+"3","erplab","ERP plot","adding standard error shadings","easier plotting of ses
+easier way of making lines thicker etc"
+"4","erplab","ERP plot","changing color of waveforms
+changing axes
+choosing where to put legend
+confidence interval shading","a more intuitive gui that spits out publication ready figures"
+"5","erplab","ERP plot","-","saving default parameters would be a time saver"
+"6","erplab, custom matlab ","ERP plot","shaded error bar","easier options for the addition of a correct error bar"
+"7","eeglab, erplab","Topoplot","figuring out time window to generate this plot from","anything that makes it easier to generate and manipulate this type of visualization"
+"8","eeglab, erplab","Topoplot","-","3d visualisation (like in brainstorm)"
+"9","erplab","Topoplot","-","it’s good like that"
+"10","erplab","Topoplot","scaling of different maps","auto scale maps based on max and min voltage"
+"11","eeglab, erplab","Topoplot series","determining the time window to generate these plots for","anything that makes it easier to generate and manipulate this type of visualization"
+"12","eeglab, erplab","Topoplot series","little control over plot features","better gui, more control over plot features"
+"13","erplab","Topoplot series","how to arrange the plots, e.g. in a 4x2 grid","more flexible tools to arrange subparts of plots"
+"14","erplab","Topoplot series","-","plot succession of averaged windows (time bins)"
+"15","erplab","Topoplot series","export to publication quality figure, due to rasterization of gradients","-"
+"16","1) eegutils 2) erplab","ERP grid","1 & 2) making it legible; it's mostly useful for spotting channels that are markedly different from others","1) - 2) -"
+"17","eeglab, erplab","ERP grid","-","improved click-and-point"
+"18","erplab","ERP grid","-","should be possible to change the distance between the individual plots"
+"19","erplab","ERP grid","manipulating the size of each waveform and formatting of locations (they kept overlapping when i made the waveforms bigger and i couldn't make all the waveforms be ordered to fit in a square rather than in the location on the head). also adding tickmarks, time benchmarks, and voltage scale","anything that makes doing the above features easier, anything that makes zooming in on/maximizing one waveform easier (doing that on erplab right now is infuriating and near impossible)"
+"20","erplab","ERP grid","-","plotting more than one group on the same figure for difference waves"
+"21","erplab, eeglab","ERP grid","-","easier way to compare them"

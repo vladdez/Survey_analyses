@@ -1,0 +1,7 @@
+"","soft","plot_type","struggles","new_feature"
+"1","eeglab, brainstorm","ERP plot","aesthetics","-"
+"2","brainstorm","Topoplot","choosing the right time-window/time-point","lines of equal potentials, changing the scale/plotting it next to the topography"
+"3","brainstorm","Topoplot series","choose the right time-window","choice of time-window/step between topographies"
+"4","brainstorm","ERP grid","exporting to publication ready figure, baseline correction","standard error of the mean visualizations"
+"5","eeglab, brainstorm","ERP grid","erps really small, if i recall correctly difficult to adjust axis limts to values i desired","choose axis limits, choose color for conditions/participants with gui as well"
+"6","brainstorm","Channel image","dont remember","mark by significance"

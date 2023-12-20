@@ -1,0 +1,72 @@
+"","feed"
+"1","Not only 2-d, but also CIRCULAR colorbars please
+They are essential to visualise ERPs as a function of any measure that is itself circular (e.g., the evoked response to a grating at different angles from 0' to 360')"
+"2","I think a great feature to have would be a selection of colors for comparison already available. The color selections would help not only maintain a color standard, but also create an easily selectable color palette that translates to grayscale well. This would assist beginner, intermediate, expert individuals and help support new labs or research groups who may enter the field."
+"3","Make it very modular. It will be useless to experts or people trying something new if you can't flexibly pick and choose the functionality you want and don't want"
+"4","This is more of a tangential comment, but one issue for me is lack of awareness of how the different tools compare (e.g., in ease-of-use, available plot types, etc.). Sometimes I probably make custom plots that technically can be created with existing tools that I just don't know about. It would be cool to have some kind of comprehensive overview (e.g., review paper) of ERP plotting tools and plot types across packages, and their ease of use (perhaps grouped by programming language, since those typically determine which toolboxes people gravitate towards)."
+"5","Easy creation of different types of error bars on ERP plots (shading)"
+"6","I use R for most analyses and visualization but matlab/eeglab/Erplab (for now) for eeg preprocessing. I wish the transition between matlab and r/ggplot were smoother - I always have to do a lot of reformatting to get the output into a tidy format"
+"7","Dynamic head montage videos"
+"8","I feel like Matlab is not very easy to implement in public and interactive sharing of data, python is way easier for that. I would love for fieldtrip to come out in python one day so it's easier to share interactive plots"
+"9","I think everything that relates to plotting ERPs + results of statistical tests on them combined can still be greatly improved!"
+"10","Parula is my colormap of choice for ERP/timefrequency EEG plots. I like having 11 divisions on the color bar, rather than a continuous scale because I think it improves readability. But that's just a preference"
+"11","Build them on TOP of existing tools.  Create the software and make bindings to the other tools."
+"12","Positive up!!!!!!!   No excuses!"
+"13","Customizability is key!"
+"14","Minimize the need for coding, maximize the possibilities of doing everything through a GUI"
+"15","Since the vast majority of literature consumption happens digitally, animated figures would be a great feature. These could illustrate the time-course and topography of an effect simultaneously."
+"16","It would be great if it was open-source and made with Python, enabling the use of Pandas dataframes and integration with MNE-Python would be great as well."
+"17","A gui based easier dynamic selection of conditions/triggers to plot during analysis would be useful."
+"18","While I recognize the utility of coding to achieve flexible and unique graphs, an easy to use and intuitive GUI would be incredibly useful, not just for those that are not coders but also for those who have students who do not stay for long periods of time (eg Masters students) and do not have coding experience. And if that GUI could output useful ERP/EEG plots that can be easily modified for different visualizations, even better."
+"19","My experience is that the axis labels and text are not publication quality level and that the font size cannot be chamged"
+"20","Greater interactivity and very fast rendering would be good!"
+"21","Improve ERPLab's zooming in on/maximizing one waveform function easier (doing that on ERPLab right now is INFURIATING and near impossible)"
+"22","Please don't just build one function for one language, but have some common function that can be used similarly across different languanges (e.g., Matlab, Python, R)"
+"23","Make everything customizable by scripting, with well defined (and sane) default values. Provide ample description for options. Easy way to combine plots of individual trials with averages (i.e. not having to iterate over trials by hand)."
+"24","I think every open software should include easy ways to plot variability around average erps."
+"25","I think making sure the plot is reproducible (eg. if GUI, have a code output), making sure the plot specifies the units of the scale, creating tools to encourage people to plot individual's ERP activity as well as grand average ERP"
+"26","Color-blind friendly plot"
+"27","Very detailed guide and support platform (type StackOverflow) where people can post and get answers. I feel this is missing for the tools I currently use and having a mailing list can be confusing. So maybe a platform such as Stack where people get credits if they answer questions and some sort of an incentive."
+"28","For users who are unfamiliar with coding, an intuitive GUI will be most helpful"
+"29","What could be helpful: a guide how to choose color palette to get insights from the data, in relation to ERP visualization (something like in Crameri et al., 2020:  https://www.nature.com/articles/s41467-020-19160-7); a trend to choose rather simple but intuitive datavis over a fancy one :-)"
+"30","Plotting errors (SEM,CI) should be the default display! 
+Plots should be easily modifiable through coding. Standards such as graph/line/label sizes should be accesseble, modifiable, and easy to save and apply for other plots.
+Plotting the mean or individual channels/participants/conditions should be easily accessible."
+"31","I would argue that we need code structure that allows for epochs of different lenght.
+See this : https://github.com/mne-tools/mne-python/issues/5612"
+"32","It would be nice to have a good way to easily make grand ERPs, either combining all sensors from a single subject or multiple subjects together.
+Also, I use decoding analyses quite a bit, and although this departs from classicial ERPs, I find this to be a good way to visualize the data (specificaly, to know where/when are our experimental conditions represented in brain signals)."
+"33","thanks for this interesting initiative!"
+"34","It would be nice to consider what kind of projection is used for topography mapping (spherical interpolation vs other).
+Also plotting he scalp current densities is often useful.
+What is important during data visualization is the interactivity between time courses and topographies. For example to have a cursor moving on the time courses and the topogrphes changing accordingly. 
+Finally, it is important to be able to deal with several experimental conditions for all visualization you propose."
+"35","I really like using colorcet for my colormaps; the range of options is really nice.
+I like MEG's egg-shaped heads more than EEG's circles; they distort the head surface less.
+I think videos are super important for understanding ERPs, even if you can't then publish the video"
+"36","Thank you for creating this survey. As you can see from my point of view, the analysis tools we have available and share are great! But we do need better visualization tools - I appreciate how difficult this is. I can imagine that from this survey some priorities will emerge & some better visulaization tools will be developed. I appreciate this immensely about our neurophysiological community! Future issues to surmount: I would suggest that it is even worse for network based analyses of EEG/MEG data - the visualization problem gets even more thorny."
+"37","PLEASE make people plot positive values on top!! The opposite is so confusing. Thank you for your effort."
+"38","The community should introduce standardised guidelines"
+"39","I generally like to display heterogeneity between subjects, but apart from error bars for line plots, that's hard to do. I like that 2D color bar you showed on the previous slide, but I'm afraid it's hard to interpret for (typically) small figures in journal articles...
+Also, I feel that test statistics (t-values, z-values) should be plotted more often (instead of mean or differences of means) because that's what inference it typically based on, but such plots aren't really common in EEG research..."
+"40","For group-level comparisons or even visualizing -1/+1 SD for regressions, it would be great to have a way of plotting different groups on the same ERP grand average. I use ERPLAB for plotting and can't plot this on ERPLAB so I need to plot difference waves side by side for different groups."
+"41","I think in general it would be desireable to also have kind of automatic plot templates that incorporate ERP time series and Topographies."
+"42","Because WinEEG as a normative database, there is a lot of data to present when comparing a single subject to the norms. So the ERP will have a p-value bars for each time bin, running along the time axis. This does work but I feel that there could be a clearer and prettier way of presenting this data."
+"43","Coolwarm is a great default colormap imo!"
+"44","provide better colormaps with toolboxes per default, e.g. brainstorm colormaps used when using eeglab instead of needing to script that
+For me I need both GUI based plots for cheching the data and much more otions tha allow me to write scripts that allow me (or others) to reproduce figures. Options to get a script for a figure generated via GUI (as e.g. brainstorm and eeglab have) makes it easy to integrate complex figures in a scripted workflow"
+"45","I think it would be always nice to create exploratory plots automatically."
+"46","Will it be possible to generate automated processing for ERP for the different tasks?"
+"47","Having a way to intuitively visualize trial-wise time courses is important"
+"48","Many of them are quite bad at natively/easily handling multiple experimental conditions or participants etc. Fine for plotting means from individual conditions, less so for complex designs. This is less a limitation of the plotting tools themselves than of the packages they belong to, in the way they handle and structure the data. Matlab handles this particularly badly (MNE-Python/eegUtils do a much better job of that, IMO). Sometimes the defaults are terrible, and the plots themselves are often far from publication quality."
+"49","It's not the most important thing but making plots that are pretty and ready for publication would be great. Most of us still use MATLAB which produces the ugliest plots that are also tricky to customise. Set defaults that make sense, e.g. blue/red scales, colorblind friendly palettes, positive-upward/negative-downward y-axis ERPs."
+"50","this is more MNE specific: The API is sometimes not consistent across different functions, e.g. some functions take certain parameters, but other very similar functions do not."
+"51","Well I don't have the necessary expertise on improvisation yet, improv happens after basics are mastered.. analogically struggling artists (say a living van gogh) dont get to comment upon the color pallette of da vinci or rembrandt (more apt)..
+Thanks..all the best to the eeg universe"
+"52","EEGlab is just really lacking in terms of ""slick"" plots. I'm sure more work could be done to improve on it, but I just used what I was told to use. It's possible other tools are much better. So I guess it's more a problem of publicizing different tools?
+
+I also really disliked having to use Matlab since its proprietary (and bad to use)."
+"53","Documentation is key. It sometimes is difficult to find out how to customize plots, as some atteibutes are documented in sublibrary documentations. It would be nice to have as much overview over the functions and attributes as possible. It would also be nice to have an overview over what the input data has to consist of/which format the data has to be put into for plots (for example, the data for topoplots.jl has to be a multi-dimensional matrix consisting of data x and data y) It would also be nice if the documentations linked to sub-documentations. For example ""for an overview over the colors you can use for the ColorBar, please refer to (ColorSchemes.jl)[link to the ColorSchemes.jl documentation]"""
+"54","Plots in Pluto notebooks are limited in size by the usable space (or at least I didn't find a good workaround - changing image resolution only helps up to a point). This quickly limits the possibility of doing bigger plots with subplots. Would be cool if there was a way to improve this (unless there already is one which I didn't figure out)."
+"55","I think interactions such as cross-filtering and drill-down common in dashboards are probably really helpful for EEG plots."
+"56","From general experience, good documentation for both users and developers working with the tool is important in allowing more people to adapt and continue using it."

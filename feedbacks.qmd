@@ -38,6 +38,7 @@ library(gt)
 library(flextable)
 library(officer)
 library(gdtools)
+library(gdata)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
@@ -891,6 +892,7 @@ rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem8) %>%
 
 ## New features
 
+
 #### 1
 
 ```{r, warning=FALSE}
@@ -1006,13 +1008,93 @@ tmp1 %>%
   kable_classic(full_width = F, html_font = "Arial")
 
 ```
+## For developers
+
+```{r}
+fordev <- gdata::combine(struggle1, struggle2, struggle3, struggle4, struggle5, struggle6, struggle8) 
+
+fordev1 <- fordev %>% 
+  mutate(source = case_when(
+    grepl("struggle1", source) == TRUE ~ "ERP plot", 
+    grepl("struggle2", source) == TRUE ~ "Butterfly plot", 
+    grepl("struggle3", source) == TRUE ~ "Topoplot", 
+    grepl("struggle4", source) == TRUE ~ "Topoplot series", 
+    grepl("struggle5", source) == TRUE ~ "ERP grid", 
+    grepl("struggle6", source) == TRUE ~ "ERP image", 
+    grepl("struggle8", source) == TRUE ~ "Channel image")) %>% 
+  dplyr::rename(struggles = parts, plot_type = source) %>% filter(nchar(soft) != 1) %>% 
+  mutate(struggles = ifelse(nchar(struggles) < 3, "-", struggles)) %>%
+  mutate(struggles = str_replace_all(struggles, "it was ok", "-")) %>%
+  mutate(new_feature = str_replace_all(new_feature, "it was ok", "-")) %>%
+  mutate(new_feature = ifelse(nchar(new_feature) < 3, "-", new_feature))  %>% 
+  filter(!(new_feature == "-" & struggles == "-")) %>% filter(soft !="i don't remember") %>% filter(soft !="see comments for topoplot") 
+#%>% distinct(soft) %>% View()
+
+fordev2 <-
+  fordev1 %>% mutate(soft = case_when(
+    grepl("matlab", soft) & grepl("custom", soft) & !grepl("(fieldtrip|eeglab|ggplot|erplab)", soft) == TRUE ~ "custom matlab", 
+    grepl("matlab", soft) & !grepl("(fieldtrip|eeglab|ggplot|erplab|python)", soft) == TRUE ~ "custom matlab", 
+    grepl("matplotlib", soft) & !grepl("(fieldtrip|eeglab|ggplot|erplab|python)", soft) == TRUE ~ "custom matplotlib", 
+    grepl("matplotlib", soft) & grepl("custom", soft) & !grepl("(fieldtrip|eeglab|ggplot|erplab)", soft) == TRUE ~ "custom matplotlib", 
+    grepl("ggplot", soft) & grepl("custom", soft) & !grepl("(fieldtrip|eeglab|erplab|plotly)", soft) == TRUE ~ "custom ggplot", 
+    grepl("ggplot", soft) & !grepl("(fieldtrip|eeglab|erplab|plotly)", soft) == TRUE ~ "custom ggplot", 
+    grepl("eeglab", soft) & grepl("custom", soft) & !grepl("(fieldtrip|ggplot|erplab)", soft) == TRUE ~ "custom eeglab", 
+    grepl("fieldteip|fieldtrip's ft_topoplot", soft)  == TRUE ~ "fieldtrip", 
+    grepl("eegalb|eeglan|eeglab gui|eeglab \\(i think\\)|eeglab, matlab plot", soft)  == TRUE ~ "eeglab", 
+    grepl("fieldtrip, matlab|fieldtrip", soft)  == TRUE ~ "fieldtrip, custom matlab", 
+    grepl("fieldtrip, matlab custom code", soft)  == TRUE ~ "fieldtrip, custom matlab", 
+    grepl("fieldtrip, matlab custom code)", soft)  == TRUE ~ "fieldtrip, custom matlab", 
+
+      TRUE ~ soft
+)) %>% mutate(soft = str_replace_all(soft, " or", ",")) %>% 
+    mutate(soft = str_replace_all(soft, " and", ",")) %>% 
+    mutate(soft = str_replace_all(soft, ";", ",")) %>% 
+    mutate(soft = str_replace_all(soft, " \\+", ",")) %>% 
+    mutate(soft = str_replace(soft, "\\+", ", ")) %>% 
+    mutate(soft = str_replace_all(soft, "\\/", ", ")) %>%
+    mutate(soft = str_replace_all(soft, " &", ", ")) %>%
+    mutate(soft = str_replace_all(soft, "cant remember maybe ", "")) %>%
+    mutate(soft = str_replace_all(soft, "cusom script, cartool back in the days.", "custom, cartool")) %>%
+    mutate(soft = str_replace_all(soft, "brainstorm\\?", "brainstorm")) %>%
+    mutate(soft = str_replace_all(soft, "script(s)?", "")) %>%
+    mutate(soft = str_replace_all(soft, ",, code from mike cohen's book", "")) %>%
+    mutate(soft = str_replace_all(soft, " for sanity checks", "")) %>%
+    mutate(soft = str_replace_all(soft, " for sanity check, publication", "")) %>%
+    mutate(soft = str_replace_all(soft, ', matlab "plot" function', "")) %>%
+    mutate(soft = str_replace_all(soft, " with a few modifications of topoplot.m", "")) %>%
+    mutate(soft = str_replace_all(soft, " ing", "")) %>%
+    mutate(soft = str_replace_all(soft, "eeglab \\(topoplot\\), fieldtrip \\(ft_topoploter\\), github.com, widmann, sphspline", "eeglab, fieldtrip")) %>%
+    mutate(soft = str_replace_all(soft, "fieldtrip ft_topoplotxxx functions\r\ncustom matlab code to modify", "fieldtrip, custom matlab")) %>%
+    mutate(soft = str_replace_all(soft, "\r\n", ", ")) %>% 
+    mutate(soft = str_replace_all(soft, "spm12", "spm")) %>% 
+  select(soft, plot_type, struggles, new_feature)
+
+    # distinct(soft)  %>% 
+    # View()
+```
+
+```{r}
+eeglab <- fordev2 %>% filter(grepl("eeglab", soft)) %>% write.csv("feedback/eeglab.csv")
+fieldtrip <- fordev2 %>% filter(grepl("fieldtrip", soft))  %>% write.csv("feedback/fieldtrip.csv")
+mne <- fordev2 %>% filter(grepl("mne", soft)) %>% write.csv("feedback/mne.csv")
+erplab <- fordev2 %>% filter(grepl("erplab", soft)) %>% write.csv("feedback/erplab.csv")
+BVA <- fordev2 %>% filter(grepl("brain vision analyser", soft)) %>% write.csv("feedback/BVA.csv")
+brainstorm <- fordev2 %>% filter(grepl("brainstorm", soft)) %>% write.csv("feedback/brainstorm.csv")
+
+#spm <- fordev2 %>% filter(grepl("spm", soft))
+#besa <- fordev2 %>% filter(grepl("besa", soft))
+#cartool <- fordev2 %>% filter(grepl("cartool", soft))
+#unfold <- fordev2 %>% filter(grepl("unfold", soft))
+
+```
 
 ## Feedback
 
 ```{r}
 feed <- data[120] %>% dplyr::rename(feed = !!names(.)[1]) %>%  filter(!is.na(feed), feed != "-") #%>% View()
-feed  %>%
-  filter(!row_number() %in% c(3, 14, 17, 32, 37, 41))# just appreciation
+feed  %>% 
+  filter(!row_number() %in% c(3, 4, 14, 17, 32, 37, 41, 59)) %>% # just appreciation 
+write.csv("feedback/general_feedback.csv")
 ```
 
 

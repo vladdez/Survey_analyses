@@ -147,7 +147,7 @@ as.data.frame(na.omit(data[10]))
 pos <- data[c(12, 13)] %>% dplyr::rename(position = !!names(.)[1], other = !!names(.)[2]) %>%
   mutate(position = case_when(
     position == "Industry senior researcher" ~ "Industry R&D",
-    position == "Doctoral researcher" ~ "Doctor",
+    position == "Doctoral researcher" ~ "PhD Candidate",
     position == "Postdoctoral researcher" ~ "Postdoc",
     position == "Bachelor student" ~ "Bachelor",
     position == "Master student" ~ "Master",
@@ -158,9 +158,9 @@ pos <- data[c(12, 13)] %>% dplyr::rename(position = !!names(.)[1], other = !!nam
       grepl("\\b(engineer|tech)\\b", other) == TRUE ~ "Industry R&D",
       TRUE ~ as.character(position)
       )) %>% dplyr::select(position) %>% na.omit(.) %>% table() %>% as.data.frame()  %>% 
-   mutate(position = factor(position, levels = rev(c('Bachelor', 'Master', 'Doctor', 'Postdoc', 'Professor', 'Industry R&D', 'Medical doctor', 'Other')))) %>% mutate(percent_score = round(Freq / sum(Freq) * 100))
+   mutate(position = factor(position, levels = rev(c('Bachelor', 'Master', 'PhD Candidate', 'Postdoc', 'Professor', 'Industry R&D', 'Medical doctor', 'Other')))) %>% mutate(percent_score = round(Freq / sum(Freq) * 100))
 
-italised2 <- rev(c('Bachelor', 'Master', 'PhD', 'Postdoc', 'Professor', 'Industry R&D', 'Medical doctor', expression(italic('Other'))))
+italised2 <- rev(c('Bachelor', 'Master', 'PhD Candidate', 'Postdoc', 'Professor', 'Industry R&D', 'Medical doctor', expression(italic('Other'))))
 position <- pos %>% 
     ggplot(data = ., aes(y = position, x= percent_score))+ 
     geom_col(stat="identity") + labs(title = "Current position", x = "Percent", y="") +
@@ -356,19 +356,6 @@ ggarrange(years + labs(x ="Years of experience", y="") ,
 
 ### blue
 
-```{r}
-ggarrange(country_fig + geom_col(stat = "identity", width = 0.8, fill ="lightblue1", colour ="dodgerblue3",) + 
-            theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()) + xlim(0, 30), 
-          position + xlim(0, 80) + geom_col(stat = "identity", fill ="lightblue1", colour ="dodgerblue3",) + 
-            theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()),  
-          fieldplot + xlim(0, 100) + geom_col(stat = "identity", width = 0.7, fill ="lightblue1", colour ="dodgerblue3",) + 
-            theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()), 
-          methods  + geom_col(stat = "identity", width = 0.7, fill ="lightblue1", colour ="dodgerblue3",) +  
-            scale_y_discrete(labels=c("OPMs", "iEEG", "MEG", "Scalp EEG")) + xlim(0, 80) +  
-            theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()), 
-          labels = c("A", "B", "C", "D"),
-          ncol = 2, nrow = 2, align = 'hv')  
-```
 ```{r}
 ggarrange(country_fig + geom_col(stat = "identity", width = 0.8, fill ="#6BAED6") + 
             theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()) + xlim(0, 100), 
