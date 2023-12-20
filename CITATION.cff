@@ -17,8 +17,8 @@ authors:
     orcid: 'https://orcid.org/0000-0002-6276-3332'
 identifiers:
   - type: doi
-    value: 10.5281/zenodo.10033923
+    value: 10.5281/zenodo.10402375
 repository-code: 'https://github.com/vladdez/Survey_analyses/tree/main'
 url: 'https://vladdez.github.io/Survey_analyses/about.html'
-version: 0.1.2
+version: 0.1.3
 date-released: '2023-10-23'
