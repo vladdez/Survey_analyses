@@ -802,6 +802,31 @@ data[76] %>%  filter(!is.na(.)) %>% table()
 
 ```{r}
 cb <- table(data[117]) %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) 
+cb  %>% 
+  mutate(percent_score = round(scores / sum(scores) * 100)) %>% 
+    ggplot(., aes(y = position, x = percent_score)) + #, fill = as.factor(percent_score))) +
+    geom_bar(position = "dodge", stat = "identity", width=0.5, fill ="#6BAED6") + 
+    theme_classic() +
+    theme(
+      legend.position="none", 
+      strip.background = element_blank(), 
+      axis.ticks = element_line(color = "grey40", size = .5),
+      axis.text.x = element_blank(),
+      axis.text.y =  element_text(color = "grey10", size = 16),
+      axis.title.x=element_blank(), 
+      plot.title = element_text(color = "grey10", size = 18, face = "bold", margin = margin(t = 15)),
+      plot.title.position = "plot",
+      plot.caption = element_text(hjust=0), 
+    ) + ylab("Percent") +
+
+  geom_text(aes(label = paste0(percent_score, "%"), group = position),  hjust = -0.2) + 
+  ggtitle("Are you aware about\nperceptual controvercies of colormaps?")+
+    scale_fill_manual(values=colours) +
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 65) +
+    labs(caption = sprintf("N of respondents - %d",  sum(cb$scores)))  
+```
+
+```{r}
 
 rbind(table(data[117]) %>% data.frame() %>% 
   rename_at(vars(colnames(.)), ~ c("answer", "scores")) %>% 
@@ -833,26 +858,7 @@ table(data[118]) %>% data.frame() %>%
     theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
 ```
 
-```{r}
-cb  %>% 
-  mutate(percent_score = round(scores / sum(scores) * 100)) %>% 
-    ggplot(., aes(y = position, x = percent_score)) + #, fill = as.factor(percent_score))) +
-    geom_bar(position = "dodge", stat = "identity", width=0.5, fill ="#6BAED6") + 
-    theme_classic() +
-    theme(axis.title.x=element_blank(), axis.text.x = element_blank(), 
-          text = element_text(family = "Lato"),
-          legend.position="none", 
-          axis.title.y = element_blank(),
-          plot.title = element_text(hjust = 0.5)) + ylab("Percent") +
-     
-  geom_text(aes(label = paste0(percent_score, "%"), group = position),  hjust = -0.2) + 
-            #position = position_stack(vjust = 0.5), 
-            #size = 6
-  ggtitle("Are you aware about\nperceptual controvercies of colormaps?")+
-    scale_fill_manual(values=colours) +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 65) +
-    labs(caption = sprintf("N of respondents - %d",  sum(cb$scores)))  
-```
+
 
 ```{r}
 tdc <- table(data[119])  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>%
