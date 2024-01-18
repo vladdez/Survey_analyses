@@ -1067,31 +1067,33 @@ fordev2 <-
     mutate(soft = str_replace_all(soft, "fieldtrip ft_topoplotxxx functions\r\ncustom matlab code to modify", "fieldtrip, custom matlab")) %>%
     mutate(soft = str_replace_all(soft, "\r\n", ", ")) %>% 
     mutate(soft = str_replace_all(soft, "spm12", "spm")) %>% 
-  select(soft, plot_type, struggles, new_feature)
+  select(soft, plot_type, struggles, new_feature) %>% 
+  rename_at(vars(colnames(.)), ~ c("Tools", "Plot type", "Struggles", "Proposed features"))
 
     # distinct(soft)  %>% 
     # View()
 ```
 
 ```{r}
-eeglab <- fordev2 %>% filter(grepl("eeglab", soft)) %>% write.csv("feedback/eeglab.csv")
-fieldtrip <- fordev2 %>% filter(grepl("fieldtrip", soft))  %>% write.csv("feedback/fieldtrip.csv")
-mne <- fordev2 %>% filter(grepl("mne", soft)) %>% write.csv("feedback/mne.csv")
-erplab <- fordev2 %>% filter(grepl("erplab", soft)) %>% write.csv("feedback/erplab.csv")
-BVA <- fordev2 %>% filter(grepl("brain vision analyser", soft)) %>% write.csv("feedback/BVA.csv")
-brainstorm <- fordev2 %>% filter(grepl("brainstorm", soft)) %>% write.csv("feedback/brainstorm.csv")
+eeglab <- fordev2 %>% filter(grepl("eeglab", Tools)) %>% write.csv("feedback/eeglab.csv")
+fieldtrip <- fordev2 %>% filter(grepl("fieldtrip", Tools))  %>% write.csv("feedback/fieldtrip.csv")
+mne <- fordev2 %>% filter(grepl("mne", Tools)) %>% write.csv("feedback/mne.csv")
+erplab <- fordev2 %>% filter(grepl("erplab", Tools)) %>% write.csv("feedback/erplab.csv")
+BVA <- fordev2 %>% filter(grepl("brain vision analyser", Tools)) %>% write.csv("feedback/BVA.csv")
+brainstorm <- fordev2 %>% filter(grepl("brainstorm", Tools)) %>% write.csv("feedback/brainstorm.csv")
 
-#spm <- fordev2 %>% filter(grepl("spm", soft))
-#besa <- fordev2 %>% filter(grepl("besa", soft))
-#cartool <- fordev2 %>% filter(grepl("cartool", soft))
-#unfold <- fordev2 %>% filter(grepl("unfold", soft))
+#spm <- fordev2 %>% filter(grepl("spm", Tools))
+#besa <- fordev2 %>% filter(grepl("besa", Tools))
+#cartool <- fordev2 %>% filter(grepl("cartool", Tools))
+#unfold <- fordev2 %>% filter(grepl("unfold", Tools))
 
 ```
 
 ## Feedback
 
 ```{r}
-feed <- data[120] %>% dplyr::rename(feed = !!names(.)[1]) %>%  filter(!is.na(feed), feed != "-") #%>% View()
+feed <- data[120] %>% dplyr::rename(feedback = !!names(.)[1]) %>%  
+  filter(!is.na(feedback), feedback != "-") #%>% View()
 feed  %>% 
   filter(!row_number() %in% c(3, 4, 14, 17, 32, 37, 41, 59)) %>% # just appreciation 
 write.csv("feedback/general_feedback.csv")
