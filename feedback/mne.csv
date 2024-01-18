@@ -1,4 +1,4 @@
-"","soft","plot_type","struggles","new_feature"
+"","Tools","Plot type","Struggles","Proposed features"
 "1","mne","ERP plot","it's quite simple and standard erp plot","ability to highlight the area with the main effect"
 "2","mne","ERP plot","maybe fitting the legend correctly on the figure and other aspects of the layout.","-"
 "3","mne","ERP plot","selection of error bars type (standard deviations are too wide, and other types should be justified and consistent around the paper)","-"

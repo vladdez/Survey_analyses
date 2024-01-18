@@ -1,4 +1,4 @@
-"","soft","plot_type","struggles","new_feature"
+"","Tools","Plot type","Struggles","Proposed features"
 "1","1) eegutils 2) erplab","ERP plot","1) getting confidence intervals right 2) the default plots are nowhere near publication standard","1) - 2) easier ways to scale this to many more conditions than just two conditions"
 "2","eeglab, erplab","ERP plot","little control over the plot features","better control possibilities"
 "3","erplab","ERP plot","adding standard error shadings","easier plotting of ses

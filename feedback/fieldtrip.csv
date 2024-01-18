@@ -1,4 +1,4 @@
-"","soft","plot_type","struggles","new_feature"
+"","Tools","Plot type","Struggles","Proposed features"
 "1","fieldtrip, custom matlab","ERP plot","shaded error regions","option for choosing shaded error (e.g. choose between sd, sem etc)"
 "2","fieldtrip, custom matlab","ERP plot","organizing multiple erp plots into a single figure, while still being visually pleasing","be able to select multiple channels/electrodes to be combined into a figure that is closer to publication ready"
 "3","fieldtrip, custom matlab","ERP plot","shading","ci,std,sme"

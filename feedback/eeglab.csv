@@ -1,4 +1,4 @@
-"","soft","plot_type","struggles","new_feature"
+"","Tools","Plot type","Struggles","Proposed features"
 "1","eeglab","ERP plot","errorbars","show the topoplot at the same time and indicate the electrodes used for the erp"
 "2","eeglab","ERP plot","axes","click to edit"
 "3","eeglab","ERP plot","plotting variance","easily switch b/w sem or confidence interval or std deviation"

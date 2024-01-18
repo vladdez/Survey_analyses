@@ -1,4 +1,4 @@
-"","soft","plot_type","struggles","new_feature"
+"","Tools","Plot type","Struggles","Proposed features"
 "1","eeglab, brainstorm","ERP plot","aesthetics","-"
 "2","brainstorm","Topoplot","choosing the right time-window/time-point","lines of equal potentials, changing the scale/plotting it next to the topography"
 "3","brainstorm","Topoplot series","choose the right time-window","choice of time-window/step between topographies"
