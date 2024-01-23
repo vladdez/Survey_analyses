@@ -141,7 +141,7 @@ as.data.frame(na.omit(data[10]))
 
 ### Position
 
-```{r, message=FALSE}
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 #na.omit(data[13]) # recode Others
 
 pos <- data[c(12, 13)] %>% dplyr::rename(position = !!names(.)[1], other = !!names(.)[2]) %>%
@@ -166,17 +166,14 @@ position <- pos %>%
     geom_col(stat="identity") + labs(title = "Current position", x = "Percent", y="") +
     geom_text(aes(label = paste0(percent_score, "%")), hjust = -0.1) +
     theme_classic()  +
-  theme(legend.position="none", 
+    theme(legend.position="none", 
         text = element_text(family = "Lato"), 
         plot.caption.position = "plot", 
         plot.caption = element_text(hjust=0), 
         axis.text = element_text(size = 10)) + 
-  coord_cartesian(clip = "off") #+ scale_fill_grey(start = .9, end = 0) +
+    coord_cartesian(clip = "off") +
     scale_y_discrete(labels = italised2)
 
-
-```
-```{r}
 position + 
     labs(caption = sprintf("N of respondents - %d", sum(pos$Freq)))
 ```
@@ -197,9 +194,10 @@ methods <- data.frame(rowSums(t(data.frame(foreach(i = colnames(method)) %do% if
     geom_col(stat = "identity", width = 0.7) + labs(y = "", x = "Percent", title = "Method") +
     geom_text(aes(label = paste0(percent_score, "%")), hjust = -0.1)+
     theme_classic() + 
-    theme(legend.position="none", text = element_text(family = "Lato"), plot.caption = element_text(hjust=0), axis.text.y = element_text(size = 14)) +
+    theme(legend.position="none", text = element_text(family = "Lato"), 
+          plot.caption = element_text(hjust=0), axis.text.y = element_text(size = 14)) +
     scale_y_discrete(labels=c("OPMs MEG", "Intracranial EEG", "SQUID MEG", "Scalp EEG")) +
-  coord_cartesian(clip = "off") + xlim(0, 75) #+ scale_fill_grey(start = .9, end = 0)
+    coord_cartesian(clip = "off") + xlim(0, 75)
 
 methods + 
     labs(caption = sprintf("N of respondents = %d", nrow(method)))
@@ -235,7 +233,7 @@ area <- data.frame(matrix(tt)) %>% dplyr::rename(words = !!names(.)[1]) %>%
    
 area %>% group_by(words2) %>% dplyr::summarise(Freq = n()) %>% 
   data.frame(.)  %>% mutate(words2 = as.character(words2)) %>%  #arrange(desc(Freq)) %>% 
-    ggplot(data = ., aes(y = reorder(words2, Freq),  x= Freq, fill = words2)) +
+    ggplot(data = ., aes(y = reorder(words2, Freq),  x= Freq)) +
     geom_bar(stat="identity") + labs(x="Topic of research", y="Frequency") +
     geom_text(aes(label = Freq), 
     hjust = -0.2) + theme_classic() +
