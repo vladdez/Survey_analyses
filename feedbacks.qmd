@@ -79,7 +79,7 @@ word_preproc <- function(data, N){
 ### miniatures
 # mins <- image_read_pdf("data/eegvis_icons.pdf", density = 1000)  
 # for (i in 1:8){
-#   image_write(mins[i], path = paste0("img/", i, ".png"), format = "png", density = 1000)
+#   image_write(mins[i], path = paste0("miniatures/", i, ".png"), format = "png", density = 1000)
 # }
 
 ```
@@ -101,10 +101,10 @@ data.frame(plots = c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot timeser
 ```
 
 ```{r}
-#im_vector <- c("img/1.png", "img/2.png", "img/3.png", "img/4.png", "img/5.png", "img/6.png", "img/7.png", "img/8.png")
+#im_vector <- c("miniatures/1.png", "miniatures/2.png", "miniatures/3.png", "miniatures/4.png", "miniatures/5.png", "miniatures/6.png", "miniatures/7.png", "miniatures/8.png")
 
 dim <- dplyr::tibble(
-  Plots = c("img/1.png", "img/2.png", "img/3.png", "img/4.png", "img/5.png", "img/6.png", "img/7.png", "img/8.png"),
+  Plots = c("miniatures/1.png", "miniatures/2.png", "miniatures/3.png", "miniatures/4.png", "miniatures/5.png", "miniatures/6.png", "miniatures/7.png", "miniatures/8.png"),
   Name = c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot timeseries", "ERP grid", "ERP image", "Channel image", "Parallel plot"), 
   Time = c("x", "x", "", "(x)", "x", "x", "x", "(x)"),
   Channels = c("", "x", "x", "x", "x", "", "x", "x"), 
@@ -138,7 +138,7 @@ tab_options(data_row.padding = px(0.1), table.font.size = 14, container.padding.
   placement = "right"
 )
 
-dim_plot
+dim_plot #%>% gtsave("Table 1.png")
 
 ```
 
@@ -397,42 +397,9 @@ create_table(t) %>% data.frame() %>%
   row_spec(c(3, 6, 9, 12, 15, 18, 21), extra_css = "border-bottom: 1px dotted gray;")
 
 ```
-
 ```{r}
-plots2 <- c("img/1.png", "img/filler.png", "img/filler.png", "img/2.png", "img/filler.png", "img/filler.png", "img/3.png","img/filler.png", "img/filler.png", "img/4.png", "img/filler.png", "img/filler.png", "img/5.png", "img/filler.png", "img/filler.png", "img/6.png", "img/filler.png", "img/filler.png", "img/7.png", "img/filler.png", "img/filler.png", "img/8.png", "img/filler.png")
+plots2 <- c("miniatures/1.png", "miniatures/filler.png", "miniatures/filler.png", "miniatures/2.png", "miniatures/filler.png", "miniatures/filler.png", "miniatures/3.png","miniatures/filler.png", "miniatures/filler.png", "miniatures/4.png", "miniatures/filler.png", "miniatures/filler.png", "miniatures/5.png", "miniatures/filler.png", "miniatures/filler.png", "miniatures/6.png", "miniatures/filler.png", "miniatures/filler.png", "miniatures/7.png", "miniatures/filler.png", "miniatures/filler.png", "miniatures/8.png", "miniatures/filler.png")
 
-tab1 <- create_table(t) %>% data.frame() %>% 
-  mutate(names = str_to_sentence(names)) %>% 
-  mutate(names = str_replace(names, "Erp", "ERP")) %>% 
-  mutate(names = str_replace(names, "erp", "ERP")) %>% tibble::add_column(Plots = plots2, .before = "type") %>% 
-  dplyr::rename(`Plot types` = type,
-         `Aggregated responses` = names,
-         `Scores` =  score) %>% select(-n, -total, -p) %>%  gt()  %>% 
-  text_transform(
-    locations = cells_body(columns = Plots),
-    fn = function(x) {
-      lapply(x, function(x) {
-              html(paste(local_image(filename = x)))
-      })
-    }
-  ) %>% opt_table_font(font = "Source Sans Pro") %>%  tab_options(table_body.hlines.color = "transparent") %>% 
-  tab_options(data_row.padding = px(0.1), table.font.size = 14, container.padding.x = 1) %>% 
-   
-  tab_style(
-    style = cell_borders(
-      sides = c("bottom"),
-      color = "gray",
-      weight = px(1.5),
-      style = "dotted"
-    ),
-    locations = cells_body(rows = c(3, 6, 9, 12, 15, 18, 21))) 
-tab1
-#gtsave(tab1, "tab1.png")
- 
-```
-
-
-```{r}
 plotnames <- create_table(t) %>% data.frame() %>% 
   mutate(names = str_to_sentence(names)) %>% 
   mutate(names = str_replace(names, "Erp", "ERP")) %>% 
@@ -465,9 +432,39 @@ plotnames_pic <- plotnames %>% flextable() %>%
   ) %>%   font(fontname = "Lato", part="all") %>% 
   hline_bottom(part = "body", border = fp_border(color = "white", width = 3)) 
 plotnames_pic
-   
+#save_as_html(plotnames_pic, path = "Table 2.html")
+#save_as_image(plotnames_pic, path = "Table 2.png")
 ```
 
+```{r}
+tab1 <- create_table(t) %>% data.frame() %>% 
+  mutate(names = str_to_sentence(names)) %>% 
+  mutate(names = str_replace(names, "Erp", "ERP")) %>% 
+  mutate(names = str_replace(names, "erp", "ERP")) %>% tibble::add_column(Plots = plots2, .before = "type") %>% 
+  dplyr::rename(`Plot types` = type,
+         `Aggregated responses` = names,
+         `Scores` =  score) %>% select(-n, -total, -p) %>%  gt()  %>% 
+  text_transform(
+    locations = cells_body(columns = Plots),
+    fn = function(x) {
+      lapply(x, function(x) {
+              html(paste(local_image(filename = x)))
+      })
+    }
+  ) %>% opt_table_font(font = "Source Sans Pro") %>%  tab_options(table_body.hlines.color = "transparent") %>% 
+  tab_options(data_row.padding = px(0.1), table.font.size = 14, container.padding.x = 1) %>% 
+   
+  tab_style(
+    style = cell_borders(
+      sides = c("bottom"),
+      color = "gray",
+      weight = px(1.5),
+      style = "dotted"
+    ),
+    locations = cells_body(rows = c(3, 6, 9, 12, 15, 18, 21))) 
+tab1 #%>% gtsave("Table 2.png")
+ 
+```
 
 ## Struggles with plots
 
@@ -842,7 +839,7 @@ prob_comb
 ```
 
 ```{r}
-plots3 <- c("img/1.png", "img/filler.png", "img/filler.png", "img/5.png", "img/filler.png", "img/filler.png", "img/4.png","img/filler.png", "img/filler.png", "img/7.png", "img/filler.png", "img/filler.png", "img/2.png", "img/filler.png", "img/filler.png", "img/3.png", "img/filler.png", "img/filler.png", "img/6.png", "img/filler.png", "img/filler.png")
+plots3 <- c("miniatures/1.png", "miniatures/filler.png", "miniatures/filler.png", "miniatures/5.png", "miniatures/filler.png", "miniatures/filler.png", "miniatures/4.png","miniatures/filler.png", "miniatures/filler.png", "miniatures/7.png", "miniatures/filler.png", "miniatures/filler.png", "miniatures/2.png", "miniatures/filler.png", "miniatures/filler.png", "miniatures/3.png", "miniatures/filler.png", "miniatures/filler.png", "miniatures/6.png", "miniatures/filler.png", "miniatures/filler.png")
 
 probs <- prob_comb %>% tibble::add_column(Plots = plots3, .before = "name") %>% dplyr::rename(`Plot name` = name,
          `The main problem` = problems,
@@ -869,8 +866,11 @@ probs_pic <- probs %>% flextable() %>%
     part = "body"
   ) %>% 
   hline_bottom(part = "body", border = fp_border(color = "white", width = 3)) %>% 
-  font(fontname = "Lato", part="all") #%>% save_as_image("probs.png")
-probs_pic
+  font(fontname = "Lato", part="all") 
+probs_pic 
+#save_as_image(probs_pic, path = "Table 3.pdf")
+#save_as_html(probs_pic, path = "Table 3.html")
+
 ```
 
 

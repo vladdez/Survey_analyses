@@ -115,7 +115,7 @@ na_table <- function(data, vec_named, plot_names){
 num_named <- na_table(data, vec_named, plot_names)
 num_named  %>% 
   ggplot(., aes(x = n, y = reorder(plot_names, n))) +
-  geom_col(stat="identity", fill ="lightblue1", col="dodgerblue3") +
+  geom_col(stat="identity",  fill ="#6BAED6") +
     labs(x = "Category", y = "Value") +
     theme_classic() + theme(axis.title.x=element_blank(), plot.title = element_text(hjust = 0.5)) +
   geom_text(aes(label = n), position = position_dodge(width = .9), hjust = -0.1) +
@@ -125,6 +125,26 @@ num_named  %>%
 
 
 
+```
+```{r}
+tmp <- data[vec_named]
+tmp$n <- rowSums(!is.na(tmp)) 
+table(tmp$n)  %>%  t() %>% data.frame() %>% select(-Var1) %>% 
+  mutate(percent_score = round(Freq / 213 * 100)) %>% 
+  ggplot(., aes(y = Var2, x = percent_score)) +
+  geom_col(stat="identity", fill ="#6BAED6") +
+    labs(x = "", y = "Number of named plots", title = "Number of plots named by EEG researchers") + theme_classic() +
+    geom_text(aes(label = paste0(percent_score, "%")), 
+              position = position_dodge(width = .9), hjust = -0.2, size = 4) + theme(
+      axis.text.y = element_text(size = 14),
+      legend.position="none", plot.caption.position = "plot", 
+      plot.caption = element_text(hjust=0), 
+      text = element_text(family = "Lato"),
+      axis.text.x = element_blank(), axis.text = element_text(size = 10),  
+      plot.title = element_text(color = "grey10", size = 16, face = "bold"),
+      axis.title.y = element_blank(),
+      plot.title.position = "plot"
+      ) + xlim(0, 39) 
 ```
 
 ### Plotting
