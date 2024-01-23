@@ -653,7 +653,7 @@ bl <- table(abs(just[2] %>% na.omit() %>% rbind(data[77] %>% dplyr::rename(num =
 periods_plot <- bl %>%
     ggplot(data = ., aes(x = baseline, y = percent_score)) +
     geom_bar(stat="identity", fill ="lightblue1", colour ="dodgerblue3") + 
-  labs(x = "Recomended baseline in msec", y = "") +  
+  labs(x = "Recomended baseline duration in msec", y = "") +  
   scale_y_continuous(breaks=seq(0, 60, 5)) + theme_classic() +
   theme(legend.position="none", plot.title = element_text(hjust = 0.5), text = element_text(family = "Lato")) +
   geom_text(aes(label = paste0(percent_score, "%"), group = baseline), position = position_dodge(width = .9), vjust = -0.3)   +
@@ -666,19 +666,22 @@ periods_plot +
 bl2 <- table(abs(just[2] %>% na.omit() %>% rbind(data[77] %>% dplyr::rename(num = !!names(.)[1]) , .))) %>% data.frame() %>%  dplyr::rename(baseline = !!names(.)[1]) %>% 
  # mutate(baseline = as.numeric(baseline) * -1) %>% 
   mutate(baseline = ifelse(Freq > 2, paste0("-", as.character(baseline)), "Other")) %>%
-  group_by(baseline) %>% summarise(Freq = sum(Freq)) %>% 
+  dplyr::group_by(baseline) %>% summarise(Freq = sum(Freq)) %>% 
   mutate(percent_score = round(Freq / sum(Freq), 2) *100) %>% arrange(desc(baseline)) %>% 
   mutate(baseline = factor(baseline, 
   levels = c("-500", "-300", "-250", "-200", "-100", "Other")))
 
+italised1 <- c("-500", "-300", "-250", "-200", "-100", expression(italic("Other")))
+
 periods_plot2 <- bl2 %>%
     ggplot(data = ., aes(x = baseline, y = percent_score)) +
     geom_bar(stat="identity", fill ="#6BAED6", width = 0.6) + 
-  labs(x = "Recomended baseline\n(msec)", y = "") +  
+  labs(x = "Recomended baseline duration\n(msec)", y = "") +  
   scale_y_continuous(breaks=seq(0, 60, 5)) + theme_classic() +
   theme(legend.position="none", plot.title = element_text(hjust = 0.5), text = element_text(family = "Lato")) +
   geom_text(aes(label = paste0(percent_score, "%"), group = baseline), position = position_dodge(width = .9), vjust = -0.3)   +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text.y = element_blank(), axis.text = element_text(size = 10))
+    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text.y = element_blank(), axis.text = element_text(size = 10)) + 
+  scale_x_discrete(labels = italised1)
 
 periods_plot2 +
     labs(caption = sprintf("N of respondents - %d",  sum(bl$Freq)))
@@ -713,10 +716,6 @@ tti <-  tti_data %>% ggplot(., aes(y = toposeries_int, x = p)) +
 
 tti  +
     labs(caption = sprintf("N of respondents - %d",  sum(tti_data$n))) # change
-```
-
-```{r}
-data[96] %>% filter(!is.na(.))
 ```
 
 ### Combined
