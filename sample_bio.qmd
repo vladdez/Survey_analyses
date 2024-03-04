@@ -262,7 +262,7 @@ years <- year %>% group_by(years) %>%
              col = "brown1", lty='dashed',
              lwd = 1) +
   geom_text(aes(label = paste0("median = ", median(year$years)), col = "brown1",
-                x = median(year$years)*1.9, family = "Lato",
+                x = median(year$years)*2.2, family = "Lato",
                 y  = 0.11)) + scale_y_continuous(labels = scales::percent)
 
 years + labs(caption = sprintf("N of respondents - %d, median - %d", nrow(year), median(year$years)))  
@@ -292,7 +292,7 @@ ggplot(., aes(x = papers, y = p)) +
              col = "brown1", lty='dashed',
              lwd = 1) +
   geom_text(aes(label = paste0("median = ", tmp_med), 
-                x = tmp_med*6, col = "brown1", family = "Lato",
+                x = tmp_med*7, col = "brown1", family = "Lato",
                 y  = 0.15)) + scale_y_continuous(labels = scales::percent)
 papers_fig +
   labs(caption = sprintf("N of respondents - %d, median - %s", nrow(papers), as.character(tmp_med)))
@@ -356,19 +356,20 @@ ggarrange(country_fig + geom_col(stat = "identity", width = 0.8, fill ="#6BAED6"
 ggarrange(years +  geom_col(position = "identity", bins = 45, fill ="#6BAED6") + 
   geom_vline(xintercept = median(year$years),        # Add line for mean
              col = "#FC9272", lty='dashed',
-             lwd = 1) + labs(title ="Years of experience", y="", x="") ,
+             lwd = 1) + labs(title ="Years of experience", y= "Percent of\nrespondents", x="") ,
   
           papers_fig + geom_col(position = "identity", bins = 45, fill ="#6BAED6") + 
   geom_vline(xintercept = tmp_med - 1,        # Add line for mean
              col = "#FC9272", lty='dashed',
-             lwd = 1) + labs(title ="Number of papers published", y="", x=""), 
+             lwd = 1) + labs(title ="Number of papers published", y= "Percent of\nrespondents", x=""), 
   
-          cc +  geom_col(stat = "identity",  width = 0.5, fill ="#6BAED6") + xlim(0, 100) + theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()), 
+          cc +  geom_col(stat = "identity",  width = 0.5, fill ="#6BAED6") + xlim(0, 100) + theme(axis.text.y = element_text(size = 10), axis.text.x = element_blank()) +  
+    labs(x ="Percent of respondents") , 
   
-          sall + geom_col(stat = "identity",  width = 0.5, fill ="#6BAED6") + xlim(0, 100) + theme(axis.title.x = element_blank(), axis.text.y = element_text(size = 10), axis.text.x = element_blank()), 
+          sall + geom_col(stat = "identity",  width = 0.5, fill ="#6BAED6") + xlim(0, 100) + theme(axis.text.y = element_text(size = 10), axis.text.x = element_blank()) +  
+    labs(x ="Percent of respondents"), 
           labels = c("A", "B", "C", "D"),
-          ncol = 2, nrow = 2, align = 'h') 
-
+          ncol = 2, nrow = 2) 
 ```
 
 ## Time of finishing survey in minutes

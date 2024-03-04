@@ -375,7 +375,6 @@ test  %>%
   )
 ```
 ```{r}
-
 cbPalette1 <- c("#e3342f", "#6574cd", "#f6993f",  "#38c172" )
 
 cbPalette2 <- c("#4dc0b5", "#3490dc","#f1a20b", "#9561e2", "white", "#f66d9b")
@@ -430,7 +429,9 @@ test1 <- test %>% filter(gr == "Favored") %>% mutate(value = value + 3) %>%
     segment.ncp = 3,
     segment.angle = 20
   )
+```
 
+```{r}
 test2 <- test %>% filter(gr != "Favored") %>% mutate(value = value + 3) %>% ungroup() %>% 
   tibble::add_row(name = "void", value = 1, n = 0, gr = "a", denymax=0) %>% 
   # line above is just to extend yaxis to zero
@@ -445,6 +446,7 @@ test2 <- test %>% filter(gr != "Favored") %>% mutate(value = value + 3) %>% ungr
     text = element_text(family = "Lato"),
     strip.background = element_blank(), 
     axis.text = element_text(color = "grey40"),
+    axis.text.x = element_text(color = "black"),
     axis.ticks = element_line(color = "grey40", size = .5),
     strip.text = element_text(size = 14),
     axis.title = element_blank(),
@@ -459,6 +461,7 @@ test2 <- test %>% filter(gr != "Favored") %>% mutate(value = value + 3) %>% ungr
     expand = c(0.01, 0),
     limits = c(0.9, 5), 
     breaks = seq(1, 5, by = 1),
+    
     labels = c("Not important", "", "Neutral", "", "Very important")
   ) +
   scale_y_continuous(
@@ -483,7 +486,9 @@ test2 <- test %>% filter(gr != "Favored") %>% mutate(value = value + 3) %>% ungr
     segment.ncp = 3,
     segment.angle = 20
   )
-ggarrange(test1, test2, align = 'v', nrow = 2) 
+figure <- ggarrange(test1, test2, align = 'v', nrow = 2) 
+require(grid)
+annotate_figure(figure, left = textGrob("Number of responses", rot = 90, vjust = 1, gp = gpar(cex = 1.3)))
 ```
 
 

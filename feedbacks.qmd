@@ -39,6 +39,7 @@ library(flextable)
 library(officer)
 library(gdtools)
 library(gdata)
+library(xlsx)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
@@ -360,6 +361,26 @@ n8
 ```{r}
 list(n1, n2, n3, n4, n5, n6, n8) %>% kable(.) %>% kable_styling("striped", position = "center",) 
 ```
+
+```{r}
+write.xlsx(n1 %>% 
+   rename_at(vars(colnames(.)), ~ c("Plot names", "Scores")), "data/aggregated_plotnames.xlsx", sheetName ="ERP plot", row.names=FALSE)
+write.xlsx(n2 %>% 
+   rename_at(vars(colnames(.)), ~ c("Plot names", "Scores")), "data/aggregated_plotnames.xlsx", append=TRUE, sheetName ="Butterfly plot", row.names=FALSE)
+write.xlsx(n3 %>% 
+   rename_at(vars(colnames(.)), ~ c("Plot names", "Scores")), "data/aggregated_plotnames.xlsx", append=TRUE, sheetName ="Topoplot", row.names=FALSE)
+write.xlsx(n4 %>% 
+   rename_at(vars(colnames(.)), ~ c("Plot names", "Scores")), "data/aggregated_plotnames.xlsx", append=TRUE, sheetName ="Topoplot timeseries", row.names=FALSE)
+write.xlsx(n5 %>% 
+   rename_at(vars(colnames(.)), ~ c("Plot names", "Scores")), "data/aggregated_plotnames.xlsx", append=TRUE, sheetName ="ERP grid", row.names=FALSE)
+write.xlsx(n6 %>% 
+   rename_at(vars(colnames(.)), ~ c("Plot names", "Scores")), "data/aggregated_plotnames.xlsx", append=TRUE, sheetName ="ERP image", row.names=FALSE)
+write.xlsx(n8 %>% 
+   rename_at(vars(colnames(.)), ~ c("Plot names", "Scores")), "data/aggregated_plotnames.xlsx", append=TRUE, sheetName ="Channel image", row.names=FALSE)
+write.xlsx(n7 %>% 
+   rename_at(vars(colnames(.)), ~ c("Plot names", "Scores")), "data/aggregated_plotnames.xlsx", append=TRUE, sheetName ="Parallel plot", row.names=FALSE)
+```
+
 
 ```{r}
 plot_names <- c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot\ntimeseries", "ERP grid", "ERP image", "Channel image", "Parallel plot")
