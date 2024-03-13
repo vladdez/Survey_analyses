@@ -16,11 +16,11 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 **Here we analyse how participants named presented figures and what kind of struggles their experienced. Also, their feedback on some issues presented**
 
-
 ## Setup
 
 ```{r, message= FALSE, warning=FALSE, echo=FALSE}
 # upload to the git
+ Sys.setenv(JAVA_HOME='C:\\Program Files\\Java\\jre-1.8')
 library(readxl)
 library(foreach)
 library(stringr)
@@ -40,6 +40,8 @@ library(officer)
 library(gdtools)
 library(gdata)
 library(xlsx)
+library("readxl")
+
 ```
 
 ```{r, message= FALSE, warning=FALSE}
@@ -74,7 +76,6 @@ word_preproc <- function(data, N){
 ```
 
 ## Plot dimension
-
 
 ```{r}
 ### miniatures
@@ -143,7 +144,6 @@ dim_plot #%>% gtsave("Table 1.png")
 
 ```
 
-
 ## The most common names for each plot
 
 #### 1
@@ -175,13 +175,13 @@ n1 <- word_preproc(data, 69)  %>% #View()
    rename_at(vars(colnames(.)), ~ c("ERP plot", "n")) 
 n1 
 ```
+
 ```{r}
 
 n1 %>% 
   mutate(total = sum(n)) %>% slice(1:11) %>% 
   mutate(p = round(as.numeric(n)/as.numeric(total), 2) * 100) 
 ```
-
 
 #### 2
 
@@ -359,12 +359,13 @@ n8
 ### Combined
 
 ```{r}
-list(n1, n2, n3, n4, n5, n6, n8) %>% kable(.) %>% kable_styling("striped", position = "center",) 
+#list(n1, n2, n3, n4, n5, n6, n8) n1 %>% kable(.) %>% kable_styling("striped", position = "center") 
 ```
 
 ```{r}
 write.xlsx(n1 %>% 
-   rename_at(vars(colnames(.)), ~ c("Plot names", "Scores")), "data/aggregated_plotnames.xlsx", sheetName ="ERP plot", row.names=FALSE)
+   rename_at(vars(colnames(.)), ~ c("Plot names", "Scores")), "data/aggregated_plotnames.xlsx", sheetName
+   ="ERP plot", row.names=FALSE)
 write.xlsx(n2 %>% 
    rename_at(vars(colnames(.)), ~ c("Plot names", "Scores")), "data/aggregated_plotnames.xlsx", append=TRUE, sheetName ="Butterfly plot", row.names=FALSE)
 write.xlsx(n3 %>% 
@@ -380,7 +381,6 @@ write.xlsx(n8 %>%
 write.xlsx(n7 %>% 
    rename_at(vars(colnames(.)), ~ c("Plot names", "Scores")), "data/aggregated_plotnames.xlsx", append=TRUE, sheetName ="Parallel plot", row.names=FALSE)
 ```
-
 
 ```{r}
 plot_names <- c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot\ntimeseries", "ERP grid", "ERP image", "Channel image", "Parallel plot")
@@ -418,6 +418,7 @@ create_table(t) %>% data.frame() %>%
   row_spec(c(3, 6, 9, 12, 15, 18, 21), extra_css = "border-bottom: 1px dotted gray;")
 
 ```
+
 ```{r}
 plots2 <- c("miniatures/1.png", "miniatures/filler.png", "miniatures/filler.png", "miniatures/2.png", "miniatures/filler.png", "miniatures/filler.png", "miniatures/3.png","miniatures/filler.png", "miniatures/filler.png", "miniatures/4.png", "miniatures/filler.png", "miniatures/filler.png", "miniatures/5.png", "miniatures/filler.png", "miniatures/filler.png", "miniatures/6.png", "miniatures/filler.png", "miniatures/filler.png", "miniatures/7.png", "miniatures/filler.png", "miniatures/filler.png", "miniatures/8.png", "miniatures/filler.png")
 
@@ -489,7 +490,7 @@ tab1 #%>% gtsave("Table 2.png")
 
 ## Struggles with plots
 
-### stats 
+### stats
 
 ```{r, message= FALSE, warning=FALSE}
 stat_preproc <- function(vec){
@@ -620,7 +621,6 @@ problem1 <- tmp1 %>%  mutate(name = "ERP plot")
 tmp1
 ```
 
-
 #### 2
 
 ```{r, warning=FALSE}
@@ -692,7 +692,6 @@ tmp3
 
 
 ```
-
 
 #### 4
 
@@ -894,7 +893,6 @@ probs_pic
 
 ```
 
-
 ### The most problematic plot
 
 ```{r}
@@ -912,7 +910,6 @@ rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem8) %>%
 ```
 
 ## New features
-
 
 #### 1
 
@@ -1029,6 +1026,7 @@ tmp1 %>%
   kable_classic(full_width = F, html_font = "Arial")
 
 ```
+
 ## For developers
 
 ```{r}
@@ -1119,5 +1117,3 @@ feed  %>%
   filter(!row_number() %in% c(3, 4, 14, 17, 32, 37, 41, 59)) %>% # just appreciation 
 write.csv("feedback/general_feedback.csv")
 ```
-
-

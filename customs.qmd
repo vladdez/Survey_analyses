@@ -16,7 +16,6 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 **Here we present researcher's visualization customs and awareness about some methodological problems.**
 
-
 ## Setup
 
 ```{r, message= FALSE, warning=FALSE, echo=FALSE}
@@ -76,9 +75,7 @@ rec %>%
 
 ```
 
-
 ### Naming
-
 
 Those who proposed a name for a plot. Bad names are excluded.
 
@@ -126,6 +123,7 @@ num_named  %>%
 
 
 ```
+
 ```{r}
 tmp <- data[vec_named]
 tmp$n <- rowSums(!is.na(tmp)) 
@@ -180,7 +178,6 @@ tab <- do_vec(vec_plotted, data, plot_names) %>%  data.frame() %>% tibble::rowna
 
 named <- num_named %>% dplyr::rename(named = n, plots = plot_names)  
 ```
-
 
 ```{r}
 mem_tab <-  familiar %>% 
@@ -237,7 +234,6 @@ feature1 <- feature %>%
   filter(!is.na(value))
 ```
 
-
 ```{r}
 plot_features <- c(
   "Combine with a custom plot created outside of the toolbox (as subplot or inset)",
@@ -272,9 +268,8 @@ test <-  comb_data %>% group_by(name, value) %>% dplyr::summarise(n = n()) %>%
       grepl("\\b(Coding|Customizable|Reproducible|Publishable)\\b", name) == TRUE ~ "Favored"))  %>% 
   mutate(denymax = case_when(value == 2 ~ n, TRUE ~ NA))
 
-cbPalette <- c("#e3342f", "#f6993f", "#f1a20b", "#38c172", "#3490dc", "#6574cd", "#9561e2", "#4dc0b5", "#f66d9b")
+cbPalette_fe <- c("#e3342f", "#f6993f", "#f1a20b", "#38c172", "#3490dc", "#6574cd", "#9561e2", "#4dc0b5", "#f66d9b")
 ```
-
 
 ```{r}
 test %>%  
@@ -286,7 +281,7 @@ test %>%
 test  %>% 
   ggplot(aes(x = value, y = n, label = name, color = name)) + 
    geom_smooth(aes(x = value, y = n),  size = 1) + #facet_wrap(~gr) +  
-  scale_color_manual(values=cbPalette) + theme_classic()  +  
+  scale_color_manual(values=cbPalette_fe) + theme_classic()  +  
   theme(legend.position = "none", 
   strip.background = element_blank(), 
   strip.text = element_text(size = 14),
@@ -323,11 +318,10 @@ test  %>%
   geom_line(bw = 0.5, size = 1) + 
   geom_point(shape = 21, fill = 'white', size=2, stroke=1) + 
   facet_grid(gr~ ., scales = "free_y") +  
-  scale_color_manual(values = cbPalette) + 
+  scale_color_manual(values = cbPalette_fe) + 
   labs(x = "Values on the Likert scale", y = "Scores")  +  geom_rangeframe(color = "black") +
   theme(
     panel.background = element_blank(), panel.border = element_blank(), 
-
     legend.position = "none", 
     text = element_text(family = "Lato"),
     strip.background = element_blank(), 
@@ -374,15 +368,16 @@ test  %>%
     segment.angle = 20
   )
 ```
-```{r}
-cbPalette1 <- c("#e3342f", "#6574cd", "#f6993f",  "#38c172" )
 
-cbPalette2 <- c("#4dc0b5", "#3490dc","#f1a20b", "#9561e2", "white", "#f66d9b")
+```{r}
+cbPalette_fe1 <- c("#e3342f", "#6574cd", "#f6993f",  "#38c172" )
+
+cbPalette_fe2 <- c("#4dc0b5", "#3490dc","#f1a20b", "#9561e2", "white", "#f66d9b")
 test1 <- test %>% filter(gr == "Favored") %>% mutate(value = value + 3) %>% 
   ggplot(aes(x = value, y = n, label = name, color = name)) + 
   geom_line(bw = 0.5, size = 1) + 
   geom_point(shape = 21, fill = 'white', size=2, stroke=1) + 
-  scale_color_manual(values = cbPalette1) + 
+  scale_color_manual(values = cbPalette_fe1) + 
   labs(x = "Values on the Likert scale", y = "Scores")  +  geom_rangeframe(color = "black") +
   theme(
     panel.background = element_blank(), panel.border = element_blank(), 
@@ -438,7 +433,7 @@ test2 <- test %>% filter(gr != "Favored") %>% mutate(value = value + 3) %>% ungr
   ggplot(aes(x = value, y = n, label = name, color = name)) + 
   geom_line(bw = 0.5, size = 1) + 
   geom_point(shape = 21, fill = 'white', size=2, stroke=1) + 
-  scale_color_manual(values = cbPalette2) + 
+  scale_color_manual(values = cbPalette_fe2) + 
   labs(x = "Values on the Likert scale", y = "Scores")  +  geom_rangeframe(color = "black") +
   theme(
     panel.background = element_blank(), panel.border = element_blank(), 
@@ -491,7 +486,6 @@ require(grid)
 annotate_figure(figure, left = textGrob("Number of responses", rot = 90, vjust = 1, gp = gpar(cex = 1.3)))
 ```
 
-
 ## Controversies
 
 ### Channels
@@ -527,7 +521,6 @@ marg <- data %>% select(23, 24) %>%
       theme(legend.position="none") + theme_classic() + labs(x = "Electrodes recorded", y = "Electrodes aanlysed")
 ggMarginal(marg, type="histogram")
 ```
-
 
 ### Up or down
 
@@ -621,7 +614,6 @@ pol_not_plot2 +
     labs(caption = sprintf("N of respondents - %d",  sum(as$n)))
 ```
 
-
 ### Baseline
 
 Think about the baseline period (the time before the stimulus onset). How many milliseconds would you recommend to plot? Help: Please, provide the baseline duration for the plot, not the duration for the baseline-correction
@@ -667,6 +659,7 @@ periods_plot <- bl %>%
 periods_plot +
     labs(caption = sprintf("N of respondents - %d",  sum(bl$Freq)))
 ```
+
 ```{r}
 bl2 <- table(abs(just[2] %>% na.omit() %>% rbind(data[77] %>% dplyr::rename(num = !!names(.)[1]) , .))) %>% data.frame() %>%  dplyr::rename(baseline = !!names(.)[1]) %>% 
  # mutate(baseline = as.numeric(baseline) * -1) %>% 
@@ -691,6 +684,7 @@ periods_plot2 <- bl2 %>%
 periods_plot2 +
     labs(caption = sprintf("N of respondents - %d",  sum(bl$Freq)))
 ```
+
 ### Topoplot timeseries interpretation
 
 ```{r}
@@ -734,8 +728,8 @@ ggarrange(pol_not_plot2, tti, labels = c("A", "B"))
 
 ```
 
-
 ## Awareness
+
 ### Error bars
 
 ```{r}
@@ -821,7 +815,6 @@ ggarrange(eb_fig, ebd_fig,
 data[76] %>%  filter(!is.na(.)) %>% table()
 ```
 
-
 ### Colormaps
 
 ```{r}
@@ -881,8 +874,6 @@ table(data[118]) %>% data.frame() %>%
     labs(caption = sprintf("N of respondents - %d",  sum(cb$scores))) +
     theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) 
 ```
-
-
 
 ```{r}
 tdc <- table(data[119])  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>%

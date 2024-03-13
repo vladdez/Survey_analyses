@@ -12,10 +12,10 @@ editor: visual
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+Sys.setenv(LANG = "en")
 ```
 
 **Here we present researcher's visualization customs and awareness about some methodological problems.**
-
 
 ## Setup
 
@@ -36,6 +36,9 @@ library(stringi)
 library(ggpubr)
 library(ggrepel)
 library(showtext)
+library(gdtools)
+library(ggthemes)
+register_gfont("Lato")
 ```
 
 ```{r, message= FALSE, warning=FALSE}
@@ -50,10 +53,10 @@ cit1 <- read.table(file = "data/cit/eeglab.txt", header = TRUE, fill = TRUE)[1:2
 cit2 <- read.table(file = "data/cit/mne.txt", header = TRUE, fill = TRUE)[1:2]%>% mutate(name = "MNE")
 cit3 <- read.table(file = "data/cit/erplab.txt", header = TRUE, fill = TRUE)[1:2]%>% mutate(name = "ERPLAB")
 cit4 <- read.table(file = "data/cit/fieldtrip.txt", header = TRUE, fill = TRUE)[1:2]%>% mutate(name = "FieldTrip")
+cit5 <- read.table(file = "data/cit/brainstorm.txt", header = TRUE, fill = TRUE)[1:2]%>% mutate(name = "Brainstorm")
 
-cit_data <- rbind(cit1, cit2, cit3, cit4) %>% rename_at(vars(colnames(.)), ~ c("year", "citations", "name"))
+cit_data <- rbind(cit1, cit2, cit3, cit4, cit5) %>% rename_at(vars(colnames(.)), ~ c("year", "citations", "name"))
 ```
-
 
 ## Software usage
 
@@ -106,7 +109,7 @@ tools <- rev(c("EEGLAB", "FieldTrip", expression(italic("Custom scripts")), "MNE
            expression(italic("Other")), "Brainstorm", "SPM", "LIMO", "Unfold", "BESA", "Curry", "Cartool"))
 
 font_add_google("Lato")
-showtext_opts(dpi = 200)
+showtext_opts(dpi = 100)
 showtext_auto(enable = TRUE)
 chart <- d %>% 
     ggplot(data = ., aes(y = reorder(soft, percent_score),  x= percent_score)) +
@@ -131,6 +134,7 @@ chart <- d %>%
 chart +
     labs(caption = sprintf("N of respondents - %d",  nrow(software)))
 ```
+
 Matlab users
 
 ```{r}
@@ -148,6 +152,7 @@ data.frame(rowSums(t(software))) %>%  tibble::rownames_to_column(., "soft") %>%
   mutate(soft = factor(soft, levels = soft[rev(order(sum_scores))])) %>% 
   arrange(desc(sum_scores)) %>% head(5)
 ```
+
 ```{r}
 software %>% select(EEGLAB, FieldTrip, ERPLAB, Brainstorm) %>% mutate(sum = rowSums(across(where(is.numeric)))) %>% 
     filter(sum != 0) %>% summarise(n = n()/ nrow(software) * 100)
@@ -186,6 +191,7 @@ data.frame(rowSums(software)) %>%  dplyr::rename(n_soft = rowSums.software.) %>%
 #### Cooccurrence
 
 ```{r, warning=FALSE}
+library(reshape2)
 # how to order by diagonal matrix 
 # how to add others
 software <- data[25:50]
@@ -197,7 +203,7 @@ colnames(c) <- rownames(c)
 diag.order <- order(diag(c), decreasing = FALSE)
 mat_reordered <- c[diag.order, diag.order]
 
-mat_reordered %>% melt(.) %>% ggplot(., aes(x=Var1, y=Var2)) + 
+mat_reordered %>%  reshape2::melt(.) %>% ggplot(., aes(x=Var1, y=Var2)) + 
   geom_tile(aes(fill = value)) + 
   geom_text(aes(label = value)) +
   scale_fill_gradient(low = "white", high = "red") +
@@ -216,7 +222,7 @@ zero_cols <- colSums(mat_reordered) == 0
 
 # Create a new matrix array without the rows and columns consisting only of zeroes
 new_matrix <- mat_reordered[!zero_rows, !zero_cols]
-melt(new_matrix) %>% ggplot(., aes(x=Var1, y=Var2)) + 
+new_matrix %>% reshape2::melt(.) %>% ggplot(., aes(x=Var1, y=Var2)) + 
   geom_tile(aes(fill = value)) + 
   geom_text(aes(label = value)) +
   scale_fill_gradient(low = "white", high = "red") +
@@ -231,29 +237,40 @@ melt(new_matrix) %>% ggplot(., aes(x=Var1, y=Var2)) +
 ## Software usage based on citations
 
 ```{r}
-cbPalette <- c("#e3342f", "#f6993f", "#38c172", "#3490dc", "#6574cd", "#9561e2", "#4dc0b5", "#f66d9b")
+cbPalette <- rev(c("#e3342f",  "#38c172", "#3490dc", "#f6993f","#9561e2"))
 #font_add_google("Lato")
 
-showtext_opts(dpi = 200)
-showtext_auto(enable = TRUE)
+#showtext_opts(dpi = 100)
+#showtext_auto(enable = TRUE)
 
 cit_plot <- cit_data %>% filter(year < 2023) %>% group_by(year) %>% 
   mutate(ylast = case_when(year == 2022 ~ citations, TRUE ~ NA)) %>% 
   ggplot(., aes(x = year, y = citations, color = name, label = name)) + geom_line() +
   geom_point(shape = 21, fill = 'white', size=2, stroke=1) + 
-  scale_color_manual(values=cbPalette) + 
-  theme_classic() + theme(legend.position = "none",
-                          text = element_text(family = "Lato"),
-                          plot.title = element_text(color = "grey10", size = 16, face = "bold", margin = margin(t = 15)),
-                          plot.title.position = "plot",)+
- coord_cartesian(clip = "off") +
+  scale_color_manual(values=cbPalette) +  
+  theme(legend.position = "none",
+        panel.background = element_blank(), panel.border = element_blank(), strip.background = element_blank(), 
+        text = element_text(family = "Lato"),
+        plot.title = element_text(color = "grey10", size = 16, face = "bold", margin = margin(t = 15)),
+        plot.title.position = "plot",)+
+  scale_x_continuous(
+    expand = c(0, 0),
+    limits = c(2003.8, 2023), 
+    breaks = seq(2004, 2023, by = 3)
+  ) + labs(
+    title = "Citations per year for the most popular EEG tools", subtitle = "", x = "Years", y = "Yearly citations"
+  ) + geom_rangeframe(color = "black") +
+  scale_y_continuous(
+    expand = c(0.04, 0),
+    breaks = seq(0, 1800, by = 200)
+  )+ coord_cartesian(xlim = c(2004, 2029), clip = "off")  + 
   geom_text_repel(
     aes(color = name, label = name, x = 2022, y = ylast,),
     family = "Lato",
     fontface = "bold",
     size = 4,
     direction = "y",
-    xlim = c(2022.3, Inf),
+    xlim = c(2022.3, NA),
     hjust = 0,
     segment.size = .7,
     segment.alpha = .5,
@@ -262,32 +279,24 @@ cit_plot <- cit_data %>% filter(year < 2023) %>% group_by(year) %>%
     segment.curvature = -0.1,
     segment.ncp = 3,
     segment.angle = 20
-  ) +  scale_x_continuous(
-    expand = c(0, 0),
-    limits = c(2003.8, 2026), 
-    breaks = seq(2004, 2023, by = 3)
-  ) + labs(
-    title = "Citations per year for the most popular EEG tools", subtitle = "", x = "Years", y = "Yearly citations"
-  ) +
-  scale_y_continuous(
-    expand = c(0.04, 0),
-    breaks = seq(0, 1800, by = 200)
-  )
+  )# 
+
 cit_plot
   
 ```
 
 ## Comb
 
-```{r}
-cbPalette2 <- c("#e3342f", "#38c172", "grey10", "#3490dc", "#f6993f", rep("grey10", 9) )
+```{r, warning=FALSE}
+#showtext_opts(dpi = 100)
+#showtext_auto(enable = TRUE)
+cbPalette2 <- c("#f6993f",  "#38c172", "grey10", "#e3342f", "#3490dc", "grey10", "grey10", "#9561e2", rep("grey10", 6) )
 ggarrange(chart + labs(title="Which EEG, MEG, or iEEG\nanalysis platform\nhave you used for ERP plotting?")+
-            theme( axis.text.y = element_text(color = rev(cbPalette2)),
+            theme( axis.text.y = element_text(color = rev(cbPalette2), face = "bold"),
               plot.title = element_text(color = "grey10", size = 14, margin = margin(t = 15))), 
           
           cit_plot + labs(title = "Citations per year for\nthe most popular EEG tools") +
-            theme(plot.title = element_text(color = "grey10", size = 14, margin = margin(t = 15)))+
-            scale_x_continuous(limits = c(2003.8, 2027), breaks = seq(2004, 2023, by = 3)), 
+            theme(plot.title = element_text(color = "grey10", face = "bold", size = 14, margin = margin(t = 15)))+
+            scale_x_continuous(limits = c(2003.8, 2023), breaks = seq(2004, 2023, by = 3)), 
           labels = c("A", "B"), align = 'h') 
 ```
-

@@ -14,9 +14,7 @@ editor: visual
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
-
 **Here we assess how proficiency in EEG affects researcher's awareness, preferences and choices.**
-
 
 ## Setup
 
