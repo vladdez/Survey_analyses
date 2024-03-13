@@ -205,12 +205,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#tiles" id="toc-tiles" class="nav-link" data-scroll-target="#tiles">Tiles</a>
   <ul class="collapse">
-  <li><a href="#cor.tests" id="toc-cor.tests" class="nav-link" data-scroll-target="#cor.tests">cor.tests</a></li>
-  <li><a href="#log-reg" id="toc-log-reg" class="nav-link" data-scroll-target="#log-reg">log reg</a></li>
+  <li><a href="#controvercies" id="toc-controvercies" class="nav-link" data-scroll-target="#controvercies">controvercies</a></li>
+  <li><a href="#attitudes" id="toc-attitudes" class="nav-link" data-scroll-target="#attitudes">attitudes</a></li>
+  <li><a href="#awareness" id="toc-awareness" class="nav-link" data-scroll-target="#awareness">awareness</a></li>
+  <li><a href="#tools" id="toc-tools" class="nav-link" data-scroll-target="#tools">tools</a></li>
   </ul></li>
   <li><a href="#proficiency-and" id="toc-proficiency-and" class="nav-link" data-scroll-target="#proficiency-and">Proficiency and …</a>
   <ul class="collapse">
-  <li><a href="#tools" id="toc-tools" class="nav-link" data-scroll-target="#tools">Tools</a></li>
+  <li><a href="#tools-1" id="toc-tools-1" class="nav-link" data-scroll-target="#tools-1">Tools</a></li>
   <li><a href="#number-of-used-software" id="toc-number-of-used-software" class="nav-link" data-scroll-target="#number-of-used-software">Number of used software</a></li>
   <li><a href="#channels" id="toc-channels" class="nav-link" data-scroll-target="#channels">Channels</a></li>
   <li><a href="#n_plot" id="toc-n_plot" class="nav-link" data-scroll-target="#n_plot">n_plot</a></li>
@@ -316,8 +318,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="tiles" class="level2">
 <h2 class="anchored" data-anchor-id="tiles">Tiles</h2>
-<section id="cor.tests" class="level3">
-<h3 class="anchored" data-anchor-id="cor.tests">cor.tests</h3>
+<section id="controvercies" class="level3">
+<h3 class="anchored" data-anchor-id="controvercies">controvercies</h3>
+<p>Here we cor.tests</p>
 <ul>
 <li><strong>n_soft</strong> - number of software used</li>
 <li><strong>rate</strong> - rate of electrodes recorded to electrodes analysed</li>
@@ -327,31 +330,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>vec <span class="ot">&lt;-</span> <span class="fu">names</span>(data[<span class="dv">25</span><span class="sc">:</span><span class="dv">50</span>]) <span class="sc">%&gt;%</span> <span class="fu">str_split_i</span>(., <span class="st">"</span><span class="sc">\\</span><span class="st">? </span><span class="sc">\\</span><span class="st">["</span>, <span class="dv">2</span>) <span class="sc">%&gt;%</span>  <span class="fu">str_sub</span>(., <span class="dv">1</span>, <span class="sc">-</span><span class="dv">2</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>cor_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(df) <span class="fu">cor.test</span>(df<span class="sc">$</span>proxy, df<span class="sc">$</span>score, <span class="at">method =</span> <span class="st">"spearman"</span>) <span class="sc">%&gt;%</span> <span class="fu">tidy</span>()</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>n_soft <span class="ot">&lt;-</span> data[<span class="dv">25</span><span class="sc">:</span><span class="dv">50</span>] <span class="sc">%&gt;%</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> vec) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_at</span>(<span class="fu">vars</span>(vec), <span class="cf">function</span>(., <span class="at">na.rm =</span> <span class="cn">FALSE</span>) (<span class="at">x =</span> <span class="fu">ifelse</span>(.<span class="sc">==</span><span class="st">"Yes"</span>, <span class="dv">1</span>, <span class="dv">0</span>)))<span class="sc">%&gt;%</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowSums</span>() <span class="sc">%&gt;%</span> <span class="fu">tibble</span>()</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(factor_scores[<span class="dv">1</span>], data[<span class="dv">23</span>]) <span class="sc">%&gt;%</span> <span class="fu">cbind</span>(., data[<span class="dv">24</span>]) <span class="sc">%&gt;%</span>  <span class="fu">cbind</span>(., n_soft) <span class="sc">%&gt;%</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> <span class="fu">c</span>(<span class="st">"proxy"</span>, <span class="st">"measure"</span>, <span class="st">"analyse"</span>, <span class="st">"n_soft"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(analyse <span class="sc">&lt;</span> <span class="dv">500</span>) <span class="sc">%&gt;%</span> <span class="fu">tibble</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">rate =</span> analyse <span class="sc">/</span> measure) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>analyse, <span class="sc">-</span>measure) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(type, score, rate<span class="sc">:</span>n_soft) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(., type) <span class="sc">%&gt;%</span> <span class="fu">nest</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(., <span class="at">model =</span> <span class="fu">map</span>(data, cor_fun)) <span class="sc">%&gt;%</span> <span class="fu">unnest</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(type, estimate, p.value, method) <span class="sc">%&gt;%</span></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(type) <span class="sc">%&gt;%</span>  <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p.value =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(p.value), <span class="dv">3</span>), </span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">estimate =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(estimate), <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p.value =</span> <span class="fu">cell_spec</span>(p.value, <span class="at">bold =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="fu">case_when</span>(</span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    type <span class="sc">==</span> <span class="st">"n_soft"</span> <span class="sc">~</span> <span class="st">"Number of softwares used"</span>,</span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    type <span class="sc">==</span> <span class="st">"rate"</span> <span class="sc">~</span> <span class="st">"Rate of electrodes recorded to analysed"</span></span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_minimal</span>(<span class="at">full_width =</span> F,  <span class="at">html_font =</span> <span class="st">"Source Sans Pro"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>cor_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(df){</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  p.value <span class="ot">&lt;-</span> <span class="fu">cor.test</span>(df<span class="sc">$</span>proxy, df<span class="sc">$</span>score, <span class="at">method =</span> <span class="st">"spearman"</span>)<span class="sc">$</span>p.value</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">spearman.ci</span>(df<span class="sc">$</span>proxy, df<span class="sc">$</span>score) <span class="sc">%&gt;%</span> <span class="fu">tidy</span>() <span class="sc">%&gt;%</span> <span class="fu">cbind</span>(p.value) </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>n_soft <span class="ot">&lt;-</span> data[<span class="dv">25</span><span class="sc">:</span><span class="dv">50</span>] <span class="sc">%&gt;%</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> vec) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_at</span>(<span class="fu">vars</span>(vec), <span class="cf">function</span>(., <span class="at">na.rm =</span> <span class="cn">FALSE</span>) (<span class="at">x =</span> <span class="fu">ifelse</span>(.<span class="sc">==</span><span class="st">"Yes"</span>, <span class="dv">1</span>, <span class="dv">0</span>)))<span class="sc">%&gt;%</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowSums</span>() <span class="sc">%&gt;%</span> <span class="fu">tibble</span>()</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(factor_scores[<span class="dv">1</span>], data[<span class="dv">23</span>]) <span class="sc">%&gt;%</span> <span class="fu">cbind</span>(., data[<span class="dv">24</span>]) <span class="sc">%&gt;%</span>  <span class="fu">cbind</span>(., n_soft) <span class="sc">%&gt;%</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> <span class="fu">c</span>(<span class="st">"proxy"</span>, <span class="st">"measure"</span>, <span class="st">"analyse"</span>, <span class="st">"n_soft"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(analyse <span class="sc">&lt;</span> <span class="dv">500</span>) <span class="sc">%&gt;%</span> <span class="fu">tibble</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">rate =</span> analyse <span class="sc">/</span> measure) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>analyse, <span class="sc">-</span>measure) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(type, score, rate<span class="sc">:</span>n_soft) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(., type) <span class="sc">%&gt;%</span> <span class="fu">nest</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(., <span class="at">model =</span> <span class="fu">map</span>(data, cor_fun)) <span class="sc">%&gt;%</span> <span class="fu">unnest</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(type, estimate, method, conf.low.Inf, conf.high.Sup, p.value) <span class="sc">%&gt;%</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(type) <span class="sc">%&gt;%</span>  <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">estimate =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(estimate), <span class="dv">3</span>),</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">CI =</span> <span class="fu">paste0</span>(<span class="st">'('</span> , <span class="fu">round</span>(conf.low.Inf, <span class="dv">3</span>), <span class="st">', '</span>, <span class="fu">round</span>(conf.high.Sup, <span class="dv">3</span>), <span class="st">')'</span>),</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>                                                             <span class="at">p.value =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(p.value), <span class="dv">2</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p.value =</span> <span class="fu">cell_spec</span>(p.value, <span class="at">bold =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="fu">case_when</span>(</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    type <span class="sc">==</span> <span class="st">"n_soft"</span> <span class="sc">~</span> <span class="st">"Number of softwares used"</span>,</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    type <span class="sc">==</span> <span class="st">"rate"</span> <span class="sc">~</span> <span class="st">"Rate of electrodes recorded to analysed"</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>conf.low.Inf, <span class="sc">-</span>conf.high.Sup) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_minimal</span>(<span class="at">full_width =</span> F,  <span class="at">html_font =</span> <span class="st">"Source Sans Pro"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <table class="lightable-minimal table table-sm table-striped small" data-quarto-postprocess="true">
@@ -359,22 +366,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">type</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">estimate</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">p.value</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">method</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">p.value</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">CI</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Number of softwares used</td>
 <td style="text-align: right;">0.307</td>
+<td style="text-align: left;">Spearman's rank correlation</td>
 <td style="text-align: left;"><span style=" font-weight: bold;    ">0</span></td>
-<td style="text-align: left;">Spearman's rank correlation rho</td>
+<td style="text-align: left;">(0.179, 0.432)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Rate of electrodes recorded to analysed</td>
 <td style="text-align: right;">0.262</td>
+<td style="text-align: left;">Spearman's rank correlation</td>
 <td style="text-align: left;"><span style=" font-weight: bold;    ">0</span></td>
-<td style="text-align: left;">Spearman's rank correlation rho</td>
+<td style="text-align: left;">(0.13, 0.383)</td>
 </tr>
 </tbody>
 </table>
@@ -382,7 +392,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </div>
 </div>
-<p>Attitudes on 8 features of ERP visualization tools</p>
+</section>
+<section id="attitudes" class="level3">
+<h3 class="anchored" data-anchor-id="attitudes">attitudes</h3>
+<p>Attitudes on 8 features of ERP visualization tools Here we use cor.tests</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -398,21 +411,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(type, score, subplot<span class="sc">:</span>coding) <span class="sc">%&gt;%</span> </span>
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(., type) <span class="sc">%&gt;%</span> <span class="fu">nest</span>() <span class="sc">%&gt;%</span> </span>
 <span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(., <span class="at">model =</span> <span class="fu">map</span>(data, cor_fun)) <span class="sc">%&gt;%</span> <span class="fu">unnest</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(type, estimate, p.value) <span class="sc">%&gt;%</span> <span class="co"># , method</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(type) <span class="sc">%&gt;%</span>  <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p.value =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(p.value), <span class="dv">2</span>),</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">estimate =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(estimate), <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p.value =</span> <span class="fu">cell_spec</span>(p.value, <span class="at">bold =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="st">`</span><span class="at">Software feature</span><span class="st">`</span> <span class="ot">=</span> type) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_minimal</span>(<span class="at">full_width =</span> F,  <span class="at">html_font =</span> <span class="st">"Source Sans Pro"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(type, estimate, conf.low.Inf, conf.high.Sup, p.value) <span class="sc">%&gt;%</span> <span class="co"># , method</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(type) <span class="sc">%&gt;%</span>  <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">estimate =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(estimate), <span class="dv">2</span>),</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">CI =</span> <span class="fu">paste0</span>(<span class="st">'('</span> , <span class="fu">round</span>(conf.low.Inf, <span class="dv">3</span>), <span class="st">', '</span>, <span class="fu">round</span>(conf.high.Sup, <span class="dv">3</span>), <span class="st">')'</span> ),</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>                                                             <span class="at">p.value =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(p.value), <span class="dv">2</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p.value =</span> <span class="fu">cell_spec</span>(p.value, <span class="at">bold =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="st">`</span><span class="at">Software feature</span><span class="st">`</span> <span class="ot">=</span> type, <span class="st">`</span><span class="at">Spearman rho</span><span class="st">`</span> <span class="ot">=</span> estimate) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>conf.low.Inf, <span class="sc">-</span>conf.high.Sup) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_minimal</span>(<span class="at">full_width =</span> F,  <span class="at">html_font =</span> <span class="st">"Source Sans Pro"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <table class="lightable-minimal table table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">Software feature</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">estimate</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Spearman rho</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">p.value</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">CI</th>
 </tr>
 </thead>
 <tbody>
@@ -420,46 +436,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: left;">attributes</td>
 <td style="text-align: right;">-0.07</td>
 <td style="text-align: left;"><span style="     ">0.32</span></td>
+<td style="text-align: left;">(-0.205, 0.076)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">coding</td>
 <td style="text-align: right;">0.17</td>
 <td style="text-align: left;"><span style=" font-weight: bold;    ">0.01</span></td>
+<td style="text-align: left;">(0.029, 0.303)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">gui</td>
 <td style="text-align: right;">-0.13</td>
 <td style="text-align: left;"><span style="     ">0.07</span></td>
+<td style="text-align: left;">(-0.26, 0.001)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">interactive</td>
 <td style="text-align: right;">-0.07</td>
 <td style="text-align: left;"><span style="     ">0.34</span></td>
+<td style="text-align: left;">(-0.202, 0.059)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">publicable</td>
 <td style="text-align: right;">-0.11</td>
 <td style="text-align: left;"><span style="     ">0.11</span></td>
+<td style="text-align: left;">(-0.249, 0.025)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">reproducable</td>
 <td style="text-align: right;">0.07</td>
 <td style="text-align: left;"><span style="     ">0.33</span></td>
+<td style="text-align: left;">(-0.069, 0.206)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">speed</td>
 <td style="text-align: right;">0.02</td>
 <td style="text-align: left;"><span style="     ">0.82</span></td>
+<td style="text-align: left;">(-0.129, 0.149)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">subplot</td>
 <td style="text-align: right;">0.12</td>
 <td style="text-align: left;"><span style="     ">0.08</span></td>
+<td style="text-align: left;">(-0.024, 0.254)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">zooming</td>
 <td style="text-align: right;">-0.01</td>
 <td style="text-align: left;"><span style="     ">0.92</span></td>
+<td style="text-align: left;">(-0.14, 0.136)</td>
 </tr>
 </tbody>
 </table>
@@ -468,35 +493,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="log-reg" class="level3">
-<h3 class="anchored" data-anchor-id="log-reg">log reg</h3>
+<section id="awareness" class="level3">
+<h3 class="anchored" data-anchor-id="awareness">awareness</h3>
+<p>Here we sue logistic regression</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>log_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(df) <span class="fu">glm</span>(df<span class="sc">$</span>score <span class="sc">~</span> df<span class="sc">$</span>proxy, <span class="at">family =</span> <span class="st">"binomial"</span>) <span class="sc">%&gt;%</span> <span class="fu">tidy</span>() <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="sc">-</span><span class="dv">1</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(factor_scores[<span class="dv">1</span>], data[<span class="dv">79</span>]) <span class="sc">%&gt;%</span> <span class="fu">cbind</span>(., data[<span class="dv">117</span>]) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(., data[<span class="dv">118</span>]) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> <span class="fu">c</span>(<span class="st">"proxy"</span>, <span class="st">"ud"</span>, <span class="st">"jet_aware"</span>, <span class="st">"twod_aware"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ud =</span> <span class="fu">ifelse</span>(ud<span class="sc">==</span><span class="st">"Up"</span>, <span class="dv">1</span>, <span class="dv">0</span>), </span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">jet_aware =</span> <span class="fu">ifelse</span>(jet_aware <span class="sc">==</span><span class="st">"Yes"</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">twod_aware =</span> <span class="fu">ifelse</span>(twod_aware <span class="sc">==</span><span class="st">"Yes"</span>, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(type, score, ud<span class="sc">:</span>twod_aware) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(., type) <span class="sc">%&gt;%</span> <span class="fu">nest</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(., <span class="at">model =</span> <span class="fu">map</span>(data, log_fun)) <span class="sc">%&gt;%</span> <span class="fu">unnest</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(type, estimate, std.error, p.value) <span class="sc">%&gt;%</span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(type) <span class="sc">%&gt;%</span>  <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p.value =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(p.value), <span class="dv">3</span>),</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">estimate =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(estimate), <span class="dv">3</span>),</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">std.error =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(std.error), <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p.value =</span> <span class="fu">cell_spec</span>(p.value, <span class="at">bold =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="fu">case_when</span>(</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    type <span class="sc">==</span> <span class="st">"ud"</span> <span class="sc">~</span> <span class="st">"Polaritiy convention: up"</span>,</span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    type <span class="sc">==</span> <span class="st">"jet_aware"</span> <span class="sc">~</span> <span class="st">"Awareness about colorbar perceptual controvercies: yes"</span>,</span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    type <span class="sc">==</span> <span class="st">"twod_aware"</span> <span class="sc">~</span> <span class="st">"Awareness about 2D colobars: yes"</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="st">`</span><span class="at">Visualisation customs</span><span class="st">`</span> <span class="ot">=</span> type) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_minimal</span>(<span class="at">full_width =</span> F,  <span class="at">html_font =</span> <span class="st">"Source Sans Pro"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>log_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(df){</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">glm</span>(df<span class="sc">$</span>score <span class="sc">~</span> df<span class="sc">$</span>proxy, <span class="at">family =</span> <span class="st">"binomial"</span>) </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  ci1 <span class="ot">&lt;-</span> <span class="fu">confint</span>(mod)[<span class="dv">2</span>]</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  ci2 <span class="ot">&lt;-</span> <span class="fu">confint</span>(mod)[<span class="dv">4</span>]</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  mod <span class="sc">%&gt;%</span> <span class="fu">tidy</span>() <span class="sc">%&gt;%</span> <span class="fu">slice</span>(<span class="sc">-</span><span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">cbind</span>(ci1) <span class="sc">%&gt;%</span> <span class="fu">cbind</span>(ci2)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(factor_scores[<span class="dv">1</span>], data[<span class="dv">79</span>]) <span class="sc">%&gt;%</span> <span class="fu">cbind</span>(., data[<span class="dv">117</span>]) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(., data[<span class="dv">118</span>]) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_at</span>(<span class="fu">vars</span>(<span class="fu">colnames</span>(.)), <span class="sc">~</span> <span class="fu">c</span>(<span class="st">"proxy"</span>, <span class="st">"ud"</span>, <span class="st">"jet_aware"</span>, <span class="st">"twod_aware"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ud =</span> <span class="fu">ifelse</span>(ud<span class="sc">==</span><span class="st">"Up"</span>, <span class="dv">1</span>, <span class="dv">0</span>), </span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">jet_aware =</span> <span class="fu">ifelse</span>(jet_aware <span class="sc">==</span><span class="st">"Yes"</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">twod_aware =</span> <span class="fu">ifelse</span>(twod_aware <span class="sc">==</span><span class="st">"Yes"</span>, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(type, score, ud<span class="sc">:</span>twod_aware) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(., type) <span class="sc">%&gt;%</span> <span class="fu">nest</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(., <span class="at">model =</span> <span class="fu">map</span>(data, log_fun)) <span class="sc">%&gt;%</span> <span class="fu">unnest</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(type, estimate, std.error, p.value, ci1, ci2) <span class="sc">%&gt;%</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(type) <span class="sc">%&gt;%</span>  <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p.value =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(p.value), <span class="dv">3</span>),</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">estimate =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(estimate), <span class="dv">3</span>),</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">std.error =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(std.error), <span class="dv">3</span>),</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>                                                <span class="at">CI =</span> <span class="fu">paste0</span>(<span class="st">'('</span> , <span class="fu">round</span>(ci1, <span class="dv">3</span>), <span class="st">', '</span>, <span class="fu">round</span>(ci2, <span class="dv">2</span>), <span class="st">')'</span> )) <span class="sc">%&gt;%</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>ci1, <span class="sc">-</span>ci2) <span class="sc">%&gt;%</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p.value =</span> <span class="fu">cell_spec</span>(p.value, <span class="at">bold =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="fu">case_when</span>(</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    type <span class="sc">==</span> <span class="st">"ud"</span> <span class="sc">~</span> <span class="st">"Polaritiy convention: up"</span>,</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    type <span class="sc">==</span> <span class="st">"jet_aware"</span> <span class="sc">~</span> <span class="st">"Awareness about colorbar perceptual controvercies: yes"</span>,</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    type <span class="sc">==</span> <span class="st">"twod_aware"</span> <span class="sc">~</span> <span class="st">"Awareness about 2D colobars: yes"</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="st">`</span><span class="at">Visualisation customs</span><span class="st">`</span> <span class="ot">=</span> type) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_minimal</span>(<span class="at">full_width =</span> F,  <span class="at">html_font =</span> <span class="st">"Source Sans Pro"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <table class="lightable-minimal table table-sm table-striped small" data-quarto-postprocess="true">
@@ -506,6 +539,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <th style="text-align: right;" data-quarto-table-cell-role="th">estimate</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">std.error</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">p.value</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">CI</th>
 </tr>
 </thead>
 <tbody>
@@ -514,18 +548,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">0.335</td>
 <td style="text-align: right;">0.095</td>
 <td style="text-align: left;"><span style=" font-weight: bold;    ">0</span></td>
+<td style="text-align: left;">(0.156, 0.53)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Awareness about 2D colobars: yes</td>
 <td style="text-align: right;">0.112</td>
 <td style="text-align: right;">0.090</td>
 <td style="text-align: left;"><span style="     ">0.213</span></td>
+<td style="text-align: left;">(-0.061, 0.29)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Polaritiy convention: up</td>
 <td style="text-align: right;">-0.022</td>
 <td style="text-align: right;">0.111</td>
 <td style="text-align: left;"><span style="     ">0.843</span></td>
+<td style="text-align: left;">(-0.236, 0.2)</td>
 </tr>
 </tbody>
 </table>
@@ -533,6 +570,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </div>
 </div>
+</section>
+<section id="tools" class="level3">
+<h3 class="anchored" data-anchor-id="tools">tools</h3>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -547,14 +587,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(type, score, BESA<span class="sc">:</span><span class="st">`</span><span class="at">Custom scripts</span><span class="st">`</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>   dplyr<span class="sc">::</span><span class="fu">group_by</span>(., type) <span class="sc">%&gt;%</span> <span class="fu">nest</span>() <span class="sc">%&gt;%</span> </span>
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(., <span class="at">model =</span> <span class="fu">map</span>(data, log_fun)) <span class="sc">%&gt;%</span> <span class="fu">unnest</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(type, estimate, std.error, p.value) <span class="sc">%&gt;%</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(type, estimate, std.error, p.value, ci1, ci2) <span class="sc">%&gt;%</span></span>
 <span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(type) <span class="sc">%&gt;%</span>  <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">p.value =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(p.value), <span class="dv">2</span>), </span>
 <span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">estimate =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(estimate), <span class="dv">2</span>),</span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">std.error =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(std.error), <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p.value =</span> <span class="fu">cell_spec</span>(p.value, <span class="at">bold =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="st">`</span><span class="at">Analytical software</span><span class="st">`</span> <span class="ot">=</span> type) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_minimal</span>(<span class="at">full_width =</span> F,  <span class="at">html_font =</span> <span class="st">"Source Sans Pro"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">std.error =</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(std.error), <span class="dv">2</span>), </span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>                                                 <span class="at">CI =</span> <span class="fu">paste0</span>(<span class="st">'('</span> , <span class="fu">round</span>(ci1, <span class="dv">3</span>), <span class="st">', '</span>, <span class="fu">round</span>(ci2, <span class="dv">3</span>), <span class="st">')'</span> )) <span class="sc">%&gt;%</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>ci1, <span class="sc">-</span>ci2) <span class="sc">%&gt;%</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">p.value =</span> <span class="fu">cell_spec</span>(p.value, <span class="at">bold =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="st">`</span><span class="at">Analytical software</span><span class="st">`</span> <span class="ot">=</span> type) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">escape =</span> F, <span class="at">booktabs =</span> T) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_minimal</span>(<span class="at">full_width =</span> F,  <span class="at">html_font =</span> <span class="st">"Source Sans Pro"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <table class="lightable-minimal table table-sm table-striped small" data-quarto-postprocess="true">
@@ -564,6 +606,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <th style="text-align: right;" data-quarto-table-cell-role="th">estimate</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">std.error</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">p.value</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">CI</th>
 </tr>
 </thead>
 <tbody>
@@ -572,66 +615,77 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">0.18</td>
 <td style="text-align: right;">0.16</td>
 <td style="text-align: left;"><span style="     ">0.26</span></td>
+<td style="text-align: left;">(-0.143, 0.482)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Brain Vision Analyser</td>
 <td style="text-align: right;">0.02</td>
 <td style="text-align: right;">0.10</td>
 <td style="text-align: left;"><span style="     ">0.81</span></td>
+<td style="text-align: left;">(-0.172, 0.212)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Brainstorm</td>
 <td style="text-align: right;">0.15</td>
 <td style="text-align: right;">0.10</td>
 <td style="text-align: left;"><span style="     ">0.16</span></td>
+<td style="text-align: left;">(-0.063, 0.35)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Custom scripts</td>
 <td style="text-align: right;">0.13</td>
 <td style="text-align: right;">0.08</td>
 <td style="text-align: left;"><span style="     ">0.13</span></td>
+<td style="text-align: left;">(-0.036, 0.294)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">EEGLAB</td>
 <td style="text-align: right;">0.25</td>
 <td style="text-align: right;">0.09</td>
 <td style="text-align: left;"><span style=" font-weight: bold;    ">0.01</span></td>
+<td style="text-align: left;">(0.079, 0.443)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">ERPLAB</td>
 <td style="text-align: right;">0.19</td>
 <td style="text-align: right;">0.10</td>
 <td style="text-align: left;"><span style=" font-weight: bold;    ">0.04</span></td>
+<td style="text-align: left;">(0.006, 0.384)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">FieldTrip</td>
 <td style="text-align: right;">0.19</td>
 <td style="text-align: right;">0.08</td>
 <td style="text-align: left;"><span style=" font-weight: bold;    ">0.02</span></td>
+<td style="text-align: left;">(0.028, 0.357)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">LIMO</td>
 <td style="text-align: right;">0.34</td>
 <td style="text-align: right;">0.15</td>
 <td style="text-align: left;"><span style=" font-weight: bold;    ">0.02</span></td>
+<td style="text-align: left;">(0.049, 0.627)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">MNE-Python</td>
 <td style="text-align: right;">-0.05</td>
 <td style="text-align: right;">0.08</td>
 <td style="text-align: left;"><span style="     ">0.52</span></td>
+<td style="text-align: left;">(-0.219, 0.108)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">SPM</td>
 <td style="text-align: right;">0.09</td>
 <td style="text-align: right;">0.14</td>
 <td style="text-align: left;"><span style="     ">0.53</span></td>
+<td style="text-align: left;">(-0.197, 0.356)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Unfold</td>
 <td style="text-align: right;">0.08</td>
 <td style="text-align: right;">0.16</td>
 <td style="text-align: left;"><span style="     ">0.61</span></td>
+<td style="text-align: left;">(-0.254, 0.391)</td>
 </tr>
 </tbody>
 </table>
@@ -643,8 +697,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="proficiency-and" class="level2">
 <h2 class="anchored" data-anchor-id="proficiency-and">Proficiency and …</h2>
-<section id="tools" class="level3">
-<h3 class="anchored" data-anchor-id="tools">Tools</h3>
+<section id="tools-1" class="level3">
+<h3 class="anchored" data-anchor-id="tools-1">Tools</h3>
 <div class="cell">
 <details>
 <summary>Code</summary>
