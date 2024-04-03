@@ -32,6 +32,7 @@ library(janitor)
 library(formattable)
 library(kableExtra)
 library(FactoMineR)
+library(RVAideMemoire)
 ```
 
 ```{r, message= FALSE, warning=FALSE}
@@ -77,15 +78,21 @@ cbind(data[20], factor_scores[1])  %>%
 
 ## Tiles
 
-### cor.tests
+### controvercies
+
+Here we cor.tests
 
 -   **n_soft** - number of software used
 -   **rate** - rate of electrodes recorded to electrodes analysed
 
+  
 ```{r}
 vec <- names(data[25:50]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
 
-cor_fun <- function(df) cor.test(df$proxy, df$score, method = "spearman") %>% tidy()
+cor_fun <- function(df){
+  p.value <- cor.test(df$proxy, df$score, method = "spearman")$p.value
+  mod <- spearman.ci(df$proxy, df$score) %>% tidy() %>% cbind(p.value) 
+  }
 
 n_soft <- data[25:50] %>%
   rename_at(vars(colnames(.)), ~ vec) %>% 
@@ -100,21 +107,23 @@ cbind(factor_scores[1], data[23]) %>% cbind(., data[24]) %>%  cbind(., n_soft) %
   gather(type, score, rate:n_soft) %>% 
   dplyr::group_by(., type) %>% nest() %>% 
   dplyr::mutate(., model = map(data, cor_fun)) %>% unnest() %>% 
-  dplyr::select(type, estimate, p.value, method) %>%
-  dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 3), 
-                                                 estimate = round(as.numeric(estimate), 3)) %>%
+  dplyr::select(type, estimate, method, conf.low.Inf, conf.high.Sup, p.value) %>%
+  dplyr::group_by(type) %>%  slice(1) %>% mutate(estimate = round(as.numeric(estimate), 3),
+                                                 CI = paste0('(' , round(conf.low.Inf, 3), ', ', round(conf.high.Sup, 3), ')'),
+                                                             p.value = round(as.numeric(p.value), 2)) %>% 
   mutate(p.value = cell_spec(p.value, bold = ifelse(p.value < 0.05, TRUE, FALSE))) %>% 
   mutate(type = case_when(
     type == "n_soft" ~ "Number of softwares used",
     type == "rate" ~ "Rate of electrodes recorded to analysed"
-  )) %>% 
+  )) %>% select(-conf.low.Inf, -conf.high.Sup) %>% 
   kable(escape = F, booktabs = T) %>% 
   kable_minimal(full_width = F,  html_font = "Source Sans Pro")
-
-
 ```
 
+### attitudes
+
 Attitudes on 8 features of ERP visualization tools
+Here we use cor.tests
 
 ```{r}
 feature <- data[52:60] %>% rename_all(., ~str_split_i(colnames(data[52:60]), "\\? \\[", 2) %>% str_sub(., 1, -2) ) %>%  
@@ -129,20 +138,29 @@ feature %>%
   gather(type, score, subplot:coding) %>% 
   dplyr::group_by(., type) %>% nest() %>% 
   dplyr::mutate(., model = map(data, cor_fun)) %>% unnest() %>% 
-  dplyr::select(type, estimate, p.value) %>% # , method
-  dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 2),
-                                                 estimate = round(as.numeric(estimate), 2)) %>%
+  dplyr::select(type, estimate, conf.low.Inf, conf.high.Sup, p.value) %>% # , method
+  dplyr::group_by(type) %>%  slice(1) %>% mutate(estimate = round(as.numeric(estimate), 2),
+                                                 CI = paste0('(' , round(conf.low.Inf, 3), ', ', round(conf.high.Sup, 3), ')' ),
+                                                             p.value = round(as.numeric(p.value), 2)) %>% 
   mutate(p.value = cell_spec(p.value, bold = ifelse(p.value < 0.05, TRUE, FALSE))) %>% 
-  dplyr::rename(`Software feature` = type) %>% 
+  dplyr::rename(`Software feature` = type, `Spearman rho` = estimate) %>% 
+  select(-conf.low.Inf, -conf.high.Sup) %>% 
   kable(escape = F, booktabs = T) %>% 
-  kable_minimal(full_width = F,  html_font = "Source Sans Pro")
+  kable_minimal(full_width = F,  html_font = "Source Sans Pro") 
 
 ```
 
-### log reg
+### awareness
+
+Here we sue logistic regression
 
 ```{r}
-log_fun <- function(df) glm(df$score ~ df$proxy, family = "binomial") %>% tidy() %>% slice(-1)
+log_fun <- function(df){
+  mod <- glm(df$score ~ df$proxy, family = "binomial") 
+  ci1 <- confint(mod)[2]
+  ci2 <- confint(mod)[4]
+  mod %>% tidy() %>% slice(-1) %>% cbind(ci1) %>% cbind(ci2)
+}
 
 cbind(factor_scores[1], data[79]) %>% cbind(., data[117]) %>% 
   cbind(., data[118]) %>% 
@@ -153,10 +171,12 @@ cbind(factor_scores[1], data[79]) %>% cbind(., data[117]) %>%
   gather(type, score, ud:twod_aware) %>% 
   dplyr::group_by(., type) %>% nest() %>% 
   dplyr::mutate(., model = map(data, log_fun)) %>% unnest() %>% 
-  dplyr::select(type, estimate, std.error, p.value) %>%
+  dplyr::select(type, estimate, std.error, p.value, ci1, ci2) %>%
   dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 3),
                                                  estimate = round(as.numeric(estimate), 3),
-                                                 std.error = round(as.numeric(std.error), 3)) %>%
+                                                 std.error = round(as.numeric(std.error), 3),
+                                                CI = paste0('(' , round(ci1, 3), ', ', round(ci2, 2), ')' )) %>%
+  dplyr::select(-ci1, -ci2) %>%
   mutate(p.value = cell_spec(p.value, bold = ifelse(p.value < 0.05, TRUE, FALSE))) %>% 
   mutate(type = case_when(
     type == "ud" ~ "Polaritiy convention: up",
@@ -167,6 +187,9 @@ cbind(factor_scores[1], data[79]) %>% cbind(., data[117]) %>%
   kable(escape = F, booktabs = T) %>% 
   kable_minimal(full_width = F,  html_font = "Source Sans Pro")
 ```
+
+
+### tools
 
 ```{r}
 vec <- names(data[25:51]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
@@ -180,10 +203,12 @@ data[25:51] %>%
   gather(type, score, BESA:`Custom scripts`) %>% 
    dplyr::group_by(., type) %>% nest() %>% 
   dplyr::mutate(., model = map(data, log_fun)) %>% unnest() %>% 
-  dplyr::select(type, estimate, std.error, p.value) %>%
+  dplyr::select(type, estimate, std.error, p.value, ci1, ci2) %>%
   dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 2), 
                                                  estimate = round(as.numeric(estimate), 2),
-                                                 std.error = round(as.numeric(std.error), 2)) %>%
+                                                 std.error = round(as.numeric(std.error), 2), 
+                                                 CI = paste0('(' , round(ci1, 3), ', ', round(ci2, 3), ')' )) %>%
+  dplyr::select(-ci1, -ci2) %>%
   mutate(p.value = cell_spec(p.value, bold = ifelse(p.value < 0.05, TRUE, FALSE))) %>% 
   dplyr::rename(`Analytical software` = type) %>% 
   kable(escape = F, booktabs = T) %>% 
