@@ -785,7 +785,7 @@ eb_fig  +
 ebd <- data[75] %>%  filter(!is.na(.)) %>% table()  %>% data.frame() %>% rename_at(vars(colnames(.)), ~ c("position", "scores")) %>% mutate(percent_score = round(scores / sum(scores) * 100)) %>% filter(position != "Other") 
 
 ebd_fig <- ebd %>% 
-    ggplot(., aes(y = position, x = percent_score)) + #, fill = as.factor(percent_score))) +
+    ggplot(., aes(y = position, x = percent_score)) + 
     geom_bar(position = "dodge", stat = "identity", width=0.5, fill ="#6BAED6") + 
     theme_classic() +
     theme(axis.text.x = element_blank(), 
@@ -826,24 +826,26 @@ cb  %>%
     geom_bar(position = "dodge", stat = "identity", width=0.5, fill ="#6BAED6") + 
     theme_classic() +
     theme(
+      text = element_text(family = "Lato"),
       legend.position="none", 
       strip.background = element_blank(), 
-      axis.ticks = element_line(color = "grey40", size = .5),
+      axis.title.y = element_blank(),
       axis.text.x = element_blank(),
-      axis.text.y =  element_text(color = "grey10", size = 16),
-      axis.title.x=element_blank(), 
+      axis.text.y = element_text(color = "grey10", size = 16),
+      axis.title.x = element_text(color = "grey10", size = 16),
       plot.title = element_text(color = "grey10", size = 18, face = "bold", margin = margin(t = 15)),
       plot.title.position = "plot",
       plot.caption = element_text(hjust=0), 
-    ) + ylab("Percent") +
+    ) + xlab("Percent of respondents") +
 
-  geom_text(aes(label = paste0(percent_score, "%"), group = position),  hjust = -0.2) + 
+  geom_text(aes(label = paste0(percent_score, "%"), group = position),  hjust = -0.2, size = 7) + 
   ggtitle("Are you aware about\nperceptual controvercies of colormaps?")+
     scale_fill_manual(values=colours) +
-    theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 65) +
+    theme(legend.position="none", plot.caption = element_text(hjust=0)) + xlim(0, 65) #+
     labs(caption = sprintf("N of respondents - %d",  sum(cb$scores)))  
 ```
 
+### Colorbars
 ```{r}
 
 rbind(table(data[117]) %>% data.frame() %>% 
