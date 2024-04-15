@@ -24,7 +24,7 @@ library(dplyr)
 library(tokenizers)
 library(data.table)
 library(ggplot2)
-library(plyr)
+#library(plyr)
 library(purrr)
 library(tidytext)
 library(tidyr)
@@ -51,7 +51,7 @@ data <- read_excel("../data/results_survey.xlsx")
 data <- data[1:121] %>% 
   filter(.[[18]] !='Yes') # not analysed any EEG method
 
-n1 <- read_xlsx("../data/aggregated_plotnames.xlsx")
+n1 <- readxl::read_xlsx("../data/aggregated_plotnames.xlsx", sheet = 1)
 n2 <- readxl::read_xlsx("../data/aggregated_plotnames.xlsx", sheet = 2)
 n3 <- readxl::read_xlsx("../data/aggregated_plotnames.xlsx", sheet = 3)
 n4 <- readxl::read_xlsx("../data/aggregated_plotnames.xlsx", sheet = 4)
@@ -60,7 +60,7 @@ n6 <- readxl::read_xlsx("../data/aggregated_plotnames.xlsx", sheet = 6)
 n7 <- readxl::read_xlsx("../data/aggregated_plotnames.xlsx", sheet = 7)
 n8 <- readxl::read_xlsx("../data/aggregated_plotnames.xlsx", sheet = 8)
 
-problem1 <- readxl::read_xlsx("../data/aggregated_problems.xlsx")
+problem1 <- readxl::read_xlsx("../data/aggregated_problems.xlsx", sheet = 1)
 problem2 <- readxl::read_xlsx("../data/aggregated_problems.xlsx", sheet = 2)
 problem3 <- readxl::read_xlsx("../data/aggregated_problems.xlsx", sheet = 3)
 problem4 <- readxl::read_xlsx("../data/aggregated_problems.xlsx", sheet = 4)
@@ -76,15 +76,6 @@ showtext_auto(enable = TRUE)
 
 ```{r}
 dm <- data.frame()
-  
-data.frame(plots = c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot timeseries", "ERP grid", "ERP image", "Channel image", "Parallel plot"), 
-           time = c("x", "x", "", "(x)", "x", "x", "x", "x"),
-           channels = c("", "x", "x", "x", "x", "", "x", "x"), 
-           spatial = c("", "", "x", "x", "x", "", "", ""), 
-           conditions = c("x", "", "", "", "", "", "", "x"), 
-           trials = c("", "x", "", "", "", "x", "", "")) %>% kable(align="lcccccc")  %>%
-  kable_minimal(full_width = F,  html_font = "Source Sans Pro") 
-
 
 dim <- dplyr::tibble(
   Plots = c("../miniatures/1.png", "../miniatures/2.png", "../miniatures/3.png", "../miniatures/4.png", "../miniatures/5.png", "../miniatures/6.png", "../miniatures/7.png", "../miniatures/8.png"),
@@ -115,7 +106,8 @@ t1 <- dim %>%
     }
   ) %>%  opt_table_font(font = "Source Sans Pro")  %>% 
 tab_options(#container.width = 1500, container.height = 1500, 
-            data_row.padding = px(0.1), table.font.size = 14, container.padding.x = 1,  column_labels.border.bottom.color = "black",column_labels.border.top.color = "white",
+            data_row.padding = px(0.1), table.font.size = px(14), 
+            container.padding.x = px(1),  column_labels.border.bottom.color = "black",column_labels.border.top.color = "white",
     column_labels.border.top.width = px(3),) %>% 
   tab_footnote(
   footnote = "x - full dimension, (x) - partial dimension",
@@ -205,10 +197,7 @@ prob_comb <-
   dplyr::mutate(`Plot names` = ifelse(groupRow == 1, as.character(`Plot names`), "")) %>%
   dplyr::mutate(Scores = ifelse(groupRow == 1, as.character(score), paste(p, "%", sep = ""))) %>%
   select(-c(groupRow, score, Total, p, mx)) 
-prob_comb
-```
 
-```{r}
 plots3 <- c("../miniatures/1.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/5.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/4.png","../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/7.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/2.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/3.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/6.png", "../miniatures/filler.png", "../miniatures/filler.png")
 
 probs <- prob_comb %>% tibble::add_column(Plots = plots3, .before = "Plot names")  %>% ungroup() 
