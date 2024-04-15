@@ -77,15 +77,6 @@ word_preproc <- function(data, N){
 
 ## Plot dimension
 
-```{r}
-### miniatures
-# mins <- image_read_pdf("data/eegvis_icons.pdf", density = 1000)  
-# for (i in 1:8){
-#   image_write(mins[i], path = paste0("miniatures/", i, ".png"), format = "png", density = 1000)
-# }
-
-```
-
 ### dimensions
 
 ```{r}

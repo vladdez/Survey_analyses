@@ -16,7 +16,7 @@ Check out these sections on the left panel:
 
 4.  **Naming and feedback** - how would researchers name ERP plots in a free manner, what kind of struggles they have during visualization, what kind of features they would like to have in analytic tools concerning each plot type, general feedback;
 
-5. **Software** - on popularity of analytical tools.
+5.  **Software** - on popularity of analytical tools.
 
 *Study was conducted by Vladimir Mikheev, René Skukies and Benedikt Ehinger and supported by the Transregional Collaborative Research Center 161 (Sonderforschungsbereiche/Transregio 161, SFB-TRR 161) and Deutsche Forschungsgemeinschaft (DFG, German Research Foundation).*
 
