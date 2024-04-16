@@ -9,18 +9,34 @@ website:
     contents:
       - section: "Project description"
         contents:
-          - about.qmd
+          - src/about.qmd
       - section: "Analyses"
         contents:
           - text: "1. sample information"
-            file: sample_bio.qmd
+            file: src/sample_bio.qmd
           - text: "2. visualization customs"
-            file: customs.qmd
+            file: src/customs.qmd
           - text: "3. proficiency"
-            file: proficiency.qmd
+            file: src/proficiency.qmd
           - text: "4. naming and feedback"
-            file: feedbacks.qmd
-
+            file: src/feedbacks.qmd
+          - text: "5. software usage"
+            file: src/software.qmd
+      - section: "Figures"
+        contents:
+          - text: "Figures"
+            file: src/figures.qmd
+          - text: "Tables"
+            file: src/tables.qmd
+  navbar:
+    tools:navbar:
+    tools:
+      - icon: twitter
+        href: https://twitter.com/veehimrimidal
+      - icon: github
+        menu:
+          - text: Source Code
+            url:  https://github.com/vladdez/Survey_analyses
 
 format:
   html:
