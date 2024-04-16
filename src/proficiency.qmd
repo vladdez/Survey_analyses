@@ -48,7 +48,6 @@ exp_data <- data[c( 19, 20, 12, 21, 22)]
 colnames(exp_data) <- c("n_papers", "years", "position","self_level", "code_contribution")
 exp_data
 
-
 short <- exp_data[c(1:2, 5)] %>% mutate(code_contribution = ifelse(code_contribution=="Yes", 1, 0))
 
 ```
@@ -146,8 +145,6 @@ feature %>%
 
 ### awareness
 
-Here we sue logistic regression
-
 ```{r}
 log_fun <- function(df){
   mod <- glm(df$score ~ df$proxy, family = "binomial") 
@@ -155,6 +152,11 @@ log_fun <- function(df){
   ci2 <- confint(mod)[4]
   mod %>% tidy() %>% slice(-1) %>% cbind(ci1) %>% cbind(ci2)
 }
+```
+
+
+```{r}
+
 
 cbind(factor_scores[1], data[79]) %>% cbind(., data[117]) %>% 
   cbind(., data[118]) %>% 
