@@ -70,7 +70,7 @@ m = FAMD(exp_data[1:5], ncp=2, axes=c(1,2))
 factor_scores <- as.data.frame(m$ind$coord)
 
 font_add_google("Lato")
-showtext_opts(dpi = 200)
+showtext_opts(dpi = 100)
 showtext_auto(enable = TRUE)
 ```
 
@@ -118,13 +118,28 @@ tab_options(#container.width = 550, container.height = 550,
 
 t1
 ```
+```{r}
+t1_1 <- dim %>% flextable() %>%  valign(j = 2, valign = "center", part = "all") %>%
+  compose(j = 'Plots', value = as_paragraph(as_image(Plots, width = 1, height = 0.6))) %>%
+   padding(padding = 1, part = "all") %>%  autofit() %>% align(j = 3:7, align = "center") %>% 
+   height_all(0.01, part = "all", unit = "cm") %>% 
+  surround(
+    j = 1:7,
+    border.bottom = fp_border(color = "gray", style = "dashed"),
+    part = "body"
+  ) %>%   font(fontname = "Lato", part="all") %>% 
+  hline_bottom(part = "body", border = fp_border(color = "black", width = 1)) |>
+  add_footer_lines("x - full dimension, (x) - partial dimension")
+
+t1_1
+```
 
 ## Table 2
 
 ```{r}
 plot_names <- c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot\ntimeseries", "ERP grid", "ERP image", "Channel image", "Parallel plot")
 
-t <- list(n1, n2, n3, n4, n5, n6, n8, n7) 
+t <- list(n1, n2, n3, n4, n5, n6, n7, n8) 
 
 create_table <- function(t){
   tmp <- t[[1]] %>% mutate(total = sum(Scores)) %>% slice(1:3) %>% mutate(type = plot_names[1]) %>% rename_with(.cols = 1, ~"names") %>% relocate(type, names )
@@ -140,8 +155,8 @@ create_table <- function(t){
     ungroup() %>% mutate(p = round(as.numeric(Scores)/as.numeric(total), 2) * 100) %>% 
     mutate(score = paste(p, total, sep = "% out of ")) %>% 
     dplyr::mutate(type = ifelse(groupRow == 1, as.character(type), "")) %>%
-    dplyr::mutate(score = ifelse(groupRow == 1, as.character(score), paste(p, "%", sep = ""))) %>%
-    select(-c(groupRow))
+    dplyr::mutate(Scores = ifelse(groupRow == 1, as.character(score), paste(p, "%", sep = ""))) %>%
+    select(-c(groupRow, score))
 }
 plots2 <- c("../miniatures/1.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/2.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/3.png","../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/4.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/5.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/6.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/7.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/8.png", "../miniatures/filler.png")
 
@@ -178,7 +193,6 @@ t2
 ```
 
 ## Table 3
-
 
 ```{r}
 prob_comb <- 
@@ -263,7 +277,6 @@ data[25:51] %>%
 ```
 
 ## Sup table 2
-
 
 ```{r}
 cor_fun <- function(df){
