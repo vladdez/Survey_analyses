@@ -55,7 +55,7 @@ cit_data <- rbind(cit1, cit2, cit3, cit4, cit5) %>% rename_at(vars(colnames(.)),
 just <- read.csv("../data/justification.csv") %>% dplyr::select(group, num)
 
 font_add_google("Lato")
-showtext_opts(dpi = 200)
+showtext_opts(dpi = 100)
 showtext_auto(enable = TRUE)
 ```
 
@@ -156,18 +156,25 @@ methods <- data.frame(rowSums(t(data.frame(foreach(i = colnames(method)) %do% if
 ```
 
 ```{r}
-f4 <- ggarrange(country_fig + geom_col(stat = "identity", width = 0.8, fill ="#6BAED6") + 
-            theme(axis.text.y = element_text(size = 10), axis.text.x = element_blank()) + xlim(0, 100) + labs(x= "Percent of respondents"), 
+f4 <- #png(filename="bench_query_sort.png", width=1000, height=800)
+  ggarrange(country_fig + geom_col(stat = "identity", width = 0.8, fill ="#6BAED6") + 
+            theme(axis.text.y = element_text(size = 14), plot.title = element_text(size = 22), axis.text.x = element_blank()) + xlim(0, 100) + labs(x= "Percent of respondents"), 
           position + xlim(0, 100) + geom_col(stat = "identity", fill ="#6BAED6") + 
-            theme(axis.text.y = element_text(size = 10), axis.text.x = element_blank()) + labs(x = "Percent of respondents"),   
+            theme(axis.text.y = element_text(size = 14), plot.title = element_text(size = 22), axis.text.x = element_blank()) + labs(x = "Percent of respondents"),   
           fieldplot + xlim(0, 100) + geom_col(stat = "identity", width = 0.7, fill ="#6BAED6") + 
-            theme(axis.text.y = element_text(size = 10), axis.text.x = element_blank()) + labs(x = "Percent of respondents"), 
+            theme(axis.text.y = element_text(size = 14), plot.title = element_text(size = 22), axis.text.x = element_blank()) + labs(x = "Percent of respondents"), 
           methods  + geom_col(stat = "identity", width = 0.7, fill ="#6BAED6") +  
             scale_y_discrete(labels=c("OPMs", "iEEG", "MEG", "Scalp EEG")) + xlim(0, 100) +  
-            theme(axis.text.y = element_text(size = 10), axis.text.x = element_blank()) + labs(x = "Percent of respondents"),
+            theme(axis.text.y = element_text(size = 14), plot.title = element_text(size = 22), axis.text.x = element_blank()) + labs(x = "Percent of respondents"),
           labels = c("A", "B", "C", "D"),
           ncol = 2, nrow = 2, align = 'hv') 
-f4
+
+#while (!is.null(dev.list()))  dev.off()
+
+
+f4 
+#ggsave("f4.png", f4, units = "px", dpi=100, width = 1180, height = 880)
+
 ```
 
 ## Figure 5
