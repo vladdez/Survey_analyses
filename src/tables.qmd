@@ -42,7 +42,7 @@ library(RVAideMemoire)
 
 ## data
 
-```{r, message = FALSE, warning=FALSE, results='hide'}
+```{r, message = FALSE, warning=FALSE, fig.keep = "first"}
 data <- read_excel("../data/results_survey.xlsx")
 data <- data[1:121] %>% 
   filter(.[[18]] !='Yes') # not analysed any EEG method
