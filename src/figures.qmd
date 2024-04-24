@@ -55,7 +55,7 @@ cit_data <- rbind(cit1, cit2, cit3, cit4, cit5) %>% rename_at(vars(colnames(.)),
 just <- read.csv("../data/justification.csv") %>% dplyr::select(group, num)
 
 font_add_google("Lato")
-showtext_opts(dpi = 100)
+showtext_opts(dpi = 200)
 showtext_auto(enable = TRUE)
 ```
 
@@ -156,25 +156,21 @@ methods <- data.frame(rowSums(t(data.frame(foreach(i = colnames(method)) %do% if
 ```
 
 ```{r}
-f4 <- #png(filename="bench_query_sort.png", width=1000, height=800)
-  ggarrange(country_fig + geom_col(stat = "identity", width = 0.8, fill ="#6BAED6") + 
-            theme(axis.text.y = element_text(size = 14), plot.title = element_text(size = 22), axis.text.x = element_blank()) + xlim(0, 100) + labs(x= "Percent of respondents"), 
+f4 <- ggarrange(country_fig + geom_col(stat = "identity", width = 0.8, fill ="#6BAED6") + 
+            theme(axis.text.y = element_text(size = 12), plot.title = element_text(size = 14), axis.text.x = element_blank()) + xlim(0, 100) + labs(x= "Percent of respondents"), 
           position + xlim(0, 100) + geom_col(stat = "identity", fill ="#6BAED6") + 
-            theme(axis.text.y = element_text(size = 14), plot.title = element_text(size = 22), axis.text.x = element_blank()) + labs(x = "Percent of respondents"),   
+            theme(axis.text.y = element_text(size = 12), plot.title = element_text(size = 14), axis.text.x = element_blank()) + labs(x = "Percent of respondents"),   
           fieldplot + xlim(0, 100) + geom_col(stat = "identity", width = 0.7, fill ="#6BAED6") + 
-            theme(axis.text.y = element_text(size = 14), plot.title = element_text(size = 22), axis.text.x = element_blank()) + labs(x = "Percent of respondents"), 
+            theme(axis.text.y = element_text(size = 12), plot.title = element_text(size = 14), axis.text.x = element_blank()) + labs(x = "Percent of respondents"), 
           methods  + geom_col(stat = "identity", width = 0.7, fill ="#6BAED6") +  
             scale_y_discrete(labels=c("OPMs", "iEEG", "MEG", "Scalp EEG")) + xlim(0, 100) +  
-            theme(axis.text.y = element_text(size = 14), plot.title = element_text(size = 22), axis.text.x = element_blank()) + labs(x = "Percent of respondents"),
+            theme(axis.text.y = element_text(size = 12), plot.title = element_text(size = 14), axis.text.x = element_blank()) + labs(x = "Percent of respondents"),
           labels = c("A", "B", "C", "D"),
           ncol = 2, nrow = 2, align = 'hv') 
 
-#while (!is.null(dev.list()))  dev.off()
-
-
 f4 
-#ggsave("f4.png", f4, units = "px", dpi=100, width = 1180, height = 880)
 
+ggsave("Figure 4.jpg", f4, units = "px", dpi=100, width = 1500, height = 938)
 ```
 
 ## Figure 5
@@ -186,7 +182,7 @@ years <- year %>% group_by(years) %>%
   dplyr::summarise(n = n()) %>% 
   mutate(p = round(n / sum(n), 2))  %>% ggplot(data = ., aes(x=years, y = p)) +
   geom_col(position = "identity", col="grey") +  scale_x_continuous(breaks=seq(0, 30, 5)) +
-  labs(x ="Years of experience with EEG, MEG, or iEEG analysis", y="") +
+  labs(title ="Years of experience", y= "Percent of\nrespondents", x="")  +
   theme_classic() + theme(legend.position="none", text = element_text(family = "Lato"),
                           axis.text = element_text(size = 10)) +
   theme(legend.position="none", plot.caption = element_text(hjust=0), 
@@ -246,7 +242,7 @@ sall <- sal %>%
 f5 <- ggarrange(years +  geom_col(position = "identity", bins = 45, fill ="#6BAED6") + 
   geom_vline(xintercept = median(year$years),        # Add line for mean
              col = "#FC9272", lty='dashed',
-             lwd = 1) + labs(title ="Years of experience", y= "Percent of\nrespondents", x="") ,
+             lwd = 1),
   
           papers_fig + geom_col(position = "identity", bins = 45, fill ="#6BAED6") + 
   geom_vline(xintercept = tmp_med - 1,        # Add line for mean
@@ -261,6 +257,7 @@ f5 <- ggarrange(years +  geom_col(position = "identity", bins = 45, fill ="#6BAE
           labels = c("A", "B", "C", "D"),
           ncol = 2, nrow = 2) 
 f5
+ggsave("Figure 5.jpg", f5, units = "px", dpi=150, width = 1500, height = 931)
 ```
 
 ## Figure 6
@@ -270,9 +267,7 @@ vec <- c("line", "butterfly", "topo",  "topo_map", "topo_array", "erp_image", "p
 
 familiar <-  data[61:68] %>% rename_at(vars(colnames(.)), ~ vec) %>% 
   mutate_at(vars(vec), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0)))
-```
 
-```{r, message= FALSE, warning=FALSE}
 stat_preproc <- function(vec){
   tmp <- vec %>% filter(!is.na(.)) %>% 
     dplyr::rename(words = !!names(.)[1]) %>% mutate(words = tolower(words)) %>% 
@@ -345,7 +340,7 @@ f6 <- mem_tab %>%
   guides(fill = guide_legend(reverse=T)) +
   scale_y_discrete(labels = plot_vec) +
   theme(plot.caption = element_text(hjust=0), 
-        axis.text = element_text(size = 10), 
+        axis.text = element_text(size = 10, color = "black"), 
         text = element_text(family = "Lato"), 
         legend.title = element_blank(),
         legend.position = c(0.8, 0.9),
@@ -353,12 +348,13 @@ f6 <- mem_tab %>%
         axis.title = element_text(size = 12),
         plot.title.position = "plot") 
 f6
+
+ggsave("Figure 6.jpg", f6, units = "px", dpi=200, width = 1500, height = 916)
 ```
 
 ## Figure 7
 
 ```{r, warning=FALSE}
-
 other <- c(rep("Custom scripts", each=9), "4DBTi", rep("letswave", 3), "mTRF", "RAGU", "IGOR Pro", "EEGProcessor", "ELAN", "WinEEG") %>% table(.) %>% data.frame(.) %>% rename_at(vars(colnames(.)), ~ c("soft", "sum_scores"))
 
 vec <- names(data[25:50]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
@@ -466,6 +462,8 @@ f7 <- ggarrange(chart + labs(title="Which EEG, MEG, or iEEG\nanalysis platform\n
             scale_x_continuous(limits = c(2003.8, 2023), breaks = seq(2004, 2023, by = 3)), 
           labels = c("A", "B"), align = 'h')
 f7 
+
+ggsave("Figure 7.jpg", f7, units = "px", dpi=200, width = 1500, height = 916)
 ```
 
 ## Figure 8
@@ -591,12 +589,14 @@ test2 <- test %>% filter(gr != "Favored") %>% mutate(value = value + 3) %>% ungr
     limits = c(0, NA),
     breaks = seq(0, 72, by = 15)
   ) + 
-  scale_color_manual(values = cbPalette_fe2) + theme(axis.text.x = element_text(color = "black"))
+  scale_color_manual(values = cbPalette_fe2) + theme(axis.text.x = element_text(color = "black", size = 12))
 
 figure <- ggarrange(test1, test2, align = 'v', nrow = 2) 
 require(grid)
 f8 <- annotate_figure(figure, left = textGrob("Number of responses", rot = 90, vjust = 1, gp = gpar(cex = 1.3)))
 f8
+
+ggsave("Figure 8.jpg", f8, units = "px", dpi=200, width = 1700, height = 916, bg = "white")
 ```
 
 ## Figure 9
@@ -643,6 +643,8 @@ an_me_plot <- cv %>%
 f9 <- ggarrange(periods_plot2 + labs(y = "Percent of respondents")+ theme(axis.title.y = element_text(margin = margin (r = 10))), 
           an_me_plot + theme(axis.title.y = element_text(margin = margin (r = 10))), labels = c("A", "B")) 
 f9
+
+ggsave("Figure 9.jpg", f9, units = "px", dpi=200, width = 1700, height = 916, bg = "white")
 ```
 
 ## Figure 10
@@ -714,6 +716,7 @@ f10<- as %>%
 
 f10
 
+ggsave("Figure 10.jpg", f10, units = "px", dpi=200, width = 1700, height = 916, bg = "white")
 ```
 
 ## Figure 11
@@ -759,8 +762,10 @@ ebd_fig <- ebd %>%
 
 f11 <- ggarrange(eb_fig + labs(x = "Percent of respondents"), ebd_fig + labs(x = "Percent of respondents"),  
           labels = c("A", "B"),
-          ncol = 2, nrow = 2, align = 'h') 
+          ncol = 2, nrow = 1, align = 'h') 
 f11
+
+ggsave("Figure 11.jpg", f11, units = "px", dpi=250, width = 1700, height = 465, bg = "white")
 ```
 
 ## Sup figure 2
