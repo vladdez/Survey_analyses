@@ -157,20 +157,21 @@ methods <- data.frame(rowSums(t(data.frame(foreach(i = colnames(method)) %do% if
 
 ```{r}
 f4 <- ggarrange(country_fig + geom_col(stat = "identity", width = 0.8, fill ="#6BAED6") + 
-            theme(axis.text.y = element_text(size = 12), plot.title = element_text(size = 14), axis.text.x = element_blank()) + xlim(0, 100) + labs(x= "Percent of respondents"), 
+            theme(axis.text.y = element_text(size = 12), plot.title = element_text(size = 14), axis.text.x = element_blank()) + xlim(0, 100) + labs(x= "Percentage of respondents"), 
           position + xlim(0, 100) + geom_col(stat = "identity", fill ="#6BAED6") + 
-            theme(axis.text.y = element_text(size = 12), plot.title = element_text(size = 14), axis.text.x = element_blank()) + labs(x = "Percent of respondents"),   
+            theme(axis.text.y = element_text(size = 12), plot.title = element_text(size = 14), axis.text.x = element_blank()) + labs(x = "Percentage of respondents"),   
           fieldplot + xlim(0, 100) + geom_col(stat = "identity", width = 0.7, fill ="#6BAED6") + 
-            theme(axis.text.y = element_text(size = 12), plot.title = element_text(size = 14), axis.text.x = element_blank()) + labs(x = "Percent of respondents"), 
+            theme(axis.text.y = element_text(size = 12), plot.title = element_text(size = 14), axis.text.x = element_blank()) + labs(x = "Percentage of respondents"), 
           methods  + geom_col(stat = "identity", width = 0.7, fill ="#6BAED6") +  
             scale_y_discrete(labels=c("OPMs", "iEEG", "MEG", "Scalp EEG")) + xlim(0, 100) +  
-            theme(axis.text.y = element_text(size = 12), plot.title = element_text(size = 14), axis.text.x = element_blank()) + labs(x = "Percent of respondents"),
+            theme(axis.text.y = element_text(size = 12), plot.title = element_text(size = 14), axis.text.x = element_blank()) + labs(x = "Percentage of respondents"),
           labels = c("A", "B", "C", "D"),
           ncol = 2, nrow = 2, align = 'hv') 
 
 f4 
 
-ggsave("Figure 4.jpg", f4, units = "px", dpi=100, width = 1500, height = 938)
+ggsave("../figures_jpg/Figure 4.jpg", f4, units = "px", dpi=100, width = 1500, height = 938)
+ggsave("../figures_png/Figure 4.png", f4, units = "px", dpi=100, width = 1500, height = 938)
 ```
 
 ## Figure 5
@@ -182,7 +183,7 @@ years <- year %>% group_by(years) %>%
   dplyr::summarise(n = n()) %>% 
   mutate(p = round(n / sum(n), 2))  %>% ggplot(data = ., aes(x=years, y = p)) +
   geom_col(position = "identity", col="grey") +  scale_x_continuous(breaks=seq(0, 30, 5)) +
-  labs(title ="Years of experience", y= "Percent of\nrespondents", x="")  +
+  labs(title ="Years of experience", y= "Percentage of\nrespondents", x="")  +
   theme_classic() + theme(legend.position="none", text = element_text(family = "Lato"),
                           axis.text = element_text(size = 10)) +
   theme(legend.position="none", plot.caption = element_text(hjust=0), 
@@ -222,7 +223,7 @@ cc <- table(data[22])  %>% data.frame()%>% dplyr::rename(level = !!names(.)[1]) 
     geom_text(aes(label = paste0(percent_score, "%")), hjust = -0.2)  +
   theme_classic() +
   theme(legend.position="none", axis.text.x = element_text(size = 12), text = element_text(family = "Lato")) +
-  labs(title = "Code contribution", x="Percent", y="")  +
+  labs(title = "Code contribution", x="Percentage", y="")  +
     theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 64)
 
 colorsal <- c("#f9a65a", "#599ad3", "#8dc63f")
@@ -232,7 +233,7 @@ sal <- table(data[21]) %>% data.frame() %>% dplyr::rename(level = !!names(.)[1])
 
 sall <- sal %>% 
     ggplot(data = ., aes(y = level, x = percent_score)) +  
-    geom_col(stat="identity",  width = 0.5) + labs(x = "Percent", y = "", title="Self-assessed level") +
+    geom_col(stat="identity",  width = 0.5) + labs(x = "Percentage", y = "", title="Self-assessed level") +
     geom_text(aes(label = paste0(percent_score, "%")), hjust = -0.2)  + theme_classic() +
     theme(legend.position="none", axis.text.x = element_text(size = 12), text = element_text(family = "Lato"),
           plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
@@ -247,17 +248,18 @@ f5 <- ggarrange(years +  geom_col(position = "identity", bins = 45, fill ="#6BAE
           papers_fig + geom_col(position = "identity", bins = 45, fill ="#6BAED6") + 
   geom_vline(xintercept = tmp_med - 1,        # Add line for mean
              col = "#FC9272", lty='dashed',
-             lwd = 1) + labs(title ="Number of papers published", y= "Percent of\nrespondents", x=""), 
+             lwd = 1) + labs(title ="Number of papers published", y= "Percentage of\nrespondents", x=""), 
   
           cc +  geom_col(stat = "identity",  width = 0.5, fill ="#6BAED6") + xlim(0, 100) + theme(axis.text.y = element_text(size = 10), axis.text.x = element_blank()) +  
-    labs(x ="Percent of respondents") , 
+    labs(x ="Percentage of respondents") , 
   
           sall + geom_col(stat = "identity",  width = 0.5, fill ="#6BAED6") + xlim(0, 100) + theme(axis.text.y = element_text(size = 10), axis.text.x = element_blank()) +  
-    labs(x ="Percent of respondents"), 
+    labs(x ="Percentage of respondents"), 
           labels = c("A", "B", "C", "D"),
           ncol = 2, nrow = 2) 
 f5
-ggsave("Figure 5.jpg", f5, units = "px", dpi=150, width = 1500, height = 931)
+ggsave("../figures_jpg/Figure 5.jpg", f5, units = "px", dpi=150, width = 1500, height = 931)
+ggsave("../figures_png/Figure 5.png", f5, units = "px", dpi=150, width = 1500, height = 931)
 ```
 
 ## Figure 6
@@ -349,7 +351,7 @@ f6 <- mem_tab %>%
         plot.title.position = "plot") 
 f6
 
-ggsave("Figure 6.jpg", f6, units = "px", dpi=200, width = 1500, height = 916)
+ggsave("../figures_jpg/Figure 6.jpg", f6, units = "px", dpi=200, width = 1500, height = 916)
 ```
 
 ## Figure 7
@@ -463,7 +465,7 @@ f7 <- ggarrange(chart + labs(title="Which EEG, MEG, or iEEG\nanalysis platform\n
           labels = c("A", "B"), align = 'h')
 f7 
 
-ggsave("Figure 7.jpg", f7, units = "px", dpi=200, width = 1500, height = 916)
+ggsave("../figures_jpg/Figure 7.jpg", f7, units = "px", dpi=200, width = 1500, height = 916)
 ```
 
 ## Figure 8
@@ -596,7 +598,7 @@ require(grid)
 f8 <- annotate_figure(figure, left = textGrob("Number of responses", rot = 90, vjust = 1, gp = gpar(cex = 1.3)))
 f8
 
-ggsave("Figure 8.jpg", f8, units = "px", dpi=200, width = 1700, height = 916, bg = "white")
+ggsave("../figures_jpg/Figure 8.jpg", f8, units = "px", dpi=200, width = 1700, height = 916, bg = "white")
 ```
 
 ## Figure 9
@@ -636,15 +638,15 @@ an_me_plot <- cv %>%
   theme(legend.position="none", plot.caption = element_text(hjust=0), text = element_text(family = "Lato"), axis.text = element_text(size = 10)) + 
   #ylim(0, 0.1) + 
   scale_x_continuous(labels = scales::percent)  + scale_y_continuous(labels = scales::percent, limits = c(0, 0.4)) +
-   labs(y = "Percent of respondents")
+   labs(y = "Percentage of respondents")
 ```
 
 ```{r}
-f9 <- ggarrange(periods_plot2 + labs(y = "Percent of respondents")+ theme(axis.title.y = element_text(margin = margin (r = 10))), 
+f9 <- ggarrange(periods_plot2 + labs(y = "Percentage of respondents")+ theme(axis.title.y = element_text(margin = margin (r = 10))), 
           an_me_plot + theme(axis.title.y = element_text(margin = margin (r = 10))), labels = c("A", "B")) 
 f9
 
-ggsave("Figure 9.jpg", f9, units = "px", dpi=200, width = 1700, height = 916, bg = "white")
+ggsave("../figures_jpg/Figure 9.jpg", f9, units = "px", dpi=200, width = 1700, height = 916, bg = "white")
 ```
 
 ## Figure 10
@@ -691,10 +693,10 @@ group_by(area) %>%
 filter(n() > 2) %>% group_by(area, ud) %>% dplyr::summarise(n = n()) %>% 
   group_by(area) %>% dplyr::mutate(nn = sum(n)) %>% filter(area != "")
 
-f10<- as %>% 
+f10 <- as %>% 
   ggplot(., aes(x = n, y = reorder(area, nn), fill = ud)) +
-  geom_col(stat = "identity", width = 0.7) +
-  labs(x = "Percent of respondents", y = "", fill ="Positive:", title = "In ERP plot, should positive voltages\nbe plotted upwards, or downwards?") +
+  geom_col(stat = "identity", width = 0.7) + 
+  labs(x = "Percentage of respondents", y = "", fill ="Positive:", title = "In ERP plots, should positive voltages\nbe plotted upwards, or downwards?") +
   theme_classic()+
   geom_text(aes(label = n, group = ud), 
             position = position_stack(vjust = 0.5), size = 4)  +
@@ -712,11 +714,13 @@ f10<- as %>%
         plot.title.position = "plot",
         plot.caption.position = "plot",
         ) +  
-  scale_fill_manual(values=colours, limits = c("Up", "Down")) 
+  scale_fill_manual(values=colours, limits = c("Up", "Down")) +
+  scale_x_continuous(labels = scales::percent_format(scale = 1, accuracy = 1))
 
 f10
 
-ggsave("Figure 10.jpg", f10, units = "px", dpi=200, width = 1700, height = 916, bg = "white")
+ggsave("../figures_jpg/Figure 10.jpg", f10, units = "px", dpi=200, width = 1700, height = 916, bg = "white")
+ggsave("../figures_png/Figure 10.png", f10, units = "px", dpi=200, width = 1700, height = 916, bg = "white")
 ```
 
 ## Figure 11
@@ -760,12 +764,12 @@ ebd_fig <- ebd %>%
   scale_y_discrete(labels = c("Standard error\nof the mean", "Confidence\ninterval")) +
     theme(plot.caption = element_text(hjust=0), axis.text = element_text(size = 10)) + xlim(0, 100) 
 
-f11 <- ggarrange(eb_fig + labs(x = "Percent of respondents"), ebd_fig + labs(x = "Percent of respondents"),  
+f11 <- ggarrange(eb_fig + labs(x = "Percentage of respondents"), ebd_fig + labs(x = "Percentage of respondents"),  
           labels = c("A", "B"),
           ncol = 2, nrow = 1, align = 'h') 
 f11
 
-ggsave("Figure 11.jpg", f11, units = "px", dpi=250, width = 1700, height = 465, bg = "white")
+ggsave("../figures_jpg/Figure 11.jpg", f11, units = "px", dpi=250, width = 1700, height = 465, bg = "white")
 ```
 
 ## Sup figure 2

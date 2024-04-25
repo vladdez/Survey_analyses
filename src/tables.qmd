@@ -137,7 +137,7 @@ cat("```{r echo=FALSE}\nt1_1\n```", file = rmd_name)
 render(rmd_name, output_format = "html_document", output_file = html_name )
 
 webshot(html_name, zoom = 5,
-  file = "C:/Users/Vlad/Projects_prog/Survey_analyses/src/Table 1.jpg", 
+  file = "C:/Users/Vlad/Projects_prog/Survey_analyses/figures_jpg/Table 1.jpg", 
         selector = "body > div.container-fluid.main-container > div.tabwid > table")
 ```
 
@@ -240,7 +240,7 @@ cat("```{r echo=FALSE}\nt2\n```", file = rmd_name)
 render(rmd_name, output_format = "html_document", output_file = html_name)
 
 webshot(html_name, zoom = 5,
-  file = "C:/Users/Vlad/Projects_prog/Survey_analyses/src/Table 2.jpg", 
+  file = "C:/Users/Vlad/Projects_prog/Survey_analyses/figures_jpg/Table 2.jpg", 
         selector = "body > div.container-fluid.main-container > div.tabwid > table")
 ```
 
@@ -347,7 +347,7 @@ log_fun <- function(df){
 
 vec <- names(data[25:51]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
 
-data[25:51] %>%
+st1 <- data[25:51] %>%
   rename_at(vars(colnames(.)), ~ vec) %>% 
   dplyr::select(-Other) %>% 
   mutate_at(vars(vec[1:26]), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0))) %>%
@@ -363,9 +363,14 @@ data[25:51] %>%
                                                  CI = paste0('(' , round(ci1, 3), ', ', round(ci2, 3), ')' )) %>%
   dplyr::select(-ci1, -ci2) %>%
   mutate(p.value = cell_spec(p.value, bold = ifelse(p.value < 0.05, TRUE, FALSE))) %>% 
-  dplyr::rename(`Analytical software` = type) %>% 
-  kable(escape = F, booktabs = T) %>% 
-  kable_minimal(full_width = F,  html_font = "Source Sans Pro")
+  dplyr::rename(`Analytical software` = type, `Estimate` = estimate) %>% 
+  kable(escape = F, booktabs = T) #%>% 
+  #kable_minimal(full_width = F,  html_font = "Source Sans Pro")
+
+st1 %>% kable_styling(full_width = F,  html_font = "Source Sans Pro") %>% 
+  row_spec(0:11, color = "black") %>% 
+  save_kable(file = "Supplementary Table 1.jpg",
+             zoom = 5)
 ```
 
 ## Sup table 2
@@ -383,7 +388,7 @@ feature <- data[52:60] %>% rename_all(., ~str_split_i(colnames(data[52:60]), "\\
   cbind(., factor_scores[1]) %>%  
   rename_at(vars(colnames(.)), ~ c("subplot", "attributes", "speed", "publicable", "reproducable", "zooming", "interactive", "gui", "coding", "proxy")) 
 
-feature %>% 
+st2 <- feature %>% 
   gather(type, score, subplot:coding) %>% 
   dplyr::group_by(., type) %>% nest() %>% 
   dplyr::mutate(., model = map(data, cor_fun)) %>% unnest() %>% 
@@ -394,7 +399,10 @@ feature %>%
   mutate(p.value = cell_spec(p.value, bold = ifelse(p.value < 0.05, TRUE, FALSE))) %>% 
   dplyr::rename(`Software feature` = type, `Spearman rho` = estimate) %>% 
   select(-conf.low.Inf, -conf.high.Sup) %>% 
-  kable(escape = F, booktabs = T) %>% 
-  kable_minimal(full_width = F,  html_font = "Source Sans Pro") 
+  kable(escape = F, booktabs = T) #%>% 
+  #kable_minimal(full_width = F,  html_font = "Source Sans Pro") 
 
+st2 %>% kable_styling(full_width = F, html_font = "Source Sans Pro", latex_options = "striped") %>% 
+  row_spec(0:9, color = "black") %>% 
+  save_kable(file = "Supplementary Table 2.jpg", zoom = 5)
 ```

@@ -1,0 +1,295 @@
+---
+title: "All tables"
+format:
+  html:
+    toc: true
+    html-math-method: katex
+    css: styles.css
+    code-fold: true
+    code-summary: "Show the code"
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+
+Here are the figures from the paper *Art of the Brainwaves*.
+
+
+```{r, message= FALSE, warning=FALSE, echo=FALSE}
+library(dplyr)
+library(data.table)
+library(purrr)
+library(tidytext)
+library(tidyr)
+library(kableExtra)
+library(stringr)
+library(ggpubr)
+library(ggthemes)
+library(showtext)
+library(ggrepel)
+library(ggExtra)
+library(gt)
+library(officer)
+library(flextable)
+library(gdtools)
+library(gdata)
+library(xlsx)
+library(readxl)
+library(FactoMineR)
+library(RVAideMemoire)
+```
+
+
+## data
+
+
+```{r, message = FALSE, warning=FALSE, fig.keep = "first"}
+data <- read_excel("../data/results_survey.xlsx")
+data <- data[1:121] %>% 
+  filter(.[[18]] !='Yes') # not analysed any EEG method
+
+n1 <- readxl::read_xlsx("../data/aggregated_plotnames.xlsx", sheet = 1)
+n2 <- readxl::read_xlsx("../data/aggregated_plotnames.xlsx", sheet = 2)
+n3 <- readxl::read_xlsx("../data/aggregated_plotnames.xlsx", sheet = 3)
+n4 <- readxl::read_xlsx("../data/aggregated_plotnames.xlsx", sheet = 4)
+n5 <- readxl::read_xlsx("../data/aggregated_plotnames.xlsx", sheet = 5)
+n6 <- readxl::read_xlsx("../data/aggregated_plotnames.xlsx", sheet = 6)
+n7 <- readxl::read_xlsx("../data/aggregated_plotnames.xlsx", sheet = 7)
+n8 <- readxl::read_xlsx("../data/aggregated_plotnames.xlsx", sheet = 8)
+
+problem1 <- readxl::read_xlsx("../data/aggregated_problems.xlsx", sheet = 1)
+problem2 <- readxl::read_xlsx("../data/aggregated_problems.xlsx", sheet = 2)
+problem3 <- readxl::read_xlsx("../data/aggregated_problems.xlsx", sheet = 3)
+problem4 <- readxl::read_xlsx("../data/aggregated_problems.xlsx", sheet = 4)
+problem5 <- readxl::read_xlsx("../data/aggregated_problems.xlsx", sheet = 5)
+problem6 <- readxl::read_xlsx("../data/aggregated_problems.xlsx", sheet = 6)
+problem7 <- readxl::read_xlsx("../data/aggregated_problems.xlsx", sheet = 7)
+
+exp_data <- data[c( 19, 20, 12, 21, 22)]
+colnames(exp_data) <- c("n_papers", "years", "position","self_level", "code_contribution")
+m = FAMD(exp_data[1:5], ncp=2, axes=c(1,2))
+factor_scores <- as.data.frame(m$ind$coord)
+
+font_add_google("Lato")
+showtext_opts(dpi = 200)
+showtext_auto(enable = TRUE)
+```
+
+
+## Table 1
+
+
+```{r}
+dm <- data.frame()
+
+dim <- dplyr::tibble(
+  Plots = c("../miniatures/1.png", "../miniatures/2.png", "../miniatures/3.png", "../miniatures/4.png", "../miniatures/5.png", "../miniatures/6.png", "../miniatures/7.png", "../miniatures/8.png"),
+  Name = c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot timeseries", "ERP grid", "ERP image", "Channel image", "Parallel plot"), 
+  Time = c("x", "x", "", "(x)", "x", "x", "x", "(x)"),
+  Channels = c("", "x", "x", "x", "x", "", "x", "x"), 
+  Layout = c("", "", "x", "x", "x", "", "", ""), 
+  Conditions = c("x", "", "", "", "(x)", "", "", "x"), 
+  Trials = c("", "", "", "", "", "x", "", "(x)")
+) 
+
+t1_1 <- dim %>% flextable() %>%  valign(j = 2, valign = "center", part = "all") %>%
+  compose(j = 'Plots', value = as_paragraph(as_image(Plots, width = 1, height = 0.6))) %>%
+   padding(padding = 1, part = "all") %>%  autofit() %>% align(j = 3:7, align = "center") %>% 
+   height_all(0.01, part = "all", unit = "cm") %>% 
+  surround(
+    j = 1:7,
+    border.bottom = fp_border(color = "gray", style = "dashed"),
+    part = "body"
+  ) %>%   font(fontname = "Lato", part="all") %>% 
+  hline_bottom(part = "body", border = fp_border(color = "black", width = 1)) |>
+  add_footer_lines("x - full dimension, (x) - partial dimension")
+
+t1_1
+
+save_as_image(t1_1, "Table 1.png", expand = 10, res = 200)
+```
+
+
+## Table 2
+
+
+```{r}
+plot_names <- c("ERP plot", "Butterfly plot", "Topoplot", "Topoplot\ntimeseries", "ERP grid", "ERP image", "Channel image", "Parallel plot")
+
+t <- list(n1, n2, n3, n4, n5, n6, n7, n8) 
+
+create_table <- function(t){
+  tmp <- t[[1]] %>% mutate(total = sum(Scores)) %>% slice(1:3) %>% mutate(type = plot_names[1]) %>% rename_with(.cols = 1, ~"names") %>% relocate(type, names )
+  
+  for (i in 2:8){
+    tmp <- t[[i]]  %>% mutate(total = sum(Scores)) %>% slice(1:3) %>% 
+      mutate(type = plot_names[i]) %>% rename_with(.cols = 1, ~"names") %>% relocate(type, names) %>% 
+      rbind(tmp, .)
+  }
+  tmp <- tmp %>% 
+    group_by( type) %>%
+    dplyr::mutate(groupRow = 1:n()) %>%
+    ungroup() %>% mutate(p = round(as.numeric(Scores)/as.numeric(total), 2) * 100) %>% 
+    mutate(score = paste(p, total, sep = "% out of ")) %>% 
+    dplyr::mutate(type = ifelse(groupRow == 1, as.character(type), "")) %>%
+    dplyr::mutate(Scores = ifelse(groupRow == 1, as.character(score), paste(p, "%", sep = ""))) %>%
+    select(-c(groupRow, score))
+}
+plots2 <- c("../miniatures/1.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/2.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/3.png","../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/4.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/5.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/6.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/7.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/8.png", "../miniatures/filler.png")
+
+plotnames <- create_table(t) %>% data.frame() %>% 
+  mutate(names = str_to_sentence(names)) %>% 
+  mutate(names = str_replace(names, "Erp", "ERP")) %>% 
+  mutate(names = str_replace(names, "erp", "ERP")) %>% tibble::add_column(Plots = plots2, .before = "type") %>% 
+  dplyr::rename(`Plot types` = type,
+         `Aggregated responses` = names) %>% select(-total, -p) 
+
+t2 <- plotnames %>% flextable() %>% 
+  merge_at(j= 1, i = 1:3) %>% merge_at(j= 1, i = 4:6) %>% 
+  merge_at(j= 1, i = 7:9) %>% merge_at(j= 1, i = 10:12) %>%
+  merge_at(j= 1, i = 13:15) %>% merge_at(j= 1, i = 16:18) %>%
+  merge_at(j= 1, i = 19:21) %>% merge_at(j= 1, i = 22:23) %>%
+  
+  merge_at(j= 2, i = 1:3) %>% merge_at(j= 2, i = 4:6) %>% 
+  merge_at(j= 2, i = 7:9) %>% merge_at(j= 2, i = 10:12) %>%
+  merge_at(j= 2, i = 13:15) %>% merge_at(j= 2, i = 16:18) %>%
+  merge_at(j= 2, i = 19:21) %>% merge_at(j= 2, i = 22:23)  %>% 
+  valign(j = 2, valign = "center", part = "all") %>%
+  compose(j = 'Plots', value = as_paragraph(as_image(Plots, width = 1, height = 0.6))) %>%
+   padding(padding = 1, part = "all") %>% 
+  autofit() %>% valign(valign = "top") %>% 
+  height_all(0.01, part = "all", unit = "cm") %>% 
+  surround(
+    i = c(3, 6, 9, 12, 15, 18, 21),
+    j = 1:4,
+    border.bottom = fp_border(color = "gray", style = "dashed"),
+    part = "body"
+  ) %>%   font(fontname = "Lato", part="all") %>% 
+  hline_bottom(part = "body", border = fp_border(color = "white", width = 3)) 
+t2
+```
+
+
+## Table 3
+
+
+```{r}
+prob_comb <- 
+  rbind(problem1, problem2, problem3, problem4, problem5, problem6, problem7) %>%
+  group_by(`Plot names`) %>%  mutate(index = match(`Plot names`, unique(`Plot names`)))  %>% filter(`Main problems` != "no complains") %>% 
+  arrange(desc(Scores)) %>% slice(1:3) %>% 
+  arrange(index) %>%  dplyr::select(`Plot names`, `Main problems`, Scores, Total) %>%  
+  mutate(`Plot names` = str_to_sentence(`Plot names`)) %>% 
+  mutate(`Plot names` = str_replace(`Plot names`, "Erp", "ERP")) %>% 
+  mutate(`Plot names` = str_replace(`Plot names`, "erp", "ERP")) %>%  
+  group_by(`Plot names`) %>%
+  dplyr::mutate(groupRow = 1:n()) %>%
+  ungroup() %>%
+  mutate(p = round(as.numeric(Scores)/as.numeric(Total), 2) * 100) %>% 
+  dplyr::group_by(`Plot names`) %>%   mutate(mx = max(p)) %>% 
+  arrange(desc(mx), desc(p)) %>% 
+  mutate(score = paste(p, Total, sep = "% out of ")) %>% 
+  dplyr::mutate(`Plot names` = ifelse(groupRow == 1, as.character(`Plot names`), "")) %>%
+  dplyr::mutate(Scores = ifelse(groupRow == 1, as.character(score), paste(p, "%", sep = ""))) %>%
+  select(-c(groupRow, score, Total, p, mx)) 
+
+plots3 <- c("../miniatures/1.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/5.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/4.png","../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/7.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/2.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/3.png", "../miniatures/filler.png", "../miniatures/filler.png", "../miniatures/6.png", "../miniatures/filler.png", "../miniatures/filler.png")
+
+probs <- prob_comb %>% tibble::add_column(Plots = plots3, .before = "Plot names")  %>% ungroup() 
+
+t3 <- probs %>% flextable() %>% 
+  merge_at(j= 1, i = 1:3) %>% merge_at(j= 1, i = 4:6) %>% 
+  merge_at(j= 1, i = 7:9) %>% merge_at(j= 1, i = 10:12) %>%
+  merge_at(j= 1, i = 13:15) %>% merge_at(j= 1, i = 16:18) %>% 
+  merge_at(j= 1, i = 19:21) %>%
+  merge_at(j= 2, i = 1:3) %>% merge_at(j= 2, i = 4:6) %>% 
+  merge_at(j= 2, i = 7:9) %>% merge_at(j= 2, i = 10:12) %>%
+  merge_at(j= 2, i = 13:15) %>% merge_at(j= 2, i = 16:18) %>%
+  merge_at(j= 2, i = 19:21) %>% 
+  padding(padding = 1, part = "all") %>% 
+  valign(j = 2, valign = "center", part = "all") %>%
+  compose(j = 'Plots', value = as_paragraph(as_image(Plots, width = 1, height = 0.6))) %>%
+  autofit() %>%
+  height_all(0.01, part = "all", unit = "cm") %>% 
+  surround(
+    i = c(3, 6, 9, 12, 15, 18, 21),
+    j = 1:4,
+    border.bottom = fp_border(color = "gray", style = "dashed"),
+    part = "body"
+  ) %>% 
+  hline_bottom(part = "body", border = fp_border(color = "white", width = 3)) %>% 
+  font(fontname = "Lato", part="all") 
+t3 
+```
+
+
+## Sup table 1
+
+
+```{r}
+log_fun <- function(df){
+  mod <- glm(df$score ~ df$proxy, family = "binomial") 
+  ci1 <- confint(mod)[2]
+  ci2 <- confint(mod)[4]
+  mod %>% tidy() %>% slice(-1) %>% cbind(ci1) %>% cbind(ci2)
+}
+
+vec <- names(data[25:51]) %>% str_split_i(., "\\? \\[", 2) %>%  str_sub(., 1, -2)
+
+data[25:51] %>%
+  rename_at(vars(colnames(.)), ~ vec) %>% 
+  dplyr::select(-Other) %>% 
+  mutate_at(vars(vec[1:26]), function(., na.rm = FALSE) (x = ifelse(.=="Yes", 1, 0))) %>%
+  select_if(colSums(.) > 10) %>% 
+  cbind(factor_scores[1], .) %>% dplyr::rename(proxy = !!names(.)[1]) %>% 
+  gather(type, score, BESA:`Custom scripts`) %>% 
+   dplyr::group_by(., type) %>% nest() %>% 
+  dplyr::mutate(., model = map(data, log_fun)) %>% unnest() %>% 
+  dplyr::select(type, estimate, std.error, p.value, ci1, ci2) %>%
+  dplyr::group_by(type) %>%  slice(1) %>% mutate(p.value = round(as.numeric(p.value), 2), 
+                                                 estimate = round(as.numeric(estimate), 2),
+                                                 std.error = round(as.numeric(std.error), 2), 
+                                                 CI = paste0('(' , round(ci1, 3), ', ', round(ci2, 3), ')' )) %>%
+  dplyr::select(-ci1, -ci2) %>%
+  mutate(p.value = cell_spec(p.value, bold = ifelse(p.value < 0.05, TRUE, FALSE))) %>% 
+  dplyr::rename(`Analytical software` = type) %>% 
+  kable(escape = F, booktabs = T) %>% 
+  kable_minimal(full_width = F,  html_font = "Source Sans Pro")
+```
+
+
+## Sup table 2
+
+
+```{r}
+cor_fun <- function(df){
+  p.value <- cor.test(df$proxy, df$score, method = "spearman")$p.value
+  mod <- spearman.ci(df$proxy, df$score) %>% tidy() %>% cbind(p.value) 
+  }
+feature <- data[52:60] %>% rename_all(., ~str_split_i(colnames(data[52:60]), "\\? \\[", 2) %>% str_sub(., 1, -2) ) %>%  
+  mutate_at(c(colnames(.)), 
+        funs(recode(.,
+        "Very important"= 2, "Important"= 1, "Neutral"= 0,
+        "Low importance"= -1, "Not at all important" = -2 )))  %>% 
+  cbind(., factor_scores[1]) %>%  
+  rename_at(vars(colnames(.)), ~ c("subplot", "attributes", "speed", "publicable", "reproducable", "zooming", "interactive", "gui", "coding", "proxy")) 
+
+feature %>% 
+  gather(type, score, subplot:coding) %>% 
+  dplyr::group_by(., type) %>% nest() %>% 
+  dplyr::mutate(., model = map(data, cor_fun)) %>% unnest() %>% 
+  dplyr::select(type, estimate, conf.low.Inf, conf.high.Sup, p.value) %>% # , method
+  dplyr::group_by(type) %>%  slice(1) %>% mutate(estimate = round(as.numeric(estimate), 2),
+                                                 CI = paste0('(' , round(conf.low.Inf, 3), ', ', round(conf.high.Sup, 3), ')' ),
+                                                             p.value = round(as.numeric(p.value), 2)) %>% 
+  mutate(p.value = cell_spec(p.value, bold = ifelse(p.value < 0.05, TRUE, FALSE))) %>% 
+  dplyr::rename(`Software feature` = type, `Spearman rho` = estimate) %>% 
+  select(-conf.low.Inf, -conf.high.Sup) %>% 
+  kable(escape = F, booktabs = T) %>% 
+  kable_minimal(full_width = F,  html_font = "Source Sans Pro") 
+
+```
+
