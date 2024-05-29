@@ -723,6 +723,75 @@ ggsave("../figures_jpg/Figure 10.jpg", f10, units = "px", dpi=200, width = 1700,
 ggsave("../figures_png/Figure 10.png", f10, units = "px", dpi=200, width = 1700, height = 916, bg = "white")
 ```
 
+```{r}
+area_short <- area %>% 
+  mutate(words = ifelse(str_detect(.[[1]], 'language and speech|attention'), 
+                        "language, speech,\nattention", 
+                        "affective neuroscience,\nbci, clinical, decision making,\ndevelopment, memory,\nmethodology, motor control,\nperception, sleep, time")) 
+
+as2 <- cbind(unlist(area_short$words), unlist(data[[79]])) %>% data.frame() %>% 
+filter(.[[2]] != "NANA") %>% dplyr::rename(area=X1, ud=X2) %>%
+group_by(area) %>%
+filter(n() > 2) %>% group_by(area, ud) %>% dplyr::summarise(n = n()) %>% 
+  group_by(area) %>% dplyr::mutate(nn = sum(n)) %>% filter(area != "") %>% 
+  dplyr::mutate(n = round(n / 199 *100), nn = round(nn / 199 * 100))
+
+f10_2 <- as2 %>% 
+  ggplot(., aes(x = n, y = reorder(area, nn), fill = ud)) +
+  geom_col(stat = "identity", width = 0.7) +
+  labs(x = "Percent of respondents", y = "", fill ="Positive:", title = "In ERP plot, should positive voltages\nbe plotted upwards, or downwards?") +
+  theme_classic()+
+  geom_text(aes(label = paste0(n, "%"), group = ud), 
+            position = position_stack(vjust = 0.5), size = 4)  +
+  coord_cartesian(clip = "off") +
+  theme(axis.text = element_text(size = 12),
+        text = element_text(family = "Lato"),
+        axis.title = element_text(size = 12),
+        title = element_text(size = 14),
+        axis.title.y=element_blank(),
+        
+        legend.title = element_blank(),
+        legend.direction = "horizontal",
+        legend.position = c(0.8, 0.2),
+        
+        plot.title.position = "plot",
+        plot.caption.position = "plot",
+        ) +  
+  scale_fill_manual(values=colours, limits = c("Up", "Down")) 
+
+f10_2 
+ggsave("../figures_jpg/Figure 10_2.jpg", f10_2, units = "px", dpi=200, width = 1700, height = 916, bg = "white")
+ggsave("../figures_png/Figure 10_2.png", f10_2, units = "px", dpi=200, width = 1700, height = 916, bg = "white")
+```
+```{r}
+f10_3 <- as2 %>% 
+  ggplot(., aes(y = n, x = reorder(area, nn), fill = ud)) +
+  geom_col(stat = "identity", width = 0.3) +
+  labs(y = "Percent of respondents", x = "", fill ="Positive:", title = "In ERP plot, should positive voltages\nbe plotted upwards, or downwards?") +
+  theme_classic()+
+  geom_text(aes(label = paste0(n, "%"), group = ud), 
+            position = position_stack(vjust = 0.5), size = 4)  +
+  coord_cartesian(clip = "off") +
+  theme(axis.text = element_text(size = 12),
+        text = element_text(family = "Lato"),
+        axis.title = element_text(size = 12),
+        title = element_text(size = 14),
+        
+        legend.title = element_blank(),
+        legend.position = c(0.95, 0.2),
+        aspect.ratio = 0.5/1,
+        
+       # plot.title.position = "plot",
+       # plot.caption.position = "plot",
+        ) +  
+  scale_fill_manual(values=colours, limits = c("Up", "Down")) 
+
+
+f10_3 
+ggsave("../figures_jpg/Figure 10_3.jpg", f10_3, units = "px", dpi=200, width = 1700, height = 916, bg = "white")
+```
+
+
 ## Figure 11
 
 ```{r}

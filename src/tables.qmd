@@ -89,15 +89,16 @@ dim <- dplyr::tibble(
   Channels = c("", "x", "x", "x", "x", "", "x", "x"), 
   Layout = c("", "", "x", "x", "x", "", "", ""), 
   Conditions = c("x", "", "", "", "(x)", "", "", "x"), 
-  Trials = c("", "", "", "", "", "x", "", "(x)")
+  Trials = c("", "", "", "", "", "x", "", "(x)"),
+  Voltage = c("x", "x", "x", "x", "x", "x", "x", "x")
 ) 
 
 t1_1 <- dim %>% flextable() %>%  valign(j = 2, valign = "center", part = "all") %>%
   compose(j = 'Plots', value = as_paragraph(as_image(Plots, width = 1, height = 0.6))) %>%
-   padding(padding = 1, part = "all") %>%  autofit() %>% align(j = 3:7, align = "center") %>% 
+   padding(padding = 1, part = "all") %>%  autofit() %>% align(j = 3:8, align = "center") %>% 
    height_all(0.01, part = "all", unit = "cm") %>% 
   surround(
-    j = 1:7,
+    j = 1:8,
     border.bottom = fp_border(color = "gray", style = "dashed"),
     part = "body"
   ) %>%   font(fontname = "Lato", part="all") %>% 
@@ -114,15 +115,16 @@ dim <- dplyr::tibble(
   Channels = c("", "x", "x", "x", "x", "", "x", "x"), 
   Layout = c("", "", "x", "x", "x", "", "", ""), 
   Conditions = c("x", "", "", "", "(x)", "", "", "x"), 
-  Trials = c("", "", "", "", "", "x", "", "(x)")
+  Trials = c("", "", "", "", "", "x", "", "(x)"),
+  Voltage = c("x", "x", "x", "x", "x", "x", "x", "x")
 ) 
 
 t1_1 <- dim %>% flextable() %>%  valign(j = 2, valign = "center", part = "all") %>%
   compose(j = 'Plots', value = as_paragraph(as_image(Plots, width = 1, height = 0.6))) %>%
-   padding(padding = 1, part = "all") %>%  autofit() %>% align(j = 3:7, align = "center") %>% 
+   padding(padding = 1, part = "all") %>%  autofit() %>% align(j = 3:8, align = "center") %>% 
    height_all(0.01, part = "all", unit = "cm") %>% 
   surround(
-    j = 1:7,
+    j = 1:8,
     border.bottom = fp_border(color = "gray", style = "dashed"),
     part = "body"
   ) %>%   font(fontname = "Lato", part="all") %>% 
