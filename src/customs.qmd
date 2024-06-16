@@ -51,7 +51,7 @@ showtext_auto(enable = TRUE)
 
 ## Familiarity with plots
 
-#### Recognition
+### Recognition
 
 ```{r, warning=FALSE}
 vec <- c("line", "butterfly", "topo",  "topo_map", "topo_array", "erp_image", "parallel", "channel_image")
@@ -72,6 +72,26 @@ rec %>%
   labs(caption = sprintf("N of respondents - %d",  nrow(familiar))) +
   theme(legend.position="none", plot.caption.position = "plot", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
 
+```
+
+```{r}
+familiar1 <- familiar %>%  mutate(n = rowSums(across(where(is.numeric))))
+table(familiar1$n)  %>%  t() %>% data.frame()  %>% 
+  mutate(percent_score = round(Freq / 213 * 100)) %>% 
+  ggplot(., aes(y = Var2, x = percent_score)) +
+  geom_col(stat="identity", fill ="#6BAED6") +
+    labs(x = "", y = "Number of recognised plots", title = "Number of plots recognised by EEG researchers") + theme_classic() +
+    geom_text(aes(label = paste0(percent_score, "%")), 
+              position = position_dodge(width = .9), hjust = -0.2, size = 4) + theme(
+      axis.text.y = element_text(size = 14),
+      legend.position="none", plot.caption.position = "plot", 
+      plot.caption = element_text(hjust=0), 
+      text = element_text(family = "Lato"),
+      axis.text.x = element_blank(), axis.text = element_text(size = 10),  
+      plot.title = element_text(color = "grey10", size = 16, face = "bold"),
+      axis.title.y = element_blank(),
+      plot.title.position = "plot"
+      ) + xlim(0, 45) 
 ```
 
 ### Naming
@@ -118,9 +138,6 @@ num_named  %>%
   ggtitle("Plot naming") +
   labs(caption = sprintf("N of respondents - %d",  nrow(familiar))) +
   theme(legend.position="none", plot.caption = element_text(hjust=0), axis.text = element_text(size = 10))
-
-
-
 ```
 
 ```{r}
