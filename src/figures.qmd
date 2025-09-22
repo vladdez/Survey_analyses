@@ -763,6 +763,7 @@ f10_2
 ggsave("../figures_jpg/Figure 10_2.jpg", f10_2, units = "px", dpi=200, width = 1700, height = 916, bg = "white")
 ggsave("../figures_png/Figure 10_2.png", f10_2, units = "px", dpi=200, width = 1700, height = 916, bg = "white")
 ```
+
 ```{r}
 f10_3 <- as2 %>% 
   ggplot(., aes(y = n, x = reorder(area, nn), fill = ud)) +
@@ -790,7 +791,6 @@ f10_3 <- as2 %>%
 f10_3 
 ggsave("../figures_jpg/Figure 10_3.jpg", f10_3, units = "px", dpi=200, width = 1700, height = 916, bg = "white")
 ```
-
 
 ## Figure 11
 
